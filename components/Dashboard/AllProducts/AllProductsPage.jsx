@@ -68,7 +68,7 @@ const AllProductsPage = () => {
   ];
   return (
     <div>
-      <div className="grid grid-cols-2 mx-10">
+      <div className="flex justify-between">
         <div
           className="flex items-center
                     border-2 border-[#F88D58]
@@ -85,9 +85,9 @@ const AllProductsPage = () => {
         </div>
 
         <div className="flex flex-shrink-0 text-lg items-center justify-center">
-            <div onClick={toggleMenu}  className="flex justify-center items-center cursor-pointer">
+            <div onClick={toggleMenu}  className="flex justify-center items-center cursor-pointer gap-2">
 
-          <span className="text-3xl text-[#F88D58] "> +</span>
+          <span className="text-3xl text-[#F88D58] mb-2 "> +</span>
           Add New Dog Info
             </div>
           {isOpen && (

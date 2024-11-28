@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Roboto } from "next/font/google";
 import Navbar from "@/components/Share/Navbar";
 import Footer from "@/components/Share/Footer";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 const roboto_init = Roboto({
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({ children }) {
         {/* <div className="sticky top-0  z-50 ">
           <Navbar />
         </div> */}
-        {children}
+        <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   );

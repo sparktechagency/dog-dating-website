@@ -1,62 +1,61 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import dogFood from "../../../asserts/dogfood.png";
+import shelterImg from "../../../asserts/fp2.png";
 
-const EditItem = (props) => {
-  const { item, setIsOpen, isOpen, toggleMenu } = props;
-  const profileRef = useRef(null);
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isOpen && profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, setIsOpen]);
-
-  const [formData, setFormData] = useState({
-    name: item?.name,
-    image: dogFood,
-    price: item?.price,
-    description: item?.description,
-    link: "https://www.amazon.com/Bully-Max-Performance-Super-Premium/dp/B01FT67D0O?th=1", // Default empty
-  });
-  //   console.log(formData);
-  const [photo, setPhoto] = useState(formData?.image);
-
-  const handlePhotoChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setPhoto(e.target.result);
+const AddNewShelter = (props) => {
+    const {  setIsOpen, isOpen, toggleMenu } = props;
+    const profileRef = useRef(null);
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (isOpen && profileRef.current && !profileRef.current.contains(event.target)) {
+          setIsOpen(false);
         }
       };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleImage = (e) => {
-    handleChange(e);
-    handlePhotoChange(e);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
-
-  return (
-    <div  ref={profileRef} className="bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl ">
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [isOpen, setIsOpen]);
+  
+    const [formData, setFormData] = useState({
+      name: "",
+      image: "",
+      description: "",	
+      link: "", 
+    });
+    //   console.log(formData);
+    const [photo, setPhoto] = useState(shelterImg);
+  
+    const handlePhotoChange = (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            setPhoto(e.target.result);
+          }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    };
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+    const handleImage = (e) => {
+      handleChange(e);
+      handlePhotoChange(e);
+    };
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      console.log("Form submitted:", formData);
+    };
+  
+    return (
+<div  ref={profileRef} className="bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl ">
       <div onClick={toggleMenu} className="cursor-pointer ">
         <p className="  text-lg font-bold text-white text-end me-10 mt-4 ">X</p>
       </div>
@@ -105,14 +104,13 @@ const EditItem = (props) => {
                 type="text"
                 id="name"
                 name="name"
-                placeholder={formData.name}
-                defaultValue={formData.name}
+                placeholder={`Give a title`}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
-            <div>
+            {/* <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-white  mb-1"
@@ -123,25 +121,23 @@ const EditItem = (props) => {
                 type="number"
                 id="price"
                 name="price"
-                placeholder={formData.price}
-                defaultValue={formData.price}
+                placeholder={`Give price`}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-white  mb-1"
               >
-                Product (affiliate) Link*
+                Shelter Link*
               </label>
               <input
                 type="text"
                 id="link"
                 name="link"
-                placeholder={formData.link}
-                defaultValue={formData.link}
+                placeholder={`Product affiliate Link`}	
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -158,8 +154,7 @@ const EditItem = (props) => {
                 rows={6}
                 id="description"
                 name="description"
-                placeholder={formData.description}
-                defaultValue={formData.description}
+                placeholder={`Write Description`}	
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
                 style={{ resize: "none" }}
@@ -167,17 +162,17 @@ const EditItem = (props) => {
             </div>
 
             <button
-               onClick={toggleMenu}
               type="submit"
+              onClick={toggleMenu}
               className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
             >
-              Update
+              Add
             </button>
           </div>
         </div>
       </form>
     </div>
-  );
+    );
 };
 
-export default EditItem;
+export default AddNewShelter;
