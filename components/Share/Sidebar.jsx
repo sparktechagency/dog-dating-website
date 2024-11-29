@@ -2,13 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import allProductIcon from "../../asserts/all-product-icon.svg";
+import shelterIcon from "../../asserts/shelterIcon.svg";
+import donationIcon from "../../asserts/donationIcon.svg";
+import logOutIcon from "../../asserts/logOutIcon.svg";
+import memberIcon from "../../asserts/memberIcon.svg";
 import { usePathname } from "next/navigation";
 
 const Sidebar = ({ slider, setSlider }) => {
   const location = usePathname();
   // console.log();
   return (
-    <div className=" bg-[#F88D58] text-white h-[89vh] lg:h-[80vh] pt-5 lg:rounded-tr-3xl lg:rounded-br-3xl">
+    <div className=" bg-[#F88D58] text-white h-[89vh] lg:h-[85vh] pt-5 lg:rounded-tr-3xl lg:rounded-br-3xl overflow-y-auto">
       {/* //* SideBar Collaps Buttons */}
       <div className="lg:hidden">
         {slider ? (
@@ -33,7 +37,7 @@ const Sidebar = ({ slider, setSlider }) => {
             </button>
           </div>
         ) : (
-          <button onClick={() => setSlider(!slider)}>
+          <button onClick={() => setSlider(!slider)} className="ml-[20%]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="30"
@@ -42,7 +46,7 @@ const Sidebar = ({ slider, setSlider }) => {
               viewBox="0 0 24 24"
               strokeWidth={1}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="w-8 h-8 "
             >
               <path
                 strokeLinecap="round"
@@ -54,22 +58,130 @@ const Sidebar = ({ slider, setSlider }) => {
         )}
       </div>
       {/* //* SideBar Collaps Menus */}
-      <div className={`${slider ? "block" : "hidden lg:block "} `}>
+      <div className={`${slider ? "block" : "hidden lg:block "}  h-[90%]`}>
         <h1 className="text-2xl cursor-pointer flex justify-start items-center px-5 mb-10">
           <Link href="/dashboard">
             <span className="font-bold">Dashboard</span>
           </Link>
         </h1>
-        <div className="hidden lg:block ">
-          <ul className=" flex justify-center items-start flex-col gap-3 pe-10">
-            <Link href="/dashboard/all-products" className="w-full">
-              {" "}
+        {/* For Laptop View  */}
+        <div className="hidden lg:block relative h-full">
+          <div>
+            <ul className=" flex justify-center items-start flex-col gap-3 pe-10">
+              <Link href="/dashboard/all-products" className="w-full">
+                {" "}
+                <li
+                  className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                    location === "/dashboard/all-products"
+                      ? "text-[#F88D58] bg-white"
+                      : "text-white"
+                  }`}
+                >
+                  <Image
+                    src={allProductIcon}
+                    alt="show-feedback"
+                    width={30}
+                    style={{
+                      filter:
+                        location === "/dashboard/all-products"
+                          ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                          : undefined,
+                    }}
+                  />
+                  <p>All Products</p>
+                </li>
+              </Link>
+              <Link href="/dashboard/shelter" className="w-full">
+                {" "}
+                <li
+                  className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                    location === "/dashboard/shelter"
+                      ? "text-[#F88D58] bg-white"
+                      : "text-white"
+                  }`}
+                >
+                  <Image
+                    src={shelterIcon}
+                    alt="Shelter"
+                    width={30}
+                    style={{
+                      filter:
+                        location === "/dashboard/shelter"
+                          ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                          : undefined,
+                    }}
+                  />
+                  Shelter
+                </li>
+              </Link>
+              <Link href="/dashboard/donation" className="w-full">
+                {" "}
+                <li
+                  className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                    location === "/dashboard/donation"
+                      ? "text-[#F88D58] bg-white"
+                      : "text-white"
+                  }`}
+                >
+                  <Image
+                    src={donationIcon}
+                    alt="donation"
+                    width={30}
+                    style={{
+                      filter:
+                        location === "/dashboard/donation"
+                          ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                          : undefined,
+                    }}
+                  />
+                  <p>Donation</p>
+                </li>
+              </Link>
+              <Link href="/dashboard/members" className="w-full">
+                {" "}
+                <li
+                  className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                    location === "/dashboard/members"
+                      ? "text-[#F88D58] bg-white"
+                      : "text-white"
+                  }`}
+                >
+                  <Image
+                    src={memberIcon}
+                    alt="members"
+                    width={30}
+                    style={{
+                      filter:
+                        location === "/dashboard/members"
+                          ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                          : undefined,
+                    }}
+                  />
+                  Members
+                </li>
+              </Link>
+            </ul>
+          </div>
+
+          <div
+            className={`flex items-center cursor-pointer absolute bottom-14 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
+           `}
+          >
+            <Image src={logOutIcon} alt="show-feedback" width={30} />
+            <p>Log Out</p>
+          </div>
+        </div>
+        {/* For Mobile View */}
+        <div className="block lg:hidden relative h-[90%]">
+          <div>
+            <ul className=" flex justify-center items-start flex-col gap-3  pe-5">
               <li
-                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
                   location === "/dashboard/all-products"
                     ? "text-[#F88D58] bg-white"
                     : "text-white"
                 }`}
+                onClick={() => setSlider(!slider)}
               >
                 <Image
                   src={allProductIcon}
@@ -82,21 +194,19 @@ const Sidebar = ({ slider, setSlider }) => {
                         : undefined,
                   }}
                 />
-                <p>All Products</p>
+                <Link href="/dashboard/all-products">All Products</Link>
               </li>
-            </Link>
-            <Link href="/dashboard/shelter" className="w-full">
-              {" "}
               <li
-                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
                   location === "/dashboard/shelter"
                     ? "text-[#F88D58] bg-white"
                     : "text-white"
                 }`}
+                onClick={() => setSlider(!slider)}
               >
                 <Image
-                  src={allProductIcon}
-                  alt="Shelter"
+                  src={shelterIcon}
+                  alt="shelter"
                   width={30}
                   style={{
                     filter:
@@ -105,21 +215,19 @@ const Sidebar = ({ slider, setSlider }) => {
                         : undefined,
                   }}
                 />
-                Shelter
+                <Link href="/dashboard/shelter">Shelter</Link>
               </li>
-            </Link>
-            <Link href="/dashboard/donation" className="w-full">
-              {" "}
               <li
-                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
                   location === "/dashboard/donation"
                     ? "text-[#F88D58] bg-white"
                     : "text-white"
                 }`}
+                onClick={() => setSlider(!slider)}
               >
                 <Image
-                  src={allProductIcon}
-                  alt="donation"
+                  src={donationIcon}
+                  alt="Donation"
                   width={30}
                   style={{
                     filter:
@@ -128,20 +236,18 @@ const Sidebar = ({ slider, setSlider }) => {
                         : undefined,
                   }}
                 />
-                <p>Donation</p>
+                <Link href="/dashboard/donation">Donation</Link>
               </li>
-            </Link>
-            <Link href="/dashboard/members" className="w-full">
-              {" "}
               <li
-                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
                   location === "/dashboard/members"
                     ? "text-[#F88D58] bg-white"
                     : "text-white"
                 }`}
+                onClick={() => setSlider(!slider)}
               >
                 <Image
-                  src={allProductIcon}
+                  src={memberIcon}
                   alt="members"
                   width={30}
                   style={{
@@ -151,98 +257,17 @@ const Sidebar = ({ slider, setSlider }) => {
                         : undefined,
                   }}
                 />
-                Members
+                <Link href="/dashboard/members">Members</Link>
               </li>
-            </Link>
-          </ul>
-        </div>
-        <div className="block lg:hidden">
-          <ul className=" flex justify-center items-start flex-col gap-3  pe-5">
-            <li
-              className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
-                location === "/dashboard/all-products"
-                  ? "text-[#F88D58] bg-white"
-                  : "text-white"
-              }`}
-              onClick={() => setSlider(!slider)}
-            >
-              <Image
-                src={allProductIcon}
-                alt="show-feedback"
-                width={30}
-                style={{
-                  filter:
-                    location === "/dashboard/all-products"
-                      ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
-                      : undefined,
-                }}
-              />
-              <Link href="/dashboard/all-products">All Products</Link>
-            </li>
-            <li
-              className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
-                location === "/dashboard/shelter"
-                  ? "text-[#F88D58] bg-white"
-                  : "text-white"
-              }`}
-              onClick={() => setSlider(!slider)}
-            >
-              <Image
-                src={allProductIcon}
-                alt="shelter"
-                width={30}
-                style={{
-                  filter:
-                    location === "/dashboard/shelter"
-                      ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
-                      : undefined,
-                }}
-              />
-              <Link href="/dashboard/shelter">Shelter</Link>
-            </li>
-            <li
-              className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
-                location === "/dashboard/donation"
-                  ? "text-[#F88D58] bg-white"
-                  : "text-white"
-              }`}
-              onClick={() => setSlider(!slider)}
-            >
-              <Image
-                src={allProductIcon}
-                alt="Donation"
-                width={30}
-                style={{
-                  filter:
-                    location === "/dashboard/donation"
-                      ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
-                      : undefined,
-                }}
-              />
-              <Link href="/dashboard/donation">Donation</Link>
-            </li>
-            <li
-              className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
-                location === "/dashboard/members"
-                  ? "text-[#F88D58] bg-white"
-                  : "text-white"
-              }`}
-              onClick={() => setSlider(!slider)}
-            >
-              <Image
-                src={allProductIcon}
-                alt="members"
-                width={30}
-                style={{
-                  filter:
-                    location === "/dashboard/members"
-                      ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
-                      : undefined,
-                }}
-              />
-              <Link href="/dashboard/members">Members</Link>
-            </li>
-          </ul>
+            </ul>
+          </div>
+          <div
+            className={`flex items-center cursor-pointer absolute bottom-0 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
+           `}
+          >
+            <Image src={logOutIcon} alt="show-feedback" width={30} />
+            <p>Log Out</p>
+          </div>
         </div>
       </div>
     </div>
