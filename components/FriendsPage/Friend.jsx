@@ -204,6 +204,8 @@ const Friend = ({ petPartner, index }) => {
                 judgment when arranging meetups.
               </p>
               <div className="flex justify-end">
+                <Link href={'/woof-mail'}>
+                
                 <button
                   className=" text-white no-underline  bg-[#F88D58] hover:bg-black 
                 xl:px-[48px] xl:py-[20px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 lg:text-fluid-button text-[18px] flex justify-center 
@@ -212,6 +214,7 @@ const Friend = ({ petPartner, index }) => {
                   Message Me
                   <MdOutlineArrowOutward />
                 </button>
+                </Link>
               </div>
             </div>
           </div>

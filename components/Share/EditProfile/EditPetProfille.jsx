@@ -405,7 +405,7 @@ export default function EditPetProfile(props) {
 
           {/* describe */}
           <div className="space-y-2">
-            <label className="block text-sm">describe</label>
+            <label className="block text-sm">Describe</label>
             <textarea
               name="describe"
               type="text"

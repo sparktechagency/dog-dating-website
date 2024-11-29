@@ -9,6 +9,7 @@ import logo from "../../asserts/logo.svg";
 import { usePathname } from "next/navigation";
 import logOut from "./asserts/logOut.svg";
 import profile from "./asserts/profile.svg";
+import ceo from "../../asserts/ceo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +68,7 @@ const Navbar = () => {
     { name: "Featured Pups", path: "/featured-pups" },
     { name: "Our Pack", path: "/our-pack" },
     { name: "Contact us", path: "/contact-us" },
-    { name: "Dashboard", path: "/dashboard" },
+    { name: "Dashboard", path: "/dashboard/all-products" },
   ];
 
   return (
@@ -150,27 +151,34 @@ const Navbar = () => {
           className="relative lg:block hidden cursor-pointer select-none"
         >
           <div onClick={toggleProfile}>
-            <IoPersonCircleOutline className="text-5xl" />
+            {/* <IoPersonCircleOutline className="text-5xl" /> */}
+            <Image
+            src={ceo}
+            alt={`profile`}
+            width={0}
+            height={0}
+            className="rounded-full mr-4 w-12 ring-1 ring-[#F88D58] object-cover aspect-square"
+          />
           </div>
           {open && (
             <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-32 p-1">
               <Link href="/profile">
                 <div className="flex gap-3">
-                  <Image alt="profileImage" src={profile} className="w-5" />
+                  <Image alt="profileImage" src={profile} className="w-4" />
                   <p
                     // onClick={toggleUserModal}
-                    className="text-[#302F51] text-[20px] cursor-pointer font-bold"
+                    className="text-[#302F51] text-[18px] cursor-pointer font-bold"
                   >
                     Profile
                   </p>
                 </div>
               </Link>
               <div className="flex gap-3 mt-2 whitespace-nowrap">
-                <Image alt="LogoutImage" src={logOut} className="w-5" />
+                <Image alt="LogoutImage" src={logOut} className="w-4" />
                 <Link href={`/login`}>
                   <p
                     // onClick={toggleGroupModal}
-                    className="text-[#302F51] cursor-pointer text-[20px] font-bold"
+                    className="text-[#302F51] cursor-pointer text-[18px] font-bold"
                   >
                     Log Out
                   </p>
