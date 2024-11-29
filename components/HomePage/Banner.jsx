@@ -37,7 +37,7 @@ const Banner = () => {
                         					  initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8 , delay: 0.4 }}
-        style={{fontSize:"clamp(20px, 3vw + 1rem ,85px)"}} className="text-white font-inter font-bold md:mx-0 mx-auto  md:text-start text-center  leading-tight">
+        style={{fontSize:"clamp(20px, 4vw + 1rem ,100px)"}} className="text-white font-inter font-bold md:mx-0 mx-auto  md:text-start text-center  leading-tight">
           YOUR BEST <br /> FRIEND DESERVES <br /> THEIR BEST DAY
         </motion.h1>
       </div>
