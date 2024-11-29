@@ -205,6 +205,7 @@ useEffect(() => {
           {error && <p style={{ color: 'red' }}>{error}</p>}
 
           <button
+          onClick={toggleEditProfile}
             type="submit"
             className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
           >

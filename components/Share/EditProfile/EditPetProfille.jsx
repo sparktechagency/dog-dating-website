@@ -418,9 +418,10 @@ export default function EditPetProfile(props) {
           {/* Submit Button */}
           <button
             type="submit"
+            onClick={toggleEditPetProfile}
             className="w-full bg-[#F88D58] text-white py-2 rounded-md  "
           >
-            Continue
+            Update
           </button>
         </form>
       </div>
