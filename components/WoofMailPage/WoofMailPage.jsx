@@ -63,6 +63,111 @@ const WoofMailPage = () => {
           senderRole: "user",
           unread: true,
         },
+        {
+          id: 6,
+          text: "Hello!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 7,
+          text: "How are you?",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 8,
+          text: "I'm fine, thanks!",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 9,
+          text: "What about you?",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 10,
+          text: "Doing great!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 11,
+          text: "Hello!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 12,
+          text: "How are you?",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 13,
+          text: "I'm fine, thanks!",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 14,
+          text: "What about you?",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 15,
+          text: "Doing great!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 16,
+          text: "Hello!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 17,
+          text: "How are you?",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
+        {
+          id: 18,
+          text: "I'm fine, thanks!",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 19,
+          text: "What about you?",
+          sender: "You",
+          senderRole: "admin",
+          unread: false,
+        },
+        {
+          id: 20,
+          text: "Doing great!",
+          sender: "Alice",
+          senderRole: "user",
+          unread: true,
+        },
       ],
     },
     {
@@ -570,7 +675,7 @@ const WoofMailPage = () => {
                 />
               </div>
               <div className="md:h-full h-fit !overflow-y-auto">
-                <Menu mode="vertical" className=" text-gray-300  pb-36">
+                <Menu mode="vertical" className=" text-gray-300  !pb-16">
                   {filteredConversations.map((conversation) => (
                     <Menu.Item
                       key={conversation.id}
@@ -601,22 +706,24 @@ const WoofMailPage = () => {
             <div className="!bg-[#FFFAF5] m-2  "></div>
 
             <Layout className="p-6 pl-0 !bg-[#FFFAF5]">
-              <Header className="bg-[#FFFFFF] p-4  flex justify-between">
-                <Typography.Title level={3} type="secondary">
-                  <BarsOutlined
-                    onClick={() => setCollapsed(!collapsed)}
-                    className="text-3xl"
-                  />
-                </Typography.Title>
-                <div className="flex items-center gap-2">
-                  <Image
-                    className="h-10 w-10 relative"
-                    src={profileImage}
-                    alt="Profile"
-                  />
-                  <p className="font-bold text-base sm:text-lg lg:text-xl">
-                    {selectedConversation?.user}
-                  </p>
+              <Header className="!bg-[#FFFFFF] p-4  flex justify-between">
+                <div className="flex items-center gap-5">
+                  <Typography.Title level={3} type="secondary">
+                    <BarsOutlined
+                      onClick={() => setCollapsed(!collapsed)}
+                      className="text-3xl"
+                    />
+                  </Typography.Title>
+                  <div className="flex items-center gap-2">
+                    <Image
+                      className="h-10 w-10 relative"
+                      src={profileImage}
+                      alt="Profile"
+                    />
+                    <p className="font-bold text-base sm:text-lg lg:text-xl">
+                      {selectedConversation?.user}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-full bg-[#EDE9E9]">
@@ -637,7 +744,7 @@ const WoofMailPage = () => {
               <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
                 {selectedConversation ? (
                   <div className="h-full flex flex-col justify-end">
-                    <Card className="  mb-12 overflow-y-auto border-none ">
+                    <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
                       {selectedConversation.messages.map((msg) => (
                         <div key={msg.id}>
                           <p
@@ -686,25 +793,27 @@ const WoofMailPage = () => {
                 )}
 
                 {selectedConversation && (
-                  <div className=" absolute bottom-0 flex justify-center items-center w-full p-4">
-                    <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
-                      {/* Emoji Icon */}
-                      <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600" />
+                  <div className="w-full !bg-white ">
+                    <div className=" absolute -bottom-5 flex justify-center items-center w-full p-4">
+                      <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
+                        {/* Emoji Icon */}
+                        <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600" />
 
-                      {/* Input Field */}
-                      <Input
-                        placeholder="Send your message..."
-                        className="border-none focus:ring-0 outline-none !bg-transparent text-black"
-                      />
+                        {/* Input Field */}
+                        <Input
+                          placeholder="Send your message..."
+                          className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                        />
 
-                      {/* Image Icon */}
-                      <BsImage className="cursor-pointer text-xl text-gray-500" />
+                        {/* Image Icon */}
+                        <BsImage className="cursor-pointer text-xl text-gray-500" />
 
-                      {/* Paperclip Icon */}
-                      <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
-                    </div>
-                    <div>
-                      <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
+                        {/* Paperclip Icon */}
+                        <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                      </div>
+                      <div>
+                        <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
+                      </div>
                     </div>
                   </div>
                 )}

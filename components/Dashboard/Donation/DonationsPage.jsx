@@ -1,11 +1,20 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Flex, Table } from "antd";
-import { BiSolidDonateHeart } from "react-icons/bi";
+import { Button, ConfigProvider, Flex, Table } from "antd";
+import { BiMenuAltRight, BiSolidDonateHeart } from "react-icons/bi";
 import { BsFilterRight } from "react-icons/bs";
+import { Select, Space } from "antd";
+
+const { Option } = Select;
 
 const DonationsPage = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  const handleChange = (value) => {
+    setSelectedValue(value);
+  };
 
   const donations = [
     {
@@ -102,6 +111,20 @@ const DonationsPage = () => {
       dataIndex: "email",
     },
   ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -110,52 +133,94 @@ const DonationsPage = () => {
 
   return (
     <div>
-      <div className="my-[50px] flex justify-between">
-
-<div className="gap-3 flex">
-
-
-        <div className="w-fit bg-white shadow-md px-6 py-2 rounded-lg">
-          <div>
-            <BiSolidDonateHeart className="text-5xl  rounded-full p-3 bg-[#FF6740] text-white" />
+      <div className="my-[50px] flex flex-col lg:flex-row gap-10 justify-between">
+        <div className="gap-x-5 gap-y-10 flex flex-col md:flex-row">
+          <div className=" w-full lg:w-fit bg-white shadow-md px-6 py-2 rounded-lg">
+            <div>
+              <BiSolidDonateHeart className="text-5xl  rounded-full p-3 bg-[#FF6740] text-white" />
+            </div>
+            <h1 className="text-[22px] text-[#302F51] font-semibold">
+              November Donation
+            </h1>
+            <h1 className="text-[40px] text-[#302F51] font-bold">$2,100.00</h1>
           </div>
-          <h1 className="text-[22px] text-[#302F51] font-semibold">
-            November Donation
-          </h1>
-          <h1 className="text-[40px] text-[#302F51] font-bold">$2,100.00</h1>
+
+          <div className=" w-full lg:w-fit bg-white shadow-md px-6 py-2 rounded-lg">
+            <div>
+              <BiSolidDonateHeart className="text-5xl  rounded-full p-3 bg-[#FF6740] text-white" />
+            </div>
+            <h1 className="text-[22px] text-[#302F51] font-semibold">
+              Total Donation
+            </h1>
+            <h1 className="text-[40px] text-[#302F51] font-bold">$12,909.00</h1>
+          </div>
         </div>
 
-        <div className="w-fit bg-white shadow-md px-6 py-2 rounded-lg">
-          <div>
-            <BiSolidDonateHeart className="text-5xl  rounded-full p-3 bg-[#FF6740] text-white" />
-          </div>
-          <h1 className="text-[22px] text-[#302F51] font-semibold">
-            Total Donation
-          </h1>
-          <h1 className="text-[40px] text-[#302F51] font-bold">$12,909.00</h1>
-        </div>
-</div>
-
-
-<div className="flex  justify-center gap-2">
-  <h1 className="text-[22px] font-semibold text-[#302F51]">
-  Select a Month
-  </h1>
-  <BsFilterRight className="text-3xl  text-[#FF6740] " />
-
-</div>
-
-
-
+        <ConfigProvider
+          theme={{
+            components: {
+              Select: {
+                colorBgContainer: "rgba(0,0,0,0)",
+                fontSize: 20,
+                optionSelectedColor: "#F3F3F3",
+                optionSelectedBg: "#F88D58",
+                optionActiveColor: "#F3F3F3",
+                colorBorder: "#F88D58",
+                colorBgElevated: "#F3F3F3",
+                selectorBg: "#F3F3F3",
+                colorText: "#302F51",
+                colorTextPlaceholder: "#302F51",
+              },
+            },
+          }}
+        >
+          <Select
+            suffixIcon={<BiMenuAltRight className="text-2xl text-[#F88D58]" />}
+            className="!border-none !ring-0 !outline-none !text-2xl !h-12 !w-full lg:!w-auto"
+            placeholder="Select a Month"
+            style={{ width: 200 }}
+            onChange={handleChange}
+            value={selectedValue}
+          >
+            {months.map((month, index) => (
+              <Option key={index} value={month}>
+                {month}
+              </Option>
+            ))}
+          </Select>
+        </ConfigProvider>
       </div>
       <div>
-        <h1 className="text-[24px] font-bold text-[#302F51] mb-[50px]">Donations</h1>
+        <h1 className="text-[24px] font-bold text-[#302F51] mb-[50px]">
+          Donations
+        </h1>
       </div>
       <div>
-        <Flex gap="middle" vertical>
-          <Flex align="center" gap="middle"></Flex>
-          <Table columns={columns} dataSource={donations} />
-        </Flex>
+        <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                headerBg: "#F88D5899",
+                colorBgContainer: "#fffaf5",
+                colorText: "#0C0C0C",
+                borderColor: "#fffaf5",
+                headerColor: "#0C0C0C",
+                fontSize: 18,
+                footerColor: "#fffaf5",
+                // marginXXS: 4,
+                colorLinkActive: "#fffaf5",
+                headerSplitColor: "#0C0C0C",
+              },
+            },
+          }}
+        >
+          {" "}
+          <Table
+            columns={columns}
+            dataSource={donations}
+            scroll={{ x: "100%" }}
+          />
+        </ConfigProvider>
       </div>
     </div>
   );

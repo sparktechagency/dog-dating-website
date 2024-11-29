@@ -6,9 +6,10 @@ import shelterIcon from "../../asserts/shelterIcon.svg";
 import donationIcon from "../../asserts/donationIcon.svg";
 import logOutIcon from "../../asserts/logOutIcon.svg";
 import memberIcon from "../../asserts/memberIcon.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Sidebar = ({ slider, setSlider }) => {
+  const router = useRouter();
   const location = usePathname();
   // console.log();
   return (
@@ -166,6 +167,9 @@ const Sidebar = ({ slider, setSlider }) => {
           <div
             className={`flex items-center cursor-pointer absolute bottom-14 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
            `}
+            onClick={() => {
+              router.push("/login");
+            }}
           >
             <Image src={logOutIcon} alt="show-feedback" width={30} />
             <p>Log Out</p>
@@ -264,6 +268,10 @@ const Sidebar = ({ slider, setSlider }) => {
           <div
             className={`flex items-center cursor-pointer absolute bottom-0 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
            `}
+            onClick={() => {
+              router.push("/login");
+              setSlider(!slider);
+            }}
           >
             <Image src={logOutIcon} alt="show-feedback" width={30} />
             <p>Log Out</p>
