@@ -5,7 +5,7 @@ import { FaBars, FaCross, FaTimes } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import logo from "../../asserts/logo.png";
+import logo from "../../asserts/logo.svg";
 import { usePathname } from "next/navigation";
 import logOut from "./asserts/logOut.svg";
 import profile from "./asserts/profile.svg";
