@@ -32,7 +32,12 @@ const HowDoYouPlay = () => {
         <source src="/demo.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <h1 style={{fontSize:"clamp(20px,2.5vw + 1rem ,96px)"}}  className=" absolute  w-full text-center top-[15%] text-white font-bold">HOW DO YOU PLAY?</h1>
+      {
+        isPlaying || (
+<h1 style={{fontSize:"clamp(20px,2.5vw + 1rem ,96px)"}}  className=" absolute  w-full text-center top-[15%] text-white font-bold">HOW DO YOU PLAY?</h1>
+        )
+      }
+      
 
       {/* Play/Pause Button */}
       <div
