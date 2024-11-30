@@ -15,9 +15,11 @@ import { useState } from 'react';
 import DonateNow from './DonateNow/DonateNow';
 import Link from 'next/link';
 import DonateSuccess from './DonateNow/DonateSuccess';
+import DonateButtonPage from './DonateNow/DonateButtonPage';
 
 const FeaturedPups = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenDonation, setIsOpenDonation] = useState(false)
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(null)
 
@@ -26,17 +28,18 @@ const FeaturedPups = () => {
     setIsOpen(true)
   }
   const closeModal = () => setIsOpen(false)
+  const closeDonationModal = () => setIsOpenDonation(false)
 
   const shelters = [
-    { id: 1, name: 'ABC Shelter', image: img1 },
-    { id: 2, name: 'ABC Shelter', image: img2 },
-    { id: 3, name: 'ABC Shelter', image: img3 },
-    { id: 4, name: 'ABC Shelter', image: img4 },
-    { id: 5, name: 'ABC Shelter', image: img5 },
-    { id: 6, name: 'ABC Shelter', image: img6 },
-    { id: 7, name: 'ABC Shelter', image: img7 },
-    { id: 8, name: 'ABC Shelter', image: img8 },
-    { id: 9, name: 'ABC Shelter', image: img9 },
+    { id: 1, name: 'ABC Shelter', image: img1,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 2, name: 'ABC Shelter', image: img2,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 3, name: 'ABC Shelter', image: img3,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 4, name: 'ABC Shelter', image: img4,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 5, name: 'ABC Shelter', image: img5,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 6, name: 'ABC Shelter', image: img6,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 7, name: 'ABC Shelter', image: img7,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 8, name: 'ABC Shelter', image: img8,link:"https://sarvoham.org/adopt-5-star/" },
+    { id: 9, name: 'ABC Shelter', image: img9,link:"https://sarvoham.org/adopt-5-star/" },
   ];
 
 
@@ -74,7 +77,7 @@ const FeaturedPups = () => {
                   alt={shelter?.name}
                   layout="fill"
                   objectFit="cover"
-                  className="  object-top"
+                  className="  object-top "
                 />
               </div>
 
@@ -100,7 +103,7 @@ const FeaturedPups = () => {
           Your donation helps give shelter dogs the care and love they need while
           waiting for their forever homes. Every contribution makes a tail wag and a heart hopeful. Click below to make a difference today!
         </p>
-        <button   className="md:mt-[50] mt-5 text-white no-underline bg-[#F88D58] hover:bg-black 
+        <button onClick={()=>setIsOpenDonation(true)}  className="md:mt-[50] mt-5 text-white no-underline bg-[#F88D58] hover:bg-black 
                  xl:px-[48px] xl:py-[20px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] 
                  px-[48px] py-[20px] md:mb-0 mb-4 md:text-fluid-button text-[18px] flex justify-center 
                  items-center gap-[16px] rounded-lg mx-auto">
@@ -111,6 +114,15 @@ isOpen &&
 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-50'>
 
   <DonateNow closeModal={closeModal} setOpen={setOpen} setIsOpen={setIsOpen} isOpen={isOpen}  id={id} />
+</div>
+       }
+
+
+        {
+isOpenDonation &&
+<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-50'>
+
+  <DonateButtonPage closeModal={closeDonationModal} setOpen={setOpen} setIsOpen={setIsOpenDonation} isOpen={isOpenDonation}  />
 </div>
        }
 

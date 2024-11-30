@@ -13,7 +13,8 @@ const ShelterPage = () => {
     {
       id: 1,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
@@ -22,7 +23,8 @@ const ShelterPage = () => {
     {
       id: 2,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
@@ -31,7 +33,8 @@ const ShelterPage = () => {
     {
       id: 3,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
@@ -40,7 +43,8 @@ const ShelterPage = () => {
     {
       id: 4,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
@@ -49,7 +53,8 @@ const ShelterPage = () => {
     {
       id: 5,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
@@ -58,7 +63,8 @@ const ShelterPage = () => {
     {
       id: 6,
       name: "Bella",
-      age: "3",
+      age: 3,
+      link: "https://sarvoham.org/adopt-5-star/",
       description: [
         "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
         "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",

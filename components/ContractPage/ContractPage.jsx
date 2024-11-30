@@ -1,21 +1,22 @@
+"use client";
 import React from 'react';
 import img from '../../asserts/contract.png'
 
-// const ContractPage = () => {
-//     return (
-//         <div>
-            
-//         </div>
-//     );
-// };
 
-// export default ContractPage;
-
-
-// import React from 'react';
 import Image from 'next/image';
 
 const ContractPage = () => {
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const name=e.target.name.value;
+    const email=e.target.email.value;
+    const message=e.target.message.value;
+    
+    console.log(name,email,message);
+    e.target.reset();
+    
+    // Handle form submission logic here    
+  }
   return (
     <div className="bg-[#FFFAF5] my-10">
       <div className="container mx-auto px-4">
@@ -43,7 +44,7 @@ const ContractPage = () => {
 
           {/* Contact Form */}
           <div className=" p-8 rounded-lg ">
-            <form action="#" method="POST" className="space-y-4">
+            <form onSubmit={handleFormSubmit}  className="space-y-4">
               {/* Name Input */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -53,6 +54,7 @@ const ContractPage = () => {
                   type="text"
                   name="name"
                   id="name"
+                  required
                   placeholder="Your name"
                   className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -67,6 +69,7 @@ const ContractPage = () => {
                   type="email"
                   name="email"
                   id="email"
+                  required
                   placeholder="you@company.com"
                   className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -80,6 +83,7 @@ const ContractPage = () => {
                 <textarea
                   name="message"
                   id="message"
+                  required
                   rows="4"
                   placeholder="Tell us a little about yourself..."
                   className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"

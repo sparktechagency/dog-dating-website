@@ -28,19 +28,23 @@ const Footer = () => {
         {/* Email Input and Join Button */}
         <div className="md:grid flex flex-col-reverse text-center gap-4 mt-4 md:gap-0 md:mt-0">
             <div>
-            <p className="text-white text-sm mb-2 md:mb-0 lg:mr-4">
-            JOIN OUR FURRY COMMUNITY
+              <p className="text-white text-sm ">
+           
           </p>
             </div>
 
 
-          <div className="flex items-center">
+          <div className="flex items-end">
+          <div className='flex flex-col justify-start items-start gap-2'>
+
+        
+          <label htmlFor="email"  className="text-white text-sm "> JOIN OUR FURRY COMMUNITY</label>
             <input
               type="email"
               placeholder="Enter your email"
               className="p-2 rounded-md w-full lg:w-64"
-            />
-            <button className="ml-2 p-2 bg-[#F4893D] hover:bg-black text-white rounded-md">
+            />  </div>
+            <button className="ml-2 p-2 bg-[#F4893D] hover:bg-black text-white rounded-md ">
               JOIN
             </button>
           </div>

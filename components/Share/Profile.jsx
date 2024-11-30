@@ -30,7 +30,7 @@ export default function Profile() {
     address: "1234 Sunset Blvd, Los Angeles, California, USA",
     age: "2",
     gender: "Male",
-    size: "S (34-36)",
+    size: "Small (10 – 30 lbs)",
     neutered: "Yes",
     playStyle: "Focused Play; throw the ball!",
     crowdPreference: "I'm comfortable with small groups",

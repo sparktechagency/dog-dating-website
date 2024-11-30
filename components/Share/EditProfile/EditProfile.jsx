@@ -36,77 +36,77 @@ useEffect(() => {
   const [autocomplete, setAutocomplete] = useState(null); // To store the Autocomplete instance
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Get current location for the initial marker and map center
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setMapCenter({ lat: latitude, lng: longitude });
-        },
-        (error) => {
-          console.error("Error getting geolocation: ", error);
-          // Set a default location if geolocation fails
-          setMapCenter({ lat: 34.0522, lng: -118.2437 }); // Default to Los Angeles
-        }
-      );
-    }
+  // useEffect(() => {
+  //   // Get current location for the initial marker and map center
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         setMapCenter({ lat: latitude, lng: longitude });
+  //       },
+  //       (error) => {
+  //         console.error("Error getting geolocation: ", error);
+  //         // Set a default location if geolocation fails
+  //         setMapCenter({ lat: 34.0522, lng: -118.2437 }); // Default to Los Angeles
+  //       }
+  //     );
+  //   }
 
-    // Wait for the window.google object to be available
-    const checkGoogleMapsLoaded = setInterval(() => {
-      if (window.google && window.google.maps) {
-        // Initialize Google Places Autocomplete when the Google Maps API is available
-        if (inputRef.current) {
-          const autocompleteInstance = new window.google.maps.places.Autocomplete(inputRef.current);
-          autocompleteInstance.setFields(["address_component", "geometry"]);
-          autocompleteInstance.addListener("place_changed", () => handlePlaceChange(autocompleteInstance));
-          setAutocomplete(autocompleteInstance);
-        }
-        clearInterval(checkGoogleMapsLoaded); // Clear interval once loaded
-      }
-    }, 100); // Check every 100ms for google.maps
+  //   // Wait for the window.google object to be available
+  //   const checkGoogleMapsLoaded = setInterval(() => {
+  //     if (window.google && window.google.maps) {
+  //       // Initialize Google Places Autocomplete when the Google Maps API is available
+  //       if (inputRef.current) {
+  //         const autocompleteInstance = new window.google.maps.places.Autocomplete(inputRef.current);
+  //         autocompleteInstance.setFields(["address_component", "geometry"]);
+  //         autocompleteInstance.addListener("place_changed", () => handlePlaceChange(autocompleteInstance));
+  //         setAutocomplete(autocompleteInstance);
+  //       }
+  //       clearInterval(checkGoogleMapsLoaded); // Clear interval once loaded
+  //     }
+  //   }, 100); // Check every 100ms for google.maps
 
-    return () => clearInterval(checkGoogleMapsLoaded); // Cleanup interval on unmount
-  }, []);
+  //   return () => clearInterval(checkGoogleMapsLoaded); // Cleanup interval on unmount
+  // }, []);
 
-  const handlePlaceChange = (autocompleteInstance) => {
-    const place = autocompleteInstance.getPlace();
+  // const handlePlaceChange = (autocompleteInstance) => {
+  //   const place = autocompleteInstance.getPlace();
 
-    if (place.geometry) {
-      const { lat, lng } = place.geometry.location;
-      setMapCenter({ lat: lat(), lng: lng() });
-      setFormData((prev) => ({ ...prev, location: place.formatted_address }));
-    } else {
-      setError("No details available for the selected place.");
-      setMapCenter(null);
-    }
-  };
+  //   if (place.geometry) {
+  //     const { lat, lng } = place.geometry.location;
+  //     setMapCenter({ lat: lat(), lng: lng() });
+  //     setFormData((prev) => ({ ...prev, location: place.formatted_address }));
+  //   } else {
+  //     setError("No details available for the selected place.");
+  //     setMapCenter(null);
+  //   }
+  // };
 
-  const handleGetCoordinates = async () => {
-    if (formData?.location.trim() === '') {
-      setError('Please enter a location name.');
-      return;
-    }
-    setError('');
+  // const handleGetCoordinates = async () => {
+  //   if (formData?.location.trim() === '') {
+  //     setError('Please enter a location name.');
+  //     return;
+  //   }
+  //   setError('');
     
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData?.location)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-      );
-      const data = response.data;
+  //   try {
+  //     const response = await axios.get(
+  //       `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData?.location)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+  //     );
+  //     const data = response.data;
       
-      if (data.status === 'OK') {
-        const { lat, lng } = data.results[0].geometry.location;
-        setMapCenter({ lat, lng });
-      } else {
-        setError('Location not found.');
-        setMapCenter(null);
-      }
-    } catch (err) {
-      setError('Error fetching data.');
-      setMapCenter(null);
-    }
-  };
+  //     if (data.status === 'OK') {
+  //       const { lat, lng } = data.results[0].geometry.location;
+  //       setMapCenter({ lat, lng });
+  //     } else {
+  //       setError('Location not found.');
+  //       setMapCenter(null);
+  //     }
+  //   } catch (err) {
+  //     setError('Error fetching data.');
+  //     setMapCenter(null);
+  //   }
+  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

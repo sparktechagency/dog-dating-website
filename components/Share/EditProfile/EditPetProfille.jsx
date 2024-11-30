@@ -30,11 +30,11 @@ export default function EditPetProfile(props) {
     address: "1234 Sunset Blvd, Los Angeles, California, USA",
     age: "2",
     gender: "Male",
-    size: "S (34-36)",
+    size: "Small (10 – 30 lbs)",
     neutered: "Yes",
     playStyle: "Focused Play; throw the ball!",
-    crowdPreference: "I&apos;m comfortable with small groups",
-    playpreferences: "I&apos;m comfortable in any crowd",
+    crowdPreference: "I'm comfortable with small groups",
+    playpreferences: "I'm comfortable in any crowd",
     locationPreference: "Backyard/Home playdate",
     describe: "Type your Response",
   };
@@ -183,7 +183,7 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 "
             >
-              <option value="">Select Gender</option>
+              <option disabled selected value="">Select Gender</option>
               <option className="text-[#F88D58] bg-[#FFF5ED]" value="Male">
                 Male
               </option>
@@ -202,27 +202,27 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Size</option>
+              <option disabled selected value="">Select Size</option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
-                value="XS (32-34)"
+                value="Extra small (0 – 10 lbs)"
               >
-                XS (32-34)
+                Extra small (0 – 10 lbs)
               </option>
-              <option className="text-[#F88D58] bg-[#FFF5ED]" value="S (34-36)">
-                S (34-36)
+              <option className="text-[#F88D58] bg-[#FFF5ED]" value="Small (10 – 30 lbs)">
+              Small (10 – 30 lbs)
               </option>
-              <option className="text-[#F88D58] bg-[#FFF5ED]" value="M (36-38)">
-                M (36-38)
+              <option className="text-[#F88D58] bg-[#FFF5ED]" value="Medium (30 – 55 lbs)">
+              Medium (30 – 55 lbs)
               </option>
-              <option className="text-[#F88D58] bg-[#FFF5ED]" value="L (38-40)">
-                L (38-40)
+              <option className="text-[#F88D58] bg-[#FFF5ED]" value="Large (55 – 80 lbs)">
+              Large (55 – 80 lbs)
               </option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
-                value="XL (40-42)"
+                value="Extra Large (80+ lbs)"
               >
-                XL (40-42)
+                Extra Large (80+ lbs)
               </option>
             </select>
           </div>
@@ -236,7 +236,7 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select option</option>
+              <option disabled selected value="">Select option</option>
               <option className="text-[#F88D58] bg-[#FFF5ED]" value="Yes">
                 Yes
               </option>
@@ -255,7 +255,7 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select option</option>
+              <option disabled selected value="">Select option</option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
                 value="I'm new to play, and can be shy"
@@ -296,7 +296,7 @@ export default function EditPetProfile(props) {
             </select>
           </div>
 
-          {/* Neutered//Spayed */}
+          {/* Do you like a crowd?*/}
           <div className="space-y-2">
             <label className="block text-sm ">Do you like a crowd?</label>
             <select
@@ -305,7 +305,7 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select option</option>
+              <option disabled selected value="">Select option</option>
 
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
@@ -337,7 +337,7 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select option</option>
+              <option  disabled selected value="">Select option</option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
                 value="I'm comfortable with friends my own size"
@@ -374,12 +374,12 @@ export default function EditPetProfile(props) {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select option</option>
+              <option   disabled selected value="">Select option</option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
-                value="backyard/home playdate,"
+                value="Backyard/Home playdate"
               >
-                backyard/home playdate
+                Backyard/Home playdate
               </option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
@@ -396,7 +396,7 @@ export default function EditPetProfile(props) {
               </option>
               <option
                 className="text-[#F88D58] bg-[#FFF5ED]"
-                value="I&apos;m comfortable in any crowd"
+                value="I'm comfortable in any crowd"
               >
                 I&apos;m comfortable in any crowd
               </option>
@@ -418,7 +418,7 @@ export default function EditPetProfile(props) {
           {/* Submit Button */}
           <button
             type="submit"
-            onClick={toggleEditPetProfile}
+            // onClick={toggleEditPetProfile}
             className="w-full bg-[#F88D58] text-white py-2 rounded-md  "
           >
             Update

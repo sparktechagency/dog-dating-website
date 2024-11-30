@@ -1,12 +1,23 @@
+"use client";
 import Image from 'next/image';
 import React from 'react';
 import { IoMdArrowBack } from "react-icons/io";
 import loginImg from "../../asserts/login-img.png";
-import logo from "../../asserts/logo.png";
+import logo from "../../asserts/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import Link from 'next/link';
 
 const Login = () => {
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const password=e.target.password.value;
+        const email=e.target.email.value;
+        
+        console.log(password,email);
+        e.target.reset();
+        
+        // Handle form submission logic here    
+      }
     return (
         <div className='container mx-auto pt-5'>
             {/*Back Home button */}
@@ -33,7 +44,7 @@ const Login = () => {
                     </div>
                     <h1 className='text-4xl font-bold mb-2 md:mt-16 mt-8'>Log in</h1>
                     <p className='text-gray-600 mb-4 text-xl'>Welcome back! Please enter your details.</p>
-                    <form action="" className="w-full max-w-sm">
+                    <form onSubmit={handleFormSubmit}  className="w-full max-w-sm">
                         {/* Email */}
                         <div className="form-control mb-4">
                             <label className="label">
@@ -48,7 +59,7 @@ const Login = () => {
                             />
                         </div>
                         {/* Name */}
-                        <div className="form-control md:mb-4">
+                        <div className="form-control md:mb-2">
                             <label className="label">
                                 <span className="label-text">Password</span>
                             </label>
@@ -62,7 +73,7 @@ const Login = () => {
                         </div>
                         <div className='text-right'>
                         <Link href={'/login/forgot-password'}>
-                        <button className="btn btn-link no-underline text-[#F88D58]  md:text-xl md:my-2">Forgot password</button>
+                        <button className="btn btn-link no-underline text-[#F88D58]  md:text-lg ">Forgot password</button>
                         </Link>
                         </div>
                         <button className="btn bg-[#F88D58] hover:bg-black text-white w-full text-xl  ">Sign in</button>
@@ -72,7 +83,7 @@ const Login = () => {
                         <h1 className='text-gray-500'>
                             Don’t have an account?
                             <button className="btn btn-link no-underline
-                             text-[#F88D58]  md:text-xl my-2">
+                             text-[#F88D58]  md:text-lg my-2">
                                 sign up</button>
                         </h1>
                        </Link>

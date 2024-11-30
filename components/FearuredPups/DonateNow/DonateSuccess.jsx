@@ -1,14 +1,15 @@
 "use client"
 import React, { useEffect, useRef } from "react";
-import img1 from "../../../asserts/fp1.png";
-import img2 from "../../../asserts/fp2.png";
-import img3 from "../../../asserts/fp3.png";
-import img4 from "../../../asserts/fp4.png";
-import img5 from "../../../asserts/fp5.png";
-import img6 from "../../../asserts/fp6.png";
-import img7 from "../../../asserts/fp7.png";
-import img8 from "../../../asserts/fp8.png";
-import img9 from "../../../asserts/fp9.png";
+// import img1 from "../../../asserts/fp1.png";
+// import img2 from "../../../asserts/fp2.png";
+// import img3 from "../../../asserts/fp3.png";
+// import img4 from "../../../asserts/fp4.png";
+// import img5 from "../../../asserts/fp5.png";
+// import img6 from "../../../asserts/fp6.png";
+// import img7 from "../../../asserts/fp7.png";
+// import img8 from "../../../asserts/fp8.png";
+// import img9 from "../../../asserts/fp9.png";
+import logo from "../../../asserts/logo.svg";
 import checkMark from "../../../asserts/checkMark.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,23 +41,23 @@ return () => {
 
 
 
-  const shelters = [
-    { id: 1, name: "ABC Shelter", image: img1 },
-    { id: 2, name: "ABC Shelter", image: img2 },
-    { id: 3, name: "ABC Shelter", image: img3 },
-    { id: 4, name: "ABC Shelter", image: img4 },
-    { id: 5, name: "ABC Shelter", image: img5 },
-    { id: 6, name: "ABC Shelter", image: img6 },
-    { id: 7, name: "ABC Shelter", image: img7 },
-    { id: 8, name: "ABC Shelter", image: img8 },
-    { id: 9, name: "ABC Shelter", image: img9 },
-  ];
-  const selectedShelter = shelters.find(
-    (shelter) => shelter.id === parseInt(params.id)
-  );
+  // const shelters = [
+  //   { id: 1, name: "ABC Shelter", image: img1 },
+  //   { id: 2, name: "ABC Shelter", image: img2 },
+  //   { id: 3, name: "ABC Shelter", image: img3 },
+  //   { id: 4, name: "ABC Shelter", image: img4 },
+  //   { id: 5, name: "ABC Shelter", image: img5 },
+  //   { id: 6, name: "ABC Shelter", image: img6 },
+  //   { id: 7, name: "ABC Shelter", image: img7 },
+  //   { id: 8, name: "ABC Shelter", image: img8 },
+  //   { id: 9, name: "ABC Shelter", image: img9 },
+  // ];
+  // const selectedShelter = shelters.find(
+  //   (shelter) => shelter.id === parseInt(params.id)
+  // );
 
   return (
-    <div ref={containerRef} className="bg-white/30 w-[60vw] h-[90vh]  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl flex flex-col justify-center">
+    <div ref={containerRef} className="bg-white/30 w-[60vw] h-[90vh]  items-center  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl flex flex-col justify-center">
       <button
         className="absolute right-10 top-10 font-bold text-2xl text-white"
         onClick={() => setOpen(false)}
@@ -64,13 +65,13 @@ return () => {
         X
       </button>
 
-      <div className="md:w-1/4 w-1/2 mx-auto">
+      <div className=" mx-auto">
         <Image
-          alt={selectedShelter.name}
-          src={selectedShelter.image}
+          alt={"logo"}
+          src={logo}
           width={0}
           height={0}
-          className="object-cover  m-4 px-3 aspect-square rounded-3xl  overflow-hidden mb-4 md:mb-0 md:mr-6 flex justify-center items-center "
+          className="object-cover   aspect-square rounded-3xl  overflow-hidden mb-4 md:mb-0 md:mr-6 flex justify-center items-center "
         />
       </div>
       <div className="flex justify-center mt-3">

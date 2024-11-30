@@ -1,13 +1,26 @@
+"use client";
 import Image from 'next/image';
 import React from 'react';
 import { IoMdArrowBack } from "react-icons/io";
 import loginImg from "../../asserts/Signup-img.png";
-import logo from "../../asserts/logo.png";
+import logo from "../../asserts/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import Link from 'next/link';
 
 
 const SignUp = () => {
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const name=e.target.name.value;
+        const email=e.target.email.value;
+        const userName=e.target.userName.value;
+        const password=e.target.password.value;
+        
+        console.log(name,email,userName,password);
+        e.target.reset();
+        
+        // Handle form submission logic here    
+      }
     return (
         <div className='container mx-auto pt-5'>
             {/* sign in Back button */}
@@ -35,7 +48,7 @@ const SignUp = () => {
                     </div>
                     <h1 className='text-4xl font-bold mb-7 text-center flex flex-shrink-0'>Create an account</h1>
                     {/* <p className='text-gray-600 mb-4 text-xl'>Welcome back! Please enter your details.</p> */}
-                    <form action="" className="w-full max-w-sm">
+                    <form onSubmit={handleFormSubmit} className="w-full max-w-sm">
                         {/* Name */}
                         <div className="form-control mb-4">
                             <label className="label">
@@ -52,7 +65,7 @@ const SignUp = () => {
                         {/* Email */}
                         <div className="form-control mb-4">
                             <label className="label">
-                                <span className="label-text">User Name</span>
+                                <span className="label-text">User Name*</span>
                             </label>
                             <input
                                 type="text"
@@ -94,11 +107,11 @@ const SignUp = () => {
                         <button className="btn bg-[#F88D58] hover:bg-black text-white w-full text-xl">Sign in</button>
                     </form>
                         <button className="btn bg-white text-gray-600 w-full text-xl max-w-sm mt-8 border-gray-300"><FcGoogle className='text-4xl' /> Sign in With Google</button>
-                        <h1 className='text-gray-500'>
+                        <h1 className='text-gray-500  text-lg'>
                             Already have an account?
                             <Link href={'/login'}>
                             <button className="btn btn-link no-underline 
-                            text-[#F88D58]  my-2">
+                            text-[#F88D58] text-lg my-2">
                                 Log in
                             </button>
                             </Link>
