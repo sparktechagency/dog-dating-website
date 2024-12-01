@@ -31,15 +31,186 @@ const FeaturedPups = () => {
   const closeDonationModal = () => setIsOpenDonation(false)
 
   const shelters = [
-    { id: 1, name: 'ABC Shelter', image: img1,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 2, name: 'ABC Shelter', image: img2,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 3, name: 'ABC Shelter', image: img3,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 4, name: 'ABC Shelter', image: img4,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 5, name: 'ABC Shelter', image: img5,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 6, name: 'ABC Shelter', image: img6,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 7, name: 'ABC Shelter', image: img7,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 8, name: 'ABC Shelter', image: img8,link:"https://sarvoham.org/adopt-5-star/" },
-    { id: 9, name: 'ABC Shelter', image: img9,link:"https://sarvoham.org/adopt-5-star/" },
+    {
+      id: 1,
+      name: "Memo",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Small (10-30 lbs)",
+      breed: "Corgi",
+      location: "Houston, TX",
+      img: img1,
+      description:
+        "Memo is a small-sized male Corgi, weighing between 10-30 lbs, and located in Houston, TX. He is neutered, loves playing fetch, enjoys the company of small crowds, and gets along well with other small-sized dogs.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Focused Play; throw the ball!",
+        crowdPreference: "I prefer one friend at a time",
+        sizePreference: "I'm comfortable with friends my own size.",
+        locationPreference: "Backyard/Home playdate",
+      },
+    },
+    {
+      id: 2,
+      name: "Jack",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Medium (30-50 lbs)",
+      breed: "Beagle",
+      location: "Houston, TX",
+      img: img2,
+      description:
+        "Jack is a medium-sized male Beagle, weighing between 30-50 lbs, and located in Houston, TX. He loves sniffing around, enjoys a good chase, and prefers an open space to run.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Running and chasing",
+        crowdPreference: "I love being in a pack!",
+        sizePreference: "No preference, I get along with all sizes.",
+        locationPreference: "Dog park or open fields",
+      },
+    },
+    {
+      id: 3,
+      name: "Lily",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Female",
+      size: "Small (10-30 lbs)",
+      breed: "French Bulldog",
+      location: "Houston, TX",
+      img: img3,
+      description:
+        "Lily is a small-sized female French Bulldog, weighing between 10-30 lbs, and located in Houston, TX. She is calm, enjoys short play sessions, and loves being around familiar faces.",
+      preferences: {
+        spayedNeutered: "No",
+        playStyle: "Short play sessions with lots of cuddles",
+        crowdPreference: "Prefers smaller groups",
+        sizePreference: "Comfortable with dogs her size or smaller.",
+        locationPreference: "Indoor play or fenced backyard",
+      },
+    },
+    {
+      id: 4,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img4,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
+    {
+      id: 5,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img5,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
+    {
+      id: 6,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img6,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
+    {
+      id: 7,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img7,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
+    {
+      id: 8,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img8,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
+    {
+      id: 9,
+      name: "Sparrow",
+      age: 2,
+      link: "https://sarvoham.org/adopt-5-star/",
+      gender: "Male",
+      size: "Large (50-70 lbs)",
+      breed: "Golden Retriever",
+      location: "Houston, TX",
+      img: img9,
+      description:
+        "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
+      preferences: {
+        spayedNeutered: "Yes",
+        playStyle: "Swimming and fetching toys",
+        crowdPreference: "Happy in both large and small groups",
+        sizePreference: "Gets along with all dogs, no size preference",
+        locationPreference: "Beach or large park with water access",
+      },
+    },
   ];
 
 
@@ -66,14 +237,14 @@ const FeaturedPups = () => {
           {shelters.map((shelter) => (
             // <Link href={`fearured-pups/${shelter?.id}`} key={shelter?.id} className='cursor-pointer'>
             <div
-            onClick={()=>openModal(shelter?.id)}
+            
             key={shelter?.id} 
-              className="cursor-pointer relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
+              className=" relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
             >
               {/* Image Section with Full Width and Height */}
               <div className="absolute inset-0">
                 <Image
-                  src={shelter?.image}
+                  src={shelter?.img}
                   alt={shelter?.name}
                   layout="fill"
                   objectFit="cover"
@@ -86,8 +257,10 @@ const FeaturedPups = () => {
 
               {/* Text and Icon Overlay */}
               <div className="relative z-10 text-white p-4 flex justify-between items-center w-full">
-                <span className="lg:text-[2.0833vw] text-[18px] font-semibold">{shelter?.name}</span>
-                <FiExternalLink className="lg:text-[2.0833vw] text-[18px]" />
+                <span className="lg:text-[1.2vw] text-[18px] font-semibold">{shelter?.name}</span>
+                <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
+                 Featch My Info<FiExternalLink className="lg:text-[1.2vw] text-[18px]" />
+                  </div>
               </div>
 
             </div>
