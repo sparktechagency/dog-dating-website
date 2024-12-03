@@ -237,9 +237,10 @@ const FeaturedPups = () => {
           {shelters.map((shelter) => (
             // <Link href={`fearured-pups/${shelter?.id}`} key={shelter?.id} className='cursor-pointer'>
             <div
+            onClick={()=>openModal(shelter?.id)}
             
             key={shelter?.id} 
-              className=" relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
+              className=" cursor-pointer relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
             >
               {/* Image Section with Full Width and Height */}
               <div className="absolute inset-0">
@@ -258,9 +259,9 @@ const FeaturedPups = () => {
               {/* Text and Icon Overlay */}
               <div className="relative z-10 text-white p-4 flex justify-between items-center w-full">
                 <span className="lg:text-[1.2vw] text-[18px] font-semibold">{shelter?.name}</span>
-                <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
+                {/* <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
                  Featch My Info<FiExternalLink className="lg:text-[1.2vw] text-[18px]" />
-                  </div>
+                  </div> */}
               </div>
 
             </div>

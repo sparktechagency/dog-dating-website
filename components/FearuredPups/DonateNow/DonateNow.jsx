@@ -308,7 +308,7 @@ const DonateNow = (params) => {
       },
     },
   ];
-
+ 
   const selectedShelter = shelters.find(
     (shelter) => shelter.id === parseInt(params.id)
   );
@@ -316,7 +316,7 @@ const DonateNow = (params) => {
   return (
     <div
       ref={containerRef}
-      className="relative xl:w-[60vw] w-[90vw] md:h-[90vh] h-full bg-white/30 backdrop-blur-xl md:rounded-[50px] rounded-xl border-2 border-white  p-10 flex justify-center items-center flex-col overflow-hidden overflow-y-auto"
+      className="relative xl:w-[60vw] w-[90vw] md:h-[90vh] h-full bg-white/30 backdrop-blur-xl md:rounded-[50px] rounded-xl border-2 border-white  p-10 flex justify-center items-center flex-col overflow-hidden overflow-y-auto " 
     >
       <button
         className="absolute z-50 lg:top-10  md:top-0 top-2 md:right-10 right-3 font-bold text-2xl text-white"
@@ -325,7 +325,7 @@ const DonateNow = (params) => {
         X
       </button>
 
-      <div className=" mx-auto  max-w-2xl absolute top-0  p-10 overflow-auto overflow-y-scroll">
+      <div className="   max-w-2xl   md:p-10 overflow-y-auto">
         <div className="bg-[#F88D58] rounded-t-lg p-6 ">
           <div className="flex gap-6 items-center md:items-start sm:flex-row flex-col">
             <div className="w-48 h-48 relative rounded-lg overflow-hidden flex-shrink-0 border-2 shadow-xl">
@@ -374,7 +374,7 @@ const DonateNow = (params) => {
           </div>
 
           <div className="space-y-4 flex flex-col md:text-base text-sm ">
-            <div className="flex  gap-3 text-start">
+            {/* <div className="flex  gap-3 text-start">
               <div className="flex gap-1 items-start  justify-center">
                 <Image alt="friend" src={svg} className="w-5" />
                 <span className="font-medium">Spayed/Neutered:</span>
@@ -426,7 +426,7 @@ const DonateNow = (params) => {
                 {" "}
                 {selectedShelter?.preferences.locationPreference}
               </span>
-            </div>
+            </div> */}
             <Link href={selectedShelter.link}>
               <div className="w-full  ">
                 <button
@@ -435,63 +435,17 @@ const DonateNow = (params) => {
         xl:px-[48px] xl:py-[16px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 text-[18px]
            md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
                 >
-                  Go to Shelter
+                  Featch My Info
                 </button>
               </div>
             </Link>
           </div>
         </div>
       </div>
+
     </div>
   );
 };
 
 export default DonateNow;
 
-// <div className="   flex flex-col w-1/2">
-// <Image
-//   alt={selectedShelter.name}
-//   src={selectedShelter.img}
-//   width={0}
-//   height={0}
-//   className="object-cover  px-2 h-[100%] rounded-3xl md:w-full aspect-square  overflow-hidden mb-4 md:mb-0 md:mr-6 flex justify-center items-center "
-// />
-
-// {/* <div className="rounded-xl flex flex-col md:gap-[15px] justify-center items-center px-[35px] py-2"> */}
-// {/* <h1 className="text-[32px] font-extrabold">Adapt This Pup</h1> */}
-// {/*
-//   <div className="md:text-sm text-[10px] font-normal flex flex-col gap-3 text-justify "> */}
-// {/* <h1 className="text-[18px] font-semibold text-start">
-//       Name: {selectedShelter.name}
-//     </h1> */}
-// {/* <p className="font-semibold text-[18px]">
-//       Age: {selectedShelter.age}
-//     </p> */}
-
-// {/* <p>{selectedShelter.description}</p> */}
-
-// {/* <div className="relative">
-//     <input
-//                 value={`${donationAmount}`}
-//                 onChange={(e) => setDonationAmount(e.target.value)}
-//                 type="text"
-//                 className="ring-2 w-1/2 ring-[#F88D58] rounded-lg px-2 ps-6 py-1 focus:outline-none  focus:ring-[#F88D58]"
-//               />
-
-//               <p className="absolute left-3 top-1/2 -translate-y-1/2 ">$</p>
-//   </div> */}
-// {/* </div> */}
-// <Link href={selectedShelter.link}>
-//   <div className="w-full  ">
-//     <button
-//       // onClick={handleButtonClick }
-//       className="mt-3 w-full text-center  text-white no-underline  bg-[#F88D58] hover:bg-black
-//         xl:px-[48px] xl:py-[16px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 text-[18px]
-//           md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
-//     >
-//       Featch My info
-//     </button>
-//   </div>
-// </Link>
-// {/* </div> */}
-// </div>
