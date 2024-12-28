@@ -4,6 +4,8 @@ import { Inter, Roboto } from "next/font/google";
 import Navbar from "@/components/Share/Navbar";
 import Footer from "@/components/Share/Footer";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import Providers from "@/lib/Providers";
+import { Toaster } from "sonner";
 
 const roboto_init = Roboto({
   subsets: ["latin"],
@@ -39,7 +41,10 @@ export default function RootLayout({ children }) {
         {/* <div className="sticky top-0  z-50 ">
           <Navbar />
         </div> */}
-        <AntdRegistry>{children}</AntdRegistry>
+        <Providers>
+          <Toaster position="top-center" />
+          <AntdRegistry>{children}</AntdRegistry>
+        </Providers>
       </body>
     </html>
   );
