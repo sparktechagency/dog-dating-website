@@ -99,8 +99,8 @@ export default function Profile() {
               value={profile?.location}
             />
           </div>
-          <div onClick={toggleEditProfile} className="text-end">
-            <button className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none  mt-4 w-fit ">
+          <div  className="text-end">
+            <button onClick={toggleEditProfile} className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none  mt-4 w-fit ">
               Edit
             </button>
           </div>
