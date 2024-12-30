@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   accessToken: null,
-  userInfo: null, // Add more user-related state if needed
+  // userInfo: null, // Add more user-related state if needed
 };
 
 const authSlice = createSlice({
@@ -14,11 +14,11 @@ const authSlice = createSlice({
     },
     clearAuth: (state) => {
       state.accessToken = null;
-      state.userInfo = null;
+      // state.userInfo = null;
     },
-    setUserInfo: (state, action) => {
-      state.userInfo = action.payload;
-    },
+    // setUserInfo: (state, action) => {
+    //   state.userInfo = action.payload;
+    // },
   },
 });
 

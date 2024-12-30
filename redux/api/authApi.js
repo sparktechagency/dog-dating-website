@@ -5,31 +5,23 @@ import { baseApi } from "./baseApi";
 import { decodedToken } from "@/utils/jwt";
 import { tagTypes } from "../tagTypes";
 
-const accessToken = cookies.get("woof_spot_accessToken");
-
 const AUTH_URL = "/users";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    userLogin: build.mutation({
-      query: (loginData) => ({
-        url: `/auth/login`,
-        method: "POST",
-        body: loginData,
-      }),
-      invalidatesTags: [tagTypes.user],
-    }),
     signUp: build.mutation({
-      query: (signupData) => ({
-        url: `${AUTH_URL}/create`,
-        method: "POST",
-        body: signupData,
-      }),
+      query: (signupData) => (
+        console.log(signupData),
+        {
+          url: `${AUTH_URL}/create`,
+          method: "POST",
+          body: signupData,
+        }
+      ),
       invalidatesTags: [tagTypes.user],
     }),
     verifiedEmail: build.mutation({
       query: (otpData) => {
-        const token = localStorage.getItem("createUserToken");
         return {
           url: `${AUTH_URL}/create-user-verify-otp`,
           method: "POST",
@@ -40,29 +32,27 @@ export const authApi = baseApi.injectEndpoints({
     }),
     resendOTP: build.mutation({
       query: () => {
-        const token = localStorage.getItem("createUserToken");
-        const decoded = decodedToken(token);
-        const email = decoded?.email;
+        // const token = localStorage.getItem("woof_spot_createUserToken");
+        // const decoded = decodedToken(token);
+        // const email = decoded?.email;
+
         return {
           url: `/otp/resend-otp`,
           method: "PATCH",
-          body: { email: email },
+          body: {},
         };
       },
       invalidatesTags: [tagTypes.user],
     }),
 
-    // updateProfile: build.mutation({
-    //   query: (updateData) => {
-    //     return {
-    //       url: `${AUTH_URL}/${updateData?.userId}`,
-    //       method: "PUT",
-    //       data: updateData?.updateData,
-    //     };
-    //   },
-    //   invalidatesTags: [tagTypes.user],
-    // }),
-
+    userLogin: build.mutation({
+      query: (loginData) => ({
+        url: `/auth/login`,
+        method: "POST",
+        body: loginData,
+      }),
+      invalidatesTags: [tagTypes.user],
+    }),
     forgetPassword: build.mutation({
       query: (userEmail) => {
         return {
@@ -73,9 +63,24 @@ export const authApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.user],
     }),
+    forgetOtpVerify: build.mutation({
+      query: (otpData) => {
+        const token = localStorage.getItem(
+          "woof_spot_forgetPasswordVerifyToken"
+        );
+        return {
+          url: `/auth/forgot-password-otp-match`,
+          method: "PATCH",
+          body: otpData,
+        };
+      },
+      invalidatesTags: [tagTypes.user],
+    }),
     resendForgetOTP: build.mutation({
       query: () => {
-        const token = localStorage.getItem("mm_forgetPasswordVerifyToken");
+        const token = localStorage.getItem(
+          "woof_spot_forgetPasswordVerifyToken"
+        );
         const decoded = decodedToken(token);
         const email = decoded?.email;
         return {
@@ -86,20 +91,9 @@ export const authApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.user],
     }),
-    forgetOtpVerify: build.mutation({
-      query: (otpData) => {
-        const token = localStorage.getItem("mm_forgetPasswordVerifyToken");
-        return {
-          url: `/auth/forgot-password-otp-match`,
-          method: "PATCH",
-          body: otpData,
-        };
-      },
-      invalidatesTags: [tagTypes.user],
-    }),
     resetPassword: build.mutation({
       query: (resetData) => {
-        const token = localStorage.getItem("mm_otp_match_token");
+        const token = localStorage.getItem("woof_spot_otp_match_token");
         return {
           url: `/auth/forgot-password-reset`,
           method: "PATCH",
