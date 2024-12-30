@@ -2,17 +2,14 @@
 import { Button, ConfigProvider, Form, Input } from "antd";
 import { useState } from "react";
 import Container from "@/components/ui/Container";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import OTPInput from "react-otp-input";
-import Link from "next/link";
 import { toast } from "sonner";
 import {
   useResendOTPMutation,
   useVerifiedEmailMutation,
 } from "@/redux/api/authApi";
 import Cookies from "universal-cookie";
-import { storeUserInfo } from "@/services/auth.service";
 
 const SignUpUserVerify = () => {
   const [verifiedEmail] = useVerifiedEmailMutation();
@@ -43,11 +40,11 @@ const SignUpUserVerify = () => {
             id: toastId,
             duration: 2000,
           });
-          navigate.push("/sign-in");
+          navigate.push("/login");
           navigate.refresh();
 
           setTimeout(() => {
-            localStorage.removeItem("createUserToken");
+            localStorage.removeItem("woof_spot_createUserToken");
           }, 2000);
         }
       } catch (error) {

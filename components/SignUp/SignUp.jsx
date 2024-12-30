@@ -7,20 +7,52 @@ import logo from "../../asserts/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSignUpMutation } from "@/redux/api/authApi";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const router = useRouter();
-  const handleFormSubmit = (e) => {
+  //* TO Signup A User We Need To Use useSignUpMutation From Redux Api
+  const [signUp] = useSignUpMutation();
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const name = e.target.name.value;
+
+    const toastId = toast.loading("Signing Up...");
+
+    const fullName = e.target.fullName.value;
     const email = e.target.email.value;
     const phone = e.target.phone.value;
     const password = e.target.password.value;
 
-    console.log(name, email, phone, password);
-    e.target.reset();
+    const data = { fullName, email, phone, password };
 
-    router.push("/sign-up/verify");
+    console.log("User data :", data);
+
+    try {
+      const res = await signUp(data).unwrap();
+
+      console.log("res: ", res);
+
+      if (res?.success) {
+        if (res?.data?.createUserToken) {
+          localStorage.setItem(
+            "woof_spot_createUserToken",
+            res?.data?.createUserToken
+          );
+        }
+        e.target.reset();
+        toast.success(res.message, {
+          id: toastId,
+          duration: 2000,
+        });
+        router.push("/sign-up/verify");
+      }
+    } catch (error) {
+      toast.error(error?.data?.message || "An error occurred during Signup", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
 
     // Handle form submission logic here
   };

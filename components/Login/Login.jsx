@@ -6,17 +6,68 @@ import loginImg from "../../asserts/login-img.png";
 import logo from "../../asserts/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import Cookies from "universal-cookie";
+import { toast } from "sonner";
+import { useUserLoginMutation } from "@/redux/api/authApi";
+import { useRouter } from "next/navigation";
+import { setAccessToken } from "@/redux/slices/authSlice";
 
 const Login = () => {
-  const handleFormSubmit = (e) => {
+  const [userLogin] = useUserLoginMutation();
+  const dispatch = useDispatch();
+  const navigate = useRouter();
+  // const cookies = new Cookies();
+
+  const handleFormSubmit = async (e) => {
+    const toastId = toast.loading(" Logging in...");
+
     e.preventDefault();
     const password = e.target.password.value;
     const email = e.target.email.value;
 
-    console.log(password, email);
-    e.target.reset();
+    const loginData = { email, password };
+    console.log("Login Data:", loginData);
 
     // Handle form submission logic here
+    try {
+      const res = await userLogin(loginData).unwrap();
+      console.log("res: ", res);
+      if (res.success) {
+        toast.success(res.message, {
+          id: toastId,
+          duration: 2000,
+        });
+
+        //* Dispatch the accessToken and userInfo to Redux store
+        dispatch(setAccessToken(res?.data?.accessToken));
+        // dispatch(setAccessToken(res?.data?.user));
+
+        //* Set cookies if needed
+        // cookies.set("woof_spot_accessToken", res?.data?.accessToken, {
+        //   path: "/",
+        // });
+        // cookies.set("woof_spot_refreshToken", res?.data?.refreshToken, {
+        //   path: "/",
+        // });
+
+        e.target.reset();
+        // Navigate after login
+        navigate.refresh();
+        navigate.push("/");
+      }
+    } catch (error) {
+      console.error("Login Error:", error); // Log the error for debugging
+      toast.error(
+        error?.data?.message ||
+          error?.error ||
+          "An error occurred during Login",
+        {
+          id: toastId,
+          duration: 2000,
+        }
+      );
+    }
   };
   return (
     <div className="container mx-auto pt-5">

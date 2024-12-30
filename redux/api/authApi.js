@@ -10,16 +10,18 @@ const AUTH_URL = "/users";
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     signUp: build.mutation({
-      query: (signupData) => ({
-        url: `${AUTH_URL}/create`,
-        method: "POST",
-        body: signupData,
-      }),
+      query: (signupData) => (
+        console.log(signupData),
+        {
+          url: `${AUTH_URL}/create`,
+          method: "POST",
+          body: signupData,
+        }
+      ),
       invalidatesTags: [tagTypes.user],
     }),
     verifiedEmail: build.mutation({
       query: (otpData) => {
-        const token = localStorage.getItem("createUserToken");
         return {
           url: `${AUTH_URL}/create-user-verify-otp`,
           method: "POST",
@@ -30,28 +32,19 @@ export const authApi = baseApi.injectEndpoints({
     }),
     resendOTP: build.mutation({
       query: () => {
-        const token = localStorage.getItem("createUserToken");
-        const decoded = decodedToken(token);
-        const email = decoded?.email;
+        // const token = localStorage.getItem("woof_spot_createUserToken");
+        // const decoded = decodedToken(token);
+        // const email = decoded?.email;
+
         return {
           url: `/otp/resend-otp`,
           method: "PATCH",
-          body: { email: email },
+          body: {},
         };
       },
       invalidatesTags: [tagTypes.user],
     }),
 
-    // updateProfile: build.mutation({
-    //   query: (updateData) => {
-    //     return {
-    //       url: `${AUTH_URL}/${updateData?.userId}`,
-    //       method: "PUT",
-    //       data: updateData?.updateData,
-    //     };
-    //   },
-    //   invalidatesTags: [tagTypes.user],
-    // }),
     userLogin: build.mutation({
       query: (loginData) => ({
         url: `/auth/login`,
