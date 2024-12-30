@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
           <Navbar />
         </div> */}
         <Providers>
-          <Toaster position="top-center" />
+          <Toaster richColors={true} position="top-center" />
           <AntdRegistry>{children}</AntdRegistry>
         </Providers>
       </body>
