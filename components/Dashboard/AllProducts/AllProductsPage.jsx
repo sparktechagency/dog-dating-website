@@ -79,6 +79,10 @@ const AllProductsPage = () => {
       item.name.toLowerCase().includes(searchText.toLowerCase())
     );
   }, [searchText]);
+
+
+
+  
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-5 justify-between ">

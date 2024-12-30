@@ -3,12 +3,30 @@ import Image from "next/image";
 import React, { useState } from "react";
 import dogFood from "../../../asserts/dogfood.png";
 import EditItem from "./EditItem";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { Modal } from "antd";
 
 const Item = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
+
+
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+
+    const handleOk = (id) => {
+      setIsModalOpen(false);
+      console.log(id);
+      
+    };
+
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
 
   return (
     <div
@@ -16,6 +34,29 @@ const Item = ({ item }) => {
       style={{ boxShadow: " 0px 1px 8px rgba(0, 0, 0, 0.24)" }}
     >
       <div className="py-5 px-6">
+        <div className=" flex justify-end items-end">
+          <RiDeleteBin5Fill
+            onClick={showModal}
+            className="text-4xl text-red-500 hover:bg-red-100 rounded-full py-2 delay-100 cursor-pointer"
+          />
+        </div>
+        <Modal
+          title={`Do you want to delete ${item?.name} ?`}
+          open={isModalOpen}
+          onOk={() => handleOk(item.id)}
+          onCancel={handleCancel}
+        >
+          <div className="flex justify-center flex-col items-center">
+            <Image
+              src={dogFood}
+              alt="Dog Food"
+              className="w-40 aspect-square object-cover rounded-full"
+            />
+            <h2 className="text-[40px] font-bold text-[#302F51] mb-2">
+              {item?.name}
+            </h2>
+          </div>
+        </Modal>
         <div className="flex justify-center">
           <Image
             src={dogFood}
