@@ -2,62 +2,106 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import dogFood from "../../../asserts/dogfood.png";
-
+import { useCreateProductMutation } from "@/redux/api/productApi";
+import { toast } from "sonner";
 
 const AddNewItem = (props) => {
-    const {  setIsOpen, isOpen, toggleMenu } = props;
-    const profileRef = useRef(null);
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (isOpen && profileRef.current && !profileRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [isOpen, setIsOpen]);
-  
-    const [formData, setFormData] = useState({
-      name: "",
-      image: "",
-      price: "" ,
-      description: "",	
-      link: "", 
-    });
-    //   console.log(formData);
-    const [photo, setPhoto] = useState(dogFood);
-  
-    const handlePhotoChange = (e) => {
-      if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (e.target?.result) {
-            setPhoto(e.target.result);
-          }
-        };
-        reader.readAsDataURL(e.target.files[0]);
+  const { setIsOpen, isOpen, toggleMenu } = props;
+  const [createProduct, { isLoading }] = useCreateProductMutation();
+  const profileRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
       }
     };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-    const handleImage = (e) => {
-      handleChange(e);
-      handlePhotoChange(e);
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      console.log("Form submitted:", formData);
-    };
-  
-    return (
-<div  ref={profileRef} className="bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl ">
+  }, [isOpen, setIsOpen]);
+
+  const [photo, setPhoto] = useState(dogFood);
+  const [error, setError] = useState("");
+
+  const handlePhotoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setPhoto(e.target.result);
+          setError(""); // Clear any existing error
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const handleImage = (e) => {
+    handlePhotoChange(e);
+  };
+
+  const handleSubmit = async (e) => {
+    const toastId = toast.loading("Adding New Product...");
+    e.preventDefault();
+    const formData = new FormData();
+    try {
+      const image = e.target.image.files[0];
+      const title = e.target.name.value;
+      const price = e.target.price.value;
+      const productLink = e.target.link.value;
+
+      if (!image) {
+        setError("Please select an image.");
+        throw new Error("Please select an image."); // Set error message to display it
+      }
+
+      const data = {
+        title,
+        price: Number(price),
+        productLink: productLink,
+      };
+
+      formData.append("data", JSON.stringify(data));
+      formData.append("file", image);
+
+      const res = await createProduct(formData).unwrap();
+      console.log(res);
+
+      toast.success("Product Added Successfully", {
+        id: toastId,
+        duration: 2000,
+      });
+      toggleMenu();
+      // if (res?.data?.success === false) {
+      //   throw new Error(res?.data?.message);
+      // } else {
+      //
+      // }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.data?.message ||
+          error.message ||
+          "An error occurred during Add New Product",
+        {
+          id: toastId,
+          duration: 2000,
+        }
+      );
+    }
+  };
+
+  return (
+    <div
+      ref={profileRef}
+      className="overflow-y-auto bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl "
+    >
       <div onClick={toggleMenu} className="cursor-pointer ">
         <p className="  text-lg font-bold text-white text-end me-10 mt-4 ">X</p>
       </div>
@@ -92,6 +136,7 @@ const AddNewItem = (props) => {
             >
               Choose Photo
             </label>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
 
           <div className="lg:w-full flex-1 lg:me-10 ">
@@ -106,8 +151,8 @@ const AddNewItem = (props) => {
                 type="text"
                 id="name"
                 name="name"
+                required
                 placeholder={`Give a title`}
-                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -124,7 +169,7 @@ const AddNewItem = (props) => {
                 id="price"
                 name="price"
                 placeholder={`Give price`}
-                onChange={handleChange}
+                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -139,33 +184,14 @@ const AddNewItem = (props) => {
                 type="text"
                 id="link"
                 name="link"
-                placeholder={`Product affiliate Link`}	
-                onChange={handleChange}
+                placeholder={`Product affiliate Link`}
+                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-white  mb-1"
-              >
-                Description
-              </label>
-              <textarea
-                type="text"
-                rows={6}
-                id="description"
-                name="description"
-                placeholder={`Write Description`}	
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
-                style={{ resize: "none" }}
               />
             </div>
 
             <button
               type="submit"
-              onClick={toggleMenu}
               className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
             >
               Add New Item
@@ -174,7 +200,7 @@ const AddNewItem = (props) => {
         </div>
       </form>
     </div>
-    );
+  );
 };
 
 export default AddNewItem;
