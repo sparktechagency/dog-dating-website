@@ -17,6 +17,11 @@ const ForgetPasswordOTP = () => {
   const router = useRouter();
   const [otp, setOtp] = useState("");
 
+  const token = localStorage.getItem("woof_spot_forgetPasswordVerifyToken");
+  if (!token) {
+    router.push("/login/forgot-password");
+  }
+
   const handleOTPSubmit = async () => {
     const toastId = toast.loading("Verifying...");
 
@@ -38,11 +43,14 @@ const ForgetPasswordOTP = () => {
             id: toastId,
             duration: 2000,
           });
-          router.push("/update-password");
+          router.push("/login/set-new-password");
           router.refresh();
-          localStorage.setItem("mm_otp_match_token", res.data?.token);
+          localStorage.setItem(
+            "woof_spot_otp_match_token",
+            res.data?.forgetOtpMatchToken
+          );
           setTimeout(() => {
-            localStorage.removeItem("mm_forgetPasswordVerifyToken");
+            localStorage.removeItem("woof_spot_forgetPasswordVerifyToken");
           }, 2000);
         }
       } catch (error) {

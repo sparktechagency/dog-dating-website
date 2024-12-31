@@ -57,7 +57,7 @@ export const authApi = baseApi.injectEndpoints({
       query: (userEmail) => {
         return {
           url: `/auth/forgot-password-otp`,
-          method: "PATCH",
+          method: "POST",
           body: userEmail,
         };
       },
