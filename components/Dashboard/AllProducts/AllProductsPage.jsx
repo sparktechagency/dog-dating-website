@@ -3,8 +3,13 @@ import React, { useMemo, useState } from "react";
 import Item from "./Item";
 import { FiSearch } from "react-icons/fi";
 import AddNewItem from "./AddNewItem";
+import { useGetAllProductQuery } from "@/redux/api/features/productApi";
+import { ConfigProvider, Pagination } from "antd";
 
 const AllProductsPage = () => {
+  const [page, setPage] = useState(1);
+  const { data: productData, isFetching } = useGetAllProductQuery({ page });
+
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -18,71 +23,13 @@ const AllProductsPage = () => {
   };
 
   const filteredData = useMemo(() => {
-    const items = [
-      {
-        id: 1,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-      {
-        id: 2,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-      {
-        id: 3,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-      {
-        id: 4,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-      {
-        id: 5,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-      {
-        id: 6,
-        name: "Dog Food",
-        price: 160,
-        description: [
-          "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-          "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-        ],
-      },
-    ];
+    const items = productData?.data;
     if (!searchText) return items;
     return items.filter((item) =>
-      item.name.toLowerCase().includes(searchText.toLowerCase())
+      item?.title?.toLowerCase().includes(searchText.toLowerCase())
     );
-  }, [searchText]);
+  }, [productData?.data, searchText]);
 
-
-
-  
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-5 justify-between ">
@@ -123,10 +70,29 @@ const AllProductsPage = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 justify-items-center items-baseline gap-10 my-5">
-        {filteredData.map((item) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 justify-items-center items-stretch gap-10 my-5">
+        {filteredData?.map((item) => (
           <Item item={item} key={item.id} />
         ))}
+      </div>
+      <div className="flex justify-center my-20">
+        <ConfigProvider
+          theme={{
+            components: {
+              Pagination: {
+                itemActiveBg: "#F88D58",
+                colorPrimary: "#F3F3F3",
+                colorPrimaryHover: "#F3F3F3",
+              },
+            },
+          }}
+        >
+          <Pagination
+            onChange={(page) => setPage(page)}
+            pageSize={12}
+            total={productData?.meta?.total}
+          />
+        </ConfigProvider>
       </div>
     </div>
   );

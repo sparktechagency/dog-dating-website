@@ -7,7 +7,7 @@ import logo from "../../asserts/logo.svg";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSignUpMutation } from "@/redux/api/authApi";
+import { useSignUpMutation } from "@/redux/api/features/authApi";
 import { toast } from "sonner";
 
 const SignUp = () => {
@@ -147,7 +147,7 @@ const SignUp = () => {
               </h1>
             </div>
             <button className="btn bg-[#F88D58] hover:bg-black text-white w-full text-xl">
-              Sign in
+              Sign Up
             </button>
           </form>
 

@@ -4,7 +4,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { FiKey } from "react-icons/fi";
 import Link from "next/link";
 import { toast } from "sonner";
-import { useResetPasswordMutation } from "@/redux/api/authApi";
+import { useResetPasswordMutation } from "@/redux/api/features/authApi";
 import { useRouter } from "next/navigation";
 const SetNewPassword = () => {
   const router = useRouter();

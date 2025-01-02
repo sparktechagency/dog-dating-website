@@ -2,13 +2,21 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import dogFood from "../../../asserts/dogfood.png";
+import { toast } from "sonner";
+import { getImageUrl } from "@/helpers/config/envConfig";
+import { useUpdateProductMutation } from "@/redux/api/features/productApi";
 
 const EditItem = (props) => {
   const { item, setIsOpen, isOpen, toggleMenu } = props;
   const profileRef = useRef(null);
+  const [updateProduct, { isLoading }] = useUpdateProductMutation();
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isOpen && profileRef.current && !profileRef.current.contains(event.target)) {
+      if (
+        isOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -19,15 +27,11 @@ const EditItem = (props) => {
     };
   }, [isOpen, setIsOpen]);
 
-  const [formData, setFormData] = useState({
-    name: item?.name,
-    image: dogFood,
-    price: item?.price,
-    description: item?.description,
-    link: "https://www.amazon.com/Bully-Max-Performance-Super-Premium/dp/B01FT67D0O?th=1", // Default empty
-  });
-  //   console.log(formData);
-  const [photo, setPhoto] = useState(formData?.image);
+  const url = getImageUrl();
+  const imageUrl = url + item?.image;
+
+  const [photo, setPhoto] = useState(imageUrl);
+  const [error, setError] = useState("");
 
   const handlePhotoChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -35,28 +39,75 @@ const EditItem = (props) => {
       reader.onload = (e) => {
         if (e.target?.result) {
           setPhoto(e.target.result);
+          setError(""); // Clear any existing error
         }
       };
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
   const handleImage = (e) => {
-    handleChange(e);
     handlePhotoChange(e);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    const toastId = toast.loading("Updating Product...");
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    const formData = new FormData();
+    try {
+      const image = e.target.image.files[0] || item?.image;
+      const title = e.target.name.value;
+      const price = e.target.price.value;
+      const productLink = e.target.link.value;
+
+      if (!image) {
+        setError("Please select an image.");
+        throw new Error("Please select an image."); // Set error message to display it
+      }
+
+      const data = {
+        title,
+        price: Number(price),
+        productLink: productLink,
+      };
+      console.log({ data: data, image: image });
+
+      formData.append("data", JSON.stringify(data));
+      formData.append("file", image);
+
+      const res = await updateProduct({ formData, id: item?._id }).unwrap();
+
+      console.log(res);
+
+      toast.success("Product Updated Successfully", {
+        id: toastId,
+        duration: 2000,
+      });
+      toggleMenu();
+      // if (res?.data?.success === false) {
+      //   throw new Error(res?.data?.message);
+      // } else {
+      //
+      // }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.data?.message ||
+          error.message ||
+          "An error occurred during updating Product",
+        {
+          id: toastId,
+          duration: 2000,
+        }
+      );
+    }
   };
 
   return (
-    <div  ref={profileRef} className="bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl ">
+    <div
+      ref={profileRef}
+      className="overflow-y-auto bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl "
+    >
       <div onClick={toggleMenu} className="cursor-pointer ">
         <p className="  text-lg font-bold text-white text-end me-10 mt-4 ">X</p>
       </div>
@@ -91,6 +142,7 @@ const EditItem = (props) => {
             >
               Choose Photo
             </label>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
 
           <div className="lg:w-full flex-1 lg:me-10 ">
@@ -104,10 +156,9 @@ const EditItem = (props) => {
               <input
                 type="text"
                 id="name"
-                name="name"
-                placeholder={formData.name}
-                defaultValue={formData.name}
-                onChange={handleChange}
+                name="title"
+                placeholder={item?.title}
+                defaultValue={item?.title}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -123,9 +174,8 @@ const EditItem = (props) => {
                 type="number"
                 id="price"
                 name="price"
-                placeholder={formData.price}
-                defaultValue={formData.price}
-                onChange={handleChange}
+                placeholder={item?.price}
+                defaultValue={item?.price}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -139,35 +189,14 @@ const EditItem = (props) => {
               <input
                 type="text"
                 id="link"
-                name="link"
-                placeholder={formData.link}
-                defaultValue={formData.link}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-white  mb-1"
-              >
-                Description
-              </label>
-              <textarea
-                type="text"
-                rows={6}
-                id="description"
-                name="description"
-                placeholder={formData.description}
-                defaultValue={formData.description}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
-                style={{ resize: "none" }}
+                name="productLink"
+                placeholder={item?.productLink}
+                defaultValue={item?.productLink}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-5"
               />
             </div>
 
             <button
-               onClick={toggleMenu}
               type="submit"
               className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
             >

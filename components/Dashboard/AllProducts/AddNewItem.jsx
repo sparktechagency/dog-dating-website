@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import dogFood from "../../../asserts/dogfood.png";
-import { useCreateProductMutation } from "@/redux/api/productApi";
+import { useCreateProductMutation } from "@/redux/api/features/productApi";
 import { toast } from "sonner";
 
 const AddNewItem = (props) => {
@@ -67,6 +67,7 @@ const AddNewItem = (props) => {
         productLink: productLink,
       };
 
+      console.log({ data: data, image: image });
       formData.append("data", JSON.stringify(data));
       formData.append("file", image);
 
@@ -186,7 +187,7 @@ const AddNewItem = (props) => {
                 name="link"
                 placeholder={`Product affiliate Link`}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-5"
               />
             </div>
 

@@ -2,179 +2,334 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import shelterImg from "../../../asserts/fp2.png";
+import { getImageUrl } from "@/helpers/config/envConfig";
+import { toast } from "sonner";
+import { useUpdateShelterMutation } from "@/redux/api/features/shelterApi";
 const EditSelter = (props) => {
-    const { shelter, setIsOpen, isOpen, toggleMenu } = props;
-    const profileRef = useRef(null);
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (isOpen && profileRef.current && !profileRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [isOpen, setIsOpen]);
-  
-    const [formData, setFormData] = useState({
-      name: shelter?.name,
-      image: shelterImg,
-      description: shelter?.description,
-      link: "https://www.amazon.com/Bully-Max-Performance-Super-Premium/dp/B01FT67D0O?th=1", // Default empty
-    });
-    //   console.log(formData);
-    const [photo, setPhoto] = useState(formData?.image);
-  
-    const handlePhotoChange = (e) => {
-      if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (e.target?.result) {
-            setPhoto(e.target.result);
-          }
-        };
-        reader.readAsDataURL(e.target.files[0]);
+  const [updateShelter] = useUpdateShelterMutation();
+  const { shelter, setIsOpen, isOpen, toggleMenu } = props;
+  const profileRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
       }
     };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-    const handleImage = (e) => {
-      handleChange(e);
-      handlePhotoChange(e);
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      console.log("Form submitted:", formData);
-    };
-  
-    return (
-        <div  ref={profileRef} className="bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl ">
-          <div onClick={toggleMenu} className="cursor-pointer ">
-            <p className="  text-lg font-bold text-white text-end me-10 mt-4 ">X</p>
-          </div>
-          <form onSubmit={handleSubmit} className="flex flex-col  h-full ">
-            <div className="flex lg:flex-row flex-col  items-center gap-4 justify-around   my-auto  ">
-              <div className="flex flex-col items-center space-y-2 w-full flex-1">
-                <div className="xl:w-80 xl:h-80 md:w-48 md:h-48 w-36 h-36 relative rounded-full overflow-hidden bg-gray-100">
-                  {photo ? (
-                    <Image
-                      src={photo}
-                      alt="Profile"
-                      fill
-                      className="object-cover "
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      No File Selected
-                    </div>
-                  )}
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  name="image"
-                  onChange={handleImage}
-                  className="hidden"
-                  id="photo-upload"
-                />
-                <label
-                  htmlFor="photo-upload"
-                  className="text-blue-500 cursor-pointer text-sm"
-                >
-                  Choose Photo
-                </label>
-              </div>
-    
-              <div className="lg:w-full flex-1 lg:me-10 ">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-white mb-1"
-                  >
-                    Title*
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder={formData.name}
-                    defaultValue={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-    
-                {/* <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-white  mb-1"
-                  >
-                    Product Price*
-                  </label>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    placeholder={formData.price}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div> */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-white  mb-1"
-                  >
-                    Shelter Link*
-                  </label>
-                  <input
-                    type="text"
-                    id="link"
-                    name="link"
-                    placeholder={formData.link}
-                    defaultValue={formData.link}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-white  mb-1"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    type="text"
-                    rows={6}
-                    id="description"
-                    name="description"
-                    placeholder={formData.description}
-                    defaultValue={formData.description}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
-                    style={{ resize: "none" }}
-                  />
-                </div>
-    
-                <button
-                   onClick={toggleMenu}
-                  type="submit"
-                  className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
-                >
-                  Update
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+  }, [isOpen, setIsOpen]);
+
+  const url = getImageUrl();
+  const imageUrl = url + shelter?.image;
+
+  const [photo, setPhoto] = useState(imageUrl);
+
+  const handlePhotoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setPhoto(e.target.result);
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const handleImage = (e) => {
+    handlePhotoChange(e);
+  };
+
+  const handleSubmit = async (e) => {
+    const toastId = toast.loading("Updating Shelter...");
+    e.preventDefault();
+    const formData = new FormData();
+
+    try {
+      const image = e.target.image.files[0] || shelter?.image;
+      const name = e.target.name.value;
+      const age = e.target.age.value;
+      const gender = e.target.gender.value;
+      const size = e.target.size.value;
+      const city = e.target.city.value;
+      const description = e.target.description.value;
+      const shelterLink = e.target.shelterLink.value;
+
+      console.log(age);
+
+      if (!image) {
+        setError("Please select an image.");
+        throw new Error("Please select an image."); // Set error message to display it
+      }
+
+      const data = {
+        name,
+        age: Number(age),
+        gender,
+        size,
+        city,
+        description,
+        shelterLink,
+      };
+
+      console.log({ data: data, image: image });
+
+      formData.append("data", JSON.stringify(data));
+      formData.append("file", image);
+
+      const res = await updateShelter({ formData, id: shelter?._id }).unwrap();
+
+      console.log(res);
+
+      toast.success("Shelter Updated Successfully", {
+        id: toastId,
+        duration: 2000,
+      });
+      toggleMenu();
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.data?.message ||
+          error.message ||
+          "An error occurred during updating Shelter",
+        {
+          id: toastId,
+          duration: 2000,
+        }
       );
-    };
+    }
+  };
+
+  return (
+    <div
+      ref={profileRef}
+      className="overflow-y-auto bg-white/30 lg:w-[60vw] md:w-[80vw] w-[90vw] lg:h-[90vh] py-4  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl "
+    >
+      <div onClick={toggleMenu} className="cursor-pointer ">
+        <p className="  text-lg font-bold text-white text-end me-10 mt-4 ">X</p>
+      </div>
+      <form onSubmit={handleSubmit} className="flex flex-col  h-full ">
+        <div className="flex lg:flex-row flex-col  items-center gap-4 justify-around   my-auto  ">
+          <div className="flex flex-col items-center space-y-2 w-full flex-1">
+            <div className="xl:w-80 xl:h-80 md:w-48 md:h-48 w-36 h-36 relative rounded-full overflow-hidden bg-gray-100">
+              {photo ? (
+                <Image
+                  src={photo}
+                  alt="Profile"
+                  fill
+                  className="object-cover "
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  No File Selected
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              name="image"
+              onChange={handleImage}
+              className="hidden"
+              id="photo-upload"
+            />
+            <label
+              htmlFor="photo-upload"
+              className="text-blue-500 cursor-pointer text-sm"
+            >
+              Choose Photo
+            </label>
+          </div>
+
+          <div className="lg:w-full flex-1 lg:me-10 ">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                Name*
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                defaultValue={shelter?.name}
+                placeholder={`Please Enter Name`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="age"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                Age*
+              </label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                required
+                defaultValue={shelter?.age}
+                placeholder={`Please Enter Age`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            {/* Gender  */}
+            <div>
+              <label
+                htmlFor="gender"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                Gender*
+              </label>
+              <select
+                id="gender"
+                name="gender"
+                required
+                defaultValue={shelter?.gender}
+                placeholder={`Please Select Gender`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option
+                  disabled
+                  value=""
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                >
+                  Select Gender
+                </option>
+                <option value="male" className="text-[#F88D58] bg-[#FFF5ED]">
+                  Male
+                </option>
+                <option value="female" className="text-[#F88D58] bg-[#FFF5ED]">
+                  Female
+                </option>
+              </select>
+            </div>
+            {/* Size  */}
+            <div>
+              <label
+                htmlFor="size"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                Size*
+              </label>
+              <select
+                id="size"
+                name="size"
+                required
+                defaultValue={shelter?.size}
+                placeholder={`Please Select Size`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option disabled selected value="">
+                  Select Size
+                </option>
+                <option
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                  value="Extra small (0 – 10 lbs)"
+                >
+                  Extra small (0 – 10 lbs)
+                </option>
+                <option
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                  value="Small (10 – 30 lbs)"
+                >
+                  Small (10 – 30 lbs)
+                </option>
+                <option
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                  value="Medium (30 – 55 lbs)"
+                >
+                  Medium (30 – 55 lbs)
+                </option>
+                <option
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                  value="Large (55 – 80 lbs)"
+                >
+                  Large (55 – 80 lbs)
+                </option>
+                <option
+                  className="text-[#F88D58] bg-[#FFF5ED]"
+                  value="Extra Large (80+ lbs)"
+                >
+                  Extra Large (80+ lbs)
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="city"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                City*
+              </label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                required
+                defaultValue={shelter?.city}
+                placeholder={`Please Enter City`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="shelterLink"
+                className="block text-sm font-medium text-white  mb-1"
+              >
+                Shelter Link*
+              </label>
+              <input
+                type="text"
+                id="shelterLink"
+                name="shelterLink"
+                defaultValue={shelter?.shelterLink}
+                placeholder={`Product affiliate Link`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-white  mb-1"
+              >
+                Description
+              </label>
+              <textarea
+                type="text"
+                rows={6}
+                id="description"
+                name="description"
+                defaultValue={shelter?.description}
+                placeholder={`Write Description`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
+                style={{ resize: "none" }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 export default EditSelter;

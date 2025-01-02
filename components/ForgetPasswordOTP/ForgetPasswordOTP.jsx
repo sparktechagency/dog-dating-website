@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import {
   useForgetOtpVerifyMutation,
   useResendForgetOTPMutation,
-} from "@/redux/api/authApi";
+} from "@/redux/api/features/authApi";
 
 const ForgetPasswordOTP = () => {
   const [forgetPasswordOTPResend] = useResendForgetOTPMutation();

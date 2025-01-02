@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {
   useResendOTPMutation,
   useVerifiedEmailMutation,
-} from "@/redux/api/authApi";
+} from "@/redux/api/features/authApi";
 import Cookies from "universal-cookie";
 
 const SignUpUserVerify = () => {

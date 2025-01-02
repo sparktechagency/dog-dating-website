@@ -1,9 +1,9 @@
 // For fetchbase query
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
-import { baseApi } from "./baseApi";
+import { baseApi } from "../baseApi";
 import { decodedToken } from "@/utils/jwt";
-import { tagTypes } from "../tagTypes";
+import { tagTypes } from "../../tagTypes";
 
 const AUTH_URL = "/users";
 
@@ -111,6 +111,24 @@ export const authApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.user], // Ensures that the profile data can be invalidated if needed
     }),
+    getAllUsers: build.query({
+      query: () => {
+        return {
+          url: `${AUTH_URL}/all-users`,
+          method: "GET",
+          query: {},
+        };
+      },
+      providesTags: [tagTypes.user], // Ensures that the profile data can be invalidated if needed
+    }),
+    donationUser: build.query({
+      query: () => {
+        return {
+          url: `/donation`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
@@ -124,6 +142,8 @@ export const {
   useForgetOtpVerifyMutation,
   useResetPasswordMutation,
   useMyProfileQuery,
+  useGetAllUsersQuery,
+  useDonationUserQuery,
   //   useUpdateProfileMutation,
   //   useGetAllUserQuery,
   //   useGetSingleUserQuery,

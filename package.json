@@ -27,6 +27,7 @@
     "react-places-autocomplete": "^7.3.0",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
+    "sharp": "^0.33.5",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",

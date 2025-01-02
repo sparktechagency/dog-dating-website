@@ -1,76 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import Shelter from "./Shelter";
 import AddNewShelter from "./AddNewShelter";
+import { useGetAllShelterQuery } from "@/redux/api/features/shelterApi";
+import { ConfigProvider, Pagination } from "antd";
+
 const ShelterPage = () => {
+  const [page, setPage] = useState(1);
+  const { data: shelterData, isFetching } = useGetAllShelterQuery({ page });
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const shelters = [
-    {
-      id: 1,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-    {
-      id: 2,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-    {
-      id: 3,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-    {
-      id: 4,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-    {
-      id: 5,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-    {
-      id: 6,
-      name: "Bella",
-      age: 3,
-      link: "https://sarvoham.org/adopt-5-star/",
-      description: [
-        "A must-have for dog training: a clip-on dog treat pouch that allows for easy access to rewards during training sessions.",
-        "Practical and durable design: made with heavy-duty pack-cloth material that is water-resistant and reinforced with a rip-stop liner, this dog training treat pouch is built to last.",
-      ],
-    },
-  ];
+  //* Store Search Value
+  const [searchText, setSearchText] = useState("");
+
+  const onSearch = (value) => {
+    setSearchText(value);
+  };
+
+  const filteredData = useMemo(() => {
+    const items = shelterData?.data;
+    if (!searchText) return items;
+    return items.filter((item) =>
+      item?.name?.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [shelterData?.data, searchText]);
+
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-5 justify-between ">
@@ -83,6 +42,8 @@ const ShelterPage = () => {
             <FiSearch className="text-xl" />
           </div>
           <input
+            value={searchText}
+            onChange={(e) => onSearch(e.target.value)}
             type="text"
             placeholder="Search"
             className=" bg-[#FFFAF5] placeholder:text-black border-none outline-none w-full h-full "
@@ -110,10 +71,29 @@ const ShelterPage = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4 my-5">
-        {shelters.map((shelter) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 items-stretch gap-4 my-5">
+        {filteredData?.map((shelter) => (
           <Shelter shelter={shelter} key={shelter.id} />
         ))}
+      </div>
+      <div className="flex justify-center my-20">
+        <ConfigProvider
+          theme={{
+            components: {
+              Pagination: {
+                itemActiveBg: "#F88D58",
+                colorPrimary: "#F3F3F3",
+                colorPrimaryHover: "#F3F3F3",
+              },
+            },
+          }}
+        >
+          <Pagination
+            onChange={(page) => setPage(page)}
+            pageSize={12}
+            total={shelterData?.meta?.total}
+          />
+        </ConfigProvider>
       </div>
     </div>
   );
