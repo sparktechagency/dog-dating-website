@@ -1,27 +1,32 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import axios from "axios";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import blankProfile from "../../../asserts/blankProfile.png";
 import { toast } from "sonner";
-import { getImageUrl } from "@/helpers/config/envConfig";
-import { useUpdateUserProfileMutation } from "@/redux/api/features/profileApi";
+import { useCreateUserProfileMutation } from "@/redux/api/features/profileApi";
 
-export default function EditProfile(props) {
-  const { toggleEditProfile, profileEdit, setProfileEdit, userProfile } = props;
+export default function CreateUserProfile(props) {
+  const {
+    toggleCreateProfile,
+    createUserProfile,
+    setCreateUserProfile,
+    myProfileData,
+  } = props;
   const profileRef = useRef(null);
 
-  const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation();
+  console.log(myProfileData);
+
+  const [createProfile, { isLoading }] = useCreateUserProfileMutation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        profileEdit &&
+        createUserProfile &&
         profileRef.current &&
         !profileRef.current.contains(event.target)
       ) {
-        setProfileEdit(false);
+        setCreateUserProfile(false);
       }
     };
 
@@ -29,12 +34,9 @@ export default function EditProfile(props) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [profileEdit, setProfileEdit]);
+  }, [createUserProfile, setCreateUserProfile]);
 
-  const url = getImageUrl();
-  const userImage = url + userProfile?.data?.image;
-
-  const [photo, setPhoto] = useState(userImage);
+  const [photo, setPhoto] = useState(blankProfile);
   const [error, setError] = useState("");
 
   const handlePhotoChange = (e) => {
@@ -54,10 +56,7 @@ export default function EditProfile(props) {
     handlePhotoChange(e);
   };
 
-  const [location, setLocation] = useState({
-    latitude: userProfile?.data?.location?.coordinates[1],
-    longitude: userProfile?.data?.location?.coordinates[0],
-  });
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
 
   const handleLocationClick = () => {
     if (navigator.geolocation) {
@@ -79,24 +78,50 @@ export default function EditProfile(props) {
     }
   };
 
+  const validateCoordinates = (latitude, longitude) => {
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    if (
+      isNaN(lat) ||
+      isNaN(lng) ||
+      lat < -90 ||
+      lat > 90 ||
+      lng < -180 ||
+      lng > 180
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
-    const toastId = toast.loading("Updating Profile...");
+    const toastId = toast.loading("Creating Profile...");
     e.preventDefault();
 
     try {
       const formData = new FormData();
-      const image = e.target.image.files[0] || userProfile?.data?.image;
-      const userId = userProfile?.data?.userId;
-
+      const image = e.target.image.files[0];
+      const userId = myProfileData?.userId;
       const address = e.target.address.value;
       const { latitude, longitude } = location;
+
+      // Validate latitude and longitude
+      if (!validateCoordinates(latitude, longitude)) {
+        throw new Error("Please provide valid location coordinates.");
+      }
+
+      if (!image) {
+        setError("Please select an image.");
+        throw new Error("Please select an image.");
+      }
 
       const data = {
         userId,
         address,
         location: {
           type: "Point",
-          coordinates: [Number(longitude), Number(latitude)],
+          coordinates: [Number(longitude), Number(latitude)], // Longitude first for GeoJSON
         },
       };
 
@@ -104,25 +129,21 @@ export default function EditProfile(props) {
       formData.append("data", JSON.stringify(data));
       formData.append("file", image);
 
-      console.log({ data: data, image });
-
-      const res = await updateUserProfile({
-        formData,
-        id: userProfile?.data?.userId,
-      }).unwrap();
+      // Assuming `createProfile` is an API call function
+      const res = await createProfile(formData).unwrap();
       console.log(res);
 
-      toast.success("Profile Updated Successfully", {
+      toast.success("Profile Created Successfully", {
         id: toastId,
         duration: 2000,
       });
-      toggleEditProfile();
+      toggleCreateProfile();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(
         error?.data?.message ||
           error.message ||
-          "An error occurred during updating Profile",
+          "An error occurred during profile creation",
         {
           id: toastId,
           duration: 2000,
@@ -130,20 +151,21 @@ export default function EditProfile(props) {
       );
     }
   };
+
   return (
     <div
       ref={profileRef}
-      className="flex items-center justify-center p-2 w-[600px]"
+      className="overflow-y-auto flex items-center justify-center p-2 w-[600px]"
     >
       <div className="w-full relative bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-          Edit Profile
+          Create Profile
         </h1>
         <div
-          onClick={toggleEditProfile}
-          className="cursor-pointer  md:flex justify-end top-5  z-50 absolute right-5"
+          onClick={toggleCreateProfile}
+          className="cursor-pointer md:flex justify-end top-5 z-50 absolute right-5"
         >
-          <p className=" text-lg font-bold ">X</p>
+          <p className="text-lg font-bold">X</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -180,6 +202,56 @@ export default function EditProfile(props) {
             </label>
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              defaultValue={myProfileData?.fullName}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              E-mail
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              defaultValue={myProfileData?.email}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Phone
+            </label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              defaultValue={myProfileData?.phone}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
 
           <div>
             <label
@@ -192,7 +264,6 @@ export default function EditProfile(props) {
               type="text"
               id="address"
               name="address"
-              defaultValue={userProfile?.data?.address}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />

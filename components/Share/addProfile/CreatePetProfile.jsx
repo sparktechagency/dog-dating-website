@@ -2,29 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import blankProfile from "../../../asserts/blankProfile.png";
 import { toast } from "sonner";
 import Image from "next/image";
-import {
-  useCreatePetProfileMutation,
-  useUpdatePetProfileMutation,
-} from "@/redux/api/features/profileApi";
-import { getImageUrl } from "@/helpers/config/envConfig";
+import { useCreatePetProfileMutation } from "@/redux/api/features/profileApi";
 
-const EditPetProfile = ({
-  toggleEditPetProfile,
-  petProfileEdit,
-  setPetProfileEdit,
+const CreatePetProfile = ({
+  toggleCreatePetProfile,
+  createPetProfile,
+  setCreatePetProfile,
   myProfileData,
-  petProfile,
 }) => {
   const profileRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        petProfileEdit &&
+        createPetProfile &&
         profileRef.current &&
         !profileRef.current.contains(event.target)
       ) {
-        setPetProfileEdit(false);
+        setCreatePetProfile(false);
       }
     };
 
@@ -32,14 +27,11 @@ const EditPetProfile = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [petProfileEdit, setPetProfileEdit]);
+  }, [createPetProfile, setCreatePetProfile]);
 
-  const [updatePetProfile, { isLoading }] = useUpdatePetProfileMutation();
+  const [createProfile, { isLoading }] = useCreatePetProfileMutation();
 
-  const url = getImageUrl();
-  const petImage = url + petProfile?.data?.image;
-
-  const [photo, setPhoto] = useState(petImage);
+  const [photo, setPhoto] = useState(blankProfile);
   const [error, setError] = useState("");
 
   const handlePhotoChange = (e) => {
@@ -60,12 +52,12 @@ const EditPetProfile = ({
   };
 
   const handleSubmit = async (e) => {
-    const toastId = toast.loading("Updating Pet Profile...");
+    const toastId = toast.loading("Creating Profile...");
     e.preventDefault();
 
     try {
       const formData = new FormData();
-      const image = e.target.image.files[0] || petProfile?.data?.image;
+      const image = e.target.image.files[0];
       const userId = myProfileData?.userId;
       const name = e.target.name.value;
       const age = e.target.age.value;
@@ -77,6 +69,13 @@ const EditPetProfile = ({
       const playSizePreferences = e.target.playSizePreferences.value;
       const locationPreferences = e.target.locationPreferences.value;
       const description = e.target.description.value;
+
+      // Validate latitude and longitude
+
+      if (!image) {
+        setError("Please select an image.");
+        throw new Error("Please select an image.");
+      }
 
       const data = {
         userId,
@@ -97,23 +96,20 @@ const EditPetProfile = ({
       formData.append("file", image);
 
       // Assuming `createProfile` is an API call function
-      const res = await updatePetProfile({
-        formData,
-        id: myProfileData?.userId,
-      }).unwrap();
+      const res = await createProfile(formData).unwrap();
       console.log(res);
 
-      toast.success("Pet Profile updated successfully!", {
+      toast.success("Profile Created Successfully", {
         id: toastId,
         duration: 2000,
       });
-      toggleEditPetProfile();
+      toggleCreatePetProfile();
     } catch (error) {
       console.error(error);
       toast.error(
         error?.data?.message ||
           error.message ||
-          "An error occurred during updating Pet Profile",
+          "An error occurred during profile creation",
         {
           id: toastId,
           duration: 2000,
@@ -121,7 +117,6 @@ const EditPetProfile = ({
       );
     }
   };
-
   return (
     <div
       ref={profileRef}
@@ -132,7 +127,7 @@ const EditPetProfile = ({
           Create Pet Profile
         </h1>
         <div
-          onClick={toggleEditPetProfile}
+          onClick={toggleCreatePetProfile}
           className="cursor-pointer md:flex justify-end top-5 z-50 absolute right-5"
         >
           <p className="text-lg font-bold">X</p>
@@ -180,7 +175,6 @@ const EditPetProfile = ({
               type="text"
               placeholder="Name"
               required
-              defaultValue={petProfile?.data?.name}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -193,7 +187,6 @@ const EditPetProfile = ({
               type="number"
               placeholder="Your age"
               required
-              defaultValue={petProfile?.data?.age}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -204,7 +197,6 @@ const EditPetProfile = ({
             <select
               name="gender"
               required
-              defaultValue={petProfile?.data?.gender}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -221,7 +213,6 @@ const EditPetProfile = ({
             <select
               name="size"
               required
-              defaultValue={petProfile?.data?.size}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -245,7 +236,6 @@ const EditPetProfile = ({
             <select
               name="neuteredSpayed"
               required
-              defaultValue={petProfile?.data?.neuteredSpayed}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -262,7 +252,6 @@ const EditPetProfile = ({
             <select
               name="howDoYouPlay"
               required
-              defaultValue={petProfile?.data?.howDoYouPlay}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -293,7 +282,6 @@ const EditPetProfile = ({
             <select
               name="doYouLikeACrowd"
               required
-              defaultValue={petProfile?.data?.doYouLikeACrowd}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -315,7 +303,6 @@ const EditPetProfile = ({
             <select
               name="playSizePreferences"
               required
-              defaultValue={petProfile?.data?.playSizePreferences}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -339,7 +326,6 @@ const EditPetProfile = ({
             <select
               name="locationPreferences"
               required
-              defaultValue={petProfile?.data?.locationPreferences}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             >
               <option disabled selected value="">
@@ -363,7 +349,6 @@ const EditPetProfile = ({
               name="description"
               placeholder="Type your Response"
               required
-              defaultValue={petProfile?.data?.description}
               className="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2"
             />
           </div>
@@ -381,4 +366,4 @@ const EditPetProfile = ({
   );
 };
 
-export default EditPetProfile;
+export default CreatePetProfile;

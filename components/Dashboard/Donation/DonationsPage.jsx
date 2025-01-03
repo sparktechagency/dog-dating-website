@@ -22,7 +22,6 @@ const DonationsPage = () => {
 
   const calculateTotalDonation = (donations) => {
     if (!Array.isArray(donations)) {
-      console.error("Donations is not an array:", donations);
       return 0; // Return 0 if donations is undefined or not an array
     }
 
@@ -37,6 +36,7 @@ const DonationsPage = () => {
 
   const columns = [
     {
+      key: "createdAt",
       title: "Donation Date",
       dataIndex: "createdAt",
       render: (date) => {
@@ -49,14 +49,17 @@ const DonationsPage = () => {
       },
     },
     {
+      key: "name",
       title: "Donator Name",
       dataIndex: "name",
     },
     {
+      key: "amount",
       title: "Amount",
       dataIndex: "amount",
     },
     {
+      key: "email",
       title: "Email",
       dataIndex: "email",
     },

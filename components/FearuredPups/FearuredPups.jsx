@@ -79,9 +79,10 @@ const FeaturedPups = () => {
                 <Image
                   src={url + shelter?.image}
                   alt={shelter?.name}
-                  layout="fill"
-                  objectFit="cover"
-                  className="  object-top "
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="w-full h-full object-cover object-top "
                 />
               </div>
 

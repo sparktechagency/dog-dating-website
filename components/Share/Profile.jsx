@@ -1,267 +1,407 @@
 "use client";
 import Image from "next/image";
-import ceo from "../../asserts/ceo.png";
-import ced from "../../asserts/ced.png";
+
 import EditProfile from "./EditProfile/EditProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditPetProfille from "./EditProfile/EditPetProfille";
+import { useSelector } from "react-redux";
+import { decodedToken } from "@/utils/jwt";
+import { useMyProfileQuery } from "@/redux/api/features/authApi";
+import CreateUserProfile from "./addProfile/CreateUserProfile";
+import {
+  usePetProfileQuery,
+  useUserProfileQuery,
+} from "@/redux/api/features/profileApi";
+import { getImageUrl } from "@/helpers/config/envConfig";
+import CreatePetProfile from "./addProfile/CreatePetProfile";
+
 export default function Profile() {
+  const [createUserProfile, setCreateUserProfile] = useState(false);
+  const [createPetProfile, setCreatePetProfile] = useState(false);
   const [profileEdit, setProfileEdit] = useState(false);
+  const [petProfileEdit, setPetProfileEdit] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [petProfile, setPetProfile] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  const token = useSelector((state) => state.auth.accessToken);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const userInfo = decodedToken(token);
+        setUserData(userInfo);
+      } catch (err) {
+        setUserData(null);
+      }
+    }
+  }, [token]);
+
+  // Fetch user profile
+  const {
+    data: userProfileData,
+    error: userProfileError,
+    isFetching: isFetchingProfile,
+  } = useUserProfileQuery(
+    { id: userData?.userId },
+    {
+      skip: !userData, // Skip query if userData is null
+    }
+  );
+
+  // Fetch pet profile
+  const {
+    data: petProfileData,
+    error: petProfileError,
+    isFetching: isFetchingPetProfile,
+  } = usePetProfileQuery(
+    { id: userData?.userId },
+    {
+      skip: !userData || isFetchingProfile, // Skip query if userData is null or user profile is still fetching
+    }
+  );
+
+  // Handle user profile data or error
+  useEffect(() => {
+    if (userProfileError) {
+      setUserProfile(null);
+    } else if (userProfileData) {
+      setUserProfile(userProfileData);
+    }
+  }, [userProfileData, userProfileError]);
+
+  // Handle pet profile data or error
+  useEffect(() => {
+    if (petProfileError) {
+      setPetProfile(null);
+    } else if (petProfileData) {
+      setPetProfile(petProfileData);
+    }
+  }, [petProfileData, petProfileError]);
+
+  const toggleCreateProfile = () => {
+    setCreateUserProfile((prev) => !prev);
+  };
+
+  const toggleCreatePetProfile = () => {
+    setCreatePetProfile((prev) => !prev);
+  };
+
   const toggleEditProfile = () => {
     setProfileEdit((prev) => !prev);
   };
 
-  const [petProfileEdit, setPetProfileEdit] = useState(false);
   const toggleEditPetProfile = () => {
     setPetProfileEdit((prev) => !prev);
   };
 
-  const profile = {
-    name: "Sara Sowa",
-    img: ceo,
-    address: "1234 Sunset Blvd, Los Angeles, California, USA",
-    mobile: "00000000",
-    email: "example@gmail.com",
-    location: "Los Angeles, California, USA",
-  };
-  const petProfile = {
-    name: "Murphy Bear",
-    photo: ced,
-    address: "1234 Sunset Blvd, Los Angeles, California, USA",
-    age: "2",
-    gender: "Male",
-    size: "Small (10 – 30 lbs)",
-    neutered: "Yes",
-    playStyle: "Focused Play; throw the ball!",
-    crowdPreference: "I'm comfortable with small groups",
-    playpreferences: "I'm comfortable in any crowd",
-    locationPreference: "Backyard/Home playdate",
-    describe: "Type your Response",
-  };
+  // const petProfile = {
+  //   name: "Murphy Bear",
+  //   photo: ced,
+  //   address: "1234 Sunset Blvd, Los Angeles, California, USA",
+  //   age: "2",
+  //   gender: "Male",
+  //   size: "Small (10 – 30 lbs)",
+  //   neutered: "Yes",
+  //   playStyle: "Focused Play; throw the ball!",
+  //   crowdPreference: "I'm comfortable with small groups",
+  //   playpreferences: "I'm comfortable in any crowd",
+  //   locationPreference: "Backyard/Home playdate",
+  //   describe: "Type your Response",
+  // };
+
+  const url = getImageUrl();
+  const userImage = url + userProfile?.data?.image;
+
+  const petImage = url + petProfile?.data?.image;
+
+  if (isFetchingProfile && isFetchingPetProfile) {
+    return (
+      <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 flex flex-col md:flex-row gap-8">
       {/* My Profile Section */}
-      <div className="flex-1  p-6 ">
-        <h2 className="text-2xl font-bold mb-6">My Profile</h2>
-        <div className="flex items-center mb-6">
-          <Image
-            src={profile?.img}
-            alt={profile?.name}
-            width={0}
-            height={0}
-            className="rounded-full mr-4 w-20 ring-1 ring-[#F88D58] object-cover aspect-square"
-          />
-          <h3 className="text-xl font-semibold">{profile?.name}</h3>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={profile?.address}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mobile no
-            </label>
-            <input
-              type="tel"
-              className="input input-bordered w-full bg-gray-100"
-              value={profile?.mobile}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              E-mail
-            </label>
-            <input
-              type="email"
-              className="input input-bordered w-full bg-gray-100"
-              value={profile?.email}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Location
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={profile?.location}
-            />
-          </div>
-          <div  className="text-end">
-            <button onClick={toggleEditProfile} className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none  mt-4 w-fit ">
-              Edit
-            </button>
-          </div>
-          {profileEdit && (
-            <div className="inset-0 fixed flex justify-center items-center bg-black/20 z-50 ">
-              <EditProfile
-                toggleEditProfile={toggleEditProfile}
-                profileEdit={profileEdit}
-                setProfileEdit={setProfileEdit}
+      {userProfileError ? (
+        <div className="flex-1  p-6 ">
+          <h2 className="text-2xl font-bold mb-6">My Profile</h2>
+          <p className="text-2xl font-bold mb-6">
+            No Profile Found, Please Create your own Profile
+          </p>
+          <button
+            onClick={toggleCreateProfile}
+            className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-full mt-4"
+          >
+            Create Profile
+          </button>
+          {createUserProfile && (
+            <div className="inset-0 overflow-y-auto fixed flex justify-center items-center bg-black/20 z-50 ">
+              <CreateUserProfile
+                toggleCreateProfile={toggleCreateProfile}
+                createUserProfile={createUserProfile}
+                setCreateUserProfile={setCreateUserProfile}
+                myProfileData={userData}
               />
             </div>
           )}
-
-
         </div>
-      </div>
+      ) : (
+        <div className="flex-1  p-6 ">
+          <h2 className="text-2xl font-bold mb-6">My Profile</h2>
+          <div className="flex items-center mb-6">
+            <Image
+              src={userImage}
+              alt="Profile"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-20 h-20 object-cover aspect-square rounded-full ring-1 ring-[#F88D58] mr-4"
+            />
+            <h3 className="text-xl font-semibold">{userProfile?.data?.name}</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <input
+                type="text"
+                readOnly
+                className="input input-bordered w-full bg-gray-100"
+                value={userProfile?.data?.address}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Mobile no
+              </label>
+              <input
+                type="tel"
+                readOnly
+                className="input input-bordered w-full bg-gray-100"
+                value={userProfile?.data?.mobile}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                E-mail
+              </label>
+              <input
+                type="email"
+                readOnly
+                className="input input-bordered w-full bg-gray-100"
+                value={userProfile?.data?.email}
+              />
+            </div>
+
+            <div className="text-end">
+              <button
+                onClick={toggleEditProfile}
+                className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none  mt-4 w-fit "
+              >
+                Edit
+              </button>
+            </div>
+            {profileEdit && (
+              <div className="inset-0 fixed flex justify-center items-center bg-black/20 z-50 ">
+                <EditProfile
+                  toggleEditProfile={toggleEditProfile}
+                  profileEdit={profileEdit}
+                  setProfileEdit={setProfileEdit}
+                  userProfile={userProfile}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Pets Profile Section */}
-      <div className="flex-1  p-6 ">
-        <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
-        <div className="flex items-center mb-6">
-          <Image
-            src={petProfile?.photo}
-            alt={petProfile?.name}
-            width={0}
-            height={0}
-            className="rounded-full mr-4 w-20 ring-1 ring-[#F88D58] object-cover aspect-square"
-          />
-          <h3 className="text-xl font-semibold">{petProfile?.name}</h3>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.address}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Age
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.age}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Gender
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.gender}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Size
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.size}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Neutered/Spayed
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.neutered}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              How do you play?
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.playStyle}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Do you like a crowd?
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.crowdPreference}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Play/size preferences
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.playpreferences}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Location preferences
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full bg-gray-100"
-              value={petProfile?.locationPreference}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              How would your Best Friend (aka human) describe you?
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              placeholder={petProfile?.describe}
-            />
-          </div>
-          <div onClick={toggleEditPetProfile} className="text-end">
-            <button className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-fit mt-4">
-              Edit
-            </button>
-          </div>
-
-          {petProfileEdit && (
-            <div className="inset-0 fixed flex justify-center  bg-black/20 z-50 overflow-y-scroll ">
-              <EditPetProfille
-                toggleEditPetProfile={toggleEditPetProfile}
-                petProfileEdit={petProfileEdit}
-                setPetProfileEdit={setPetProfileEdit}
+      {petProfileError ? (
+        <div className="flex-1  p-6 ">
+          <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
+          <p className="text-2xl font-bold mb-6">
+            No Profile Found, Please Create your pet Profile
+          </p>
+          <button
+            onClick={toggleCreatePetProfile}
+            className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-full mt-4"
+          >
+            Create Pet Profile
+          </button>
+          {createPetProfile && (
+            <div className="inset-0 overflow-y-auto fixed flex justify-center items-center bg-black/20 z-50 ">
+              <CreatePetProfile
+                toggleCreatePetProfile={toggleCreatePetProfile}
+                createPetProfile={createPetProfile}
+                setCreatePetProfile={setCreatePetProfile}
+                myProfileData={userData}
               />
             </div>
           )}
-
-
-
         </div>
-      </div>
+      ) : (
+        <div className="flex-1  p-6 ">
+          <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
+          <div className="flex items-center mb-6">
+            <Image
+              src={petImage}
+              alt="Profile"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-20 h-20 object-cover aspect-square rounded-full ring-1 ring-[#F88D58] mr-4"
+            />
+            <h3 className="text-xl font-semibold">{petProfile?.data?.name}</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.address}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Age
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.age}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Gender
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.gender}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Size
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.size}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Neutered/Spayed
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.neuteredSpayed}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                How do you play?
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.howDoYouPlay}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Do you like a crowd?
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.doYouLikeACrowd}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Play/size preferences
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.playSizePreferences}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Location preferences
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full bg-gray-100"
+                readOnly
+                value={petProfile?.data?.locationPreferences}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                How would your Best Friend (aka human) describe you?
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                readOnly
+                value={petProfile?.data?.description}
+              />
+            </div>
+            <div onClick={toggleEditPetProfile} className="text-end">
+              <button className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-fit mt-4">
+                Edit
+              </button>
+            </div>
+
+            {petProfileEdit && (
+              <div className="inset-0 fixed flex justify-center  bg-black/20 z-50 overflow-y-scroll ">
+                <EditPetProfille
+                  toggleEditPetProfile={toggleEditPetProfile}
+                  petProfileEdit={petProfileEdit}
+                  setPetProfileEdit={setPetProfileEdit}
+                  myProfileData={userData}
+                  petProfile={petProfile}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

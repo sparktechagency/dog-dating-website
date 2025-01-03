@@ -144,7 +144,4 @@ export const {
   useMyProfileQuery,
   useGetAllUsersQuery,
   useDonationUserQuery,
-  //   useUpdateProfileMutation,
-  //   useGetAllUserQuery,
-  //   useGetSingleUserQuery,
 } = authApi;
