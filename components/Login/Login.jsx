@@ -27,12 +27,11 @@ const Login = () => {
     const email = e.target.email.value;
 
     const loginData = { email, password };
-    console.log("Login Data:", loginData);
 
     // Handle form submission logic here
     try {
       const res = await userLogin(loginData).unwrap();
-      console.log("res: ", res);
+
       if (res.success) {
         toast.success(res.message, {
           id: toastId,
@@ -57,7 +56,6 @@ const Login = () => {
         navigate.push("/");
       }
     } catch (error) {
-      console.error("Login Error:", error); // Log the error for debugging
       toast.error(
         error?.data?.message ||
           error?.error ||

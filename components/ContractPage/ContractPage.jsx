@@ -1,33 +1,30 @@
 "use client";
-import React from 'react';
-import img from '../../asserts/contract.png'
+import React from "react";
+import img from "../../asserts/contract.png";
 
-
-import Image from 'next/image';
+import Image from "next/image";
 
 const ContractPage = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const name=e.target.name.value;
-    const email=e.target.email.value;
-    const message=e.target.message.value;
-    
-    console.log(name,email,message);
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const message = e.target.message.value;
+
     e.target.reset();
-    
-    // Handle form submission logic here    
-  }
+
+    // Handle form submission logic here
+  };
   return (
     <div className="bg-[#FFFAF5] my-10">
       <div className="container mx-auto px-4">
         {/* Heading Section */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800">CONTACT US</h1>
-          <p className="text-xl text-gray-600 mt-4">
-            information@woofspot.net
-          </p>
+          <p className="text-xl text-gray-600 mt-4">information@woofspot.net</p>
           <p className="text-md text-gray-600 mt-2">
-            If you are interested in advertising, connecting & collaborating, or sharing feedback and ideas with Woof Spot, please send us a note!
+            If you are interested in advertising, connecting & collaborating, or
+            sharing feedback and ideas with Woof Spot, please send us a note!
           </p>
         </div>
 
@@ -44,10 +41,13 @@ const ContractPage = () => {
 
           {/* Contact Form */}
           <div className=" p-8 rounded-lg ">
-            <form onSubmit={handleFormSubmit}  className="space-y-4">
+            <form onSubmit={handleFormSubmit} className="space-y-4">
               {/* Name Input */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Name
                 </label>
                 <input
@@ -62,7 +62,10 @@ const ContractPage = () => {
 
               {/* Email Input */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email
                 </label>
                 <input
@@ -77,7 +80,10 @@ const ContractPage = () => {
 
               {/* Message Input */}
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   How can we help?
                 </label>
                 <textarea

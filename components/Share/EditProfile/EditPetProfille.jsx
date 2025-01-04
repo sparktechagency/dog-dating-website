@@ -101,7 +101,6 @@ const EditPetProfile = ({
         formData,
         id: myProfileData?.userId,
       }).unwrap();
-      console.log(res);
 
       toast.success("Pet Profile updated successfully!", {
         id: toastId,
@@ -109,7 +108,6 @@ const EditPetProfile = ({
       });
       toggleEditPetProfile();
     } catch (error) {
-      console.error(error);
       toast.error(
         error?.data?.message ||
           error.message ||
@@ -123,10 +121,7 @@ const EditPetProfile = ({
   };
 
   return (
-    <div
-      ref={profileRef}
-      className="overflow-y-auto flex items-center justify-center p-2 w-[600px]"
-    >
+    <div ref={profileRef} className="bg-white md:w-[500px] rounded-md">
       <div className="w-full relative bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
           Create Pet Profile

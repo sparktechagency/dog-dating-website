@@ -43,7 +43,6 @@ const SetNewPassword = () => {
         router.push("/login");
       }
     } catch (error) {
-      console.log(error);
       toast.error(
         error?.data?.message ||
           error?.message ||

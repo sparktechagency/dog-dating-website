@@ -10,14 +10,11 @@ const AUTH_URL = "/users";
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     signUp: build.mutation({
-      query: (signupData) => (
-        console.log(signupData),
-        {
-          url: `${AUTH_URL}/create`,
-          method: "POST",
-          body: signupData,
-        }
-      ),
+      query: (signupData) => ({
+        url: `${AUTH_URL}/create`,
+        method: "POST",
+        body: signupData,
+      }),
       invalidatesTags: [tagTypes.user],
     }),
     verifiedEmail: build.mutation({

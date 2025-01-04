@@ -16,13 +16,12 @@ import { getImageUrl } from "@/helpers/config/envConfig";
 
 const DonateNow = (params) => {
   const [donationAmount, setDonationAmount] = useState("160.00");
-  // console.log(params.closeModal);
+
   const { closeModal, setOpen, setIsOpen, isOpen, selectedShelter } = params;
 
   const handleButtonClick = () => {
     closeModal();
     setOpen(true);
-    console.log(open);
   };
 
   const containerRef = useRef(null); // Ref for the dropdown

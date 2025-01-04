@@ -11,7 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 const Sidebar = ({ slider, setSlider }) => {
   const router = useRouter();
   const location = usePathname();
-  // console.log();
+
   return (
     <div className=" bg-[#F88D58] text-white h-[89vh] lg:h-[85vh] pt-5 lg:rounded-tr-3xl lg:rounded-br-3xl overflow-y-auto">
       {/* //* SideBar Collaps Buttons */}

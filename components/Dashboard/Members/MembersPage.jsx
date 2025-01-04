@@ -19,8 +19,6 @@ const MembersPage = () => {
   const paidMembers = getPaidMembers(users?.data, "Paid");
   const generalMembers = getPaidMembers(users?.data, "General");
 
-  console.log(paidMembers);
-
   const columns = [
     {
       title: "Sl No",
@@ -62,7 +60,6 @@ const MembersPage = () => {
   ];
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 

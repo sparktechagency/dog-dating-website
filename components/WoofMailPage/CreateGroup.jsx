@@ -1,10 +1,6 @@
 "use client";
 
-import {
-    Form,
-    Input,
-    Upload
-} from "antd";
+import { Form, Input, Upload } from "antd";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
@@ -12,7 +8,6 @@ import { FaImage, FaTrashAlt } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import groupProfile from "./asserts/groupProfile.png";
 import profileImage from "./asserts/newChat.png";
-
 
 export default function CreateGroup(props) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -155,8 +150,6 @@ export default function CreateGroup(props) {
   //   ];
 
   const handleImageUpload = (info) => {
-
-
     if (info.file.status === "removed") {
       setImageUrl(groupProfile);
     } else {
@@ -164,20 +157,17 @@ export default function CreateGroup(props) {
       if (file) {
         setImageUrl(URL.createObjectURL(file));
       } else {
-        console.error("No file selected or file object missing");
       }
     }
   };
 
   const onFinish = (values) => {
-    const fromValues = { ...values, picture: imageUrl,selectedUsers };
-    setSelectedUsers([])
-    setImageUrl(groupProfile)
+    const fromValues = { ...values, picture: imageUrl, selectedUsers };
+    setSelectedUsers([]);
+    setImageUrl(groupProfile);
     form.resetFields();
-    console.log("Success:", fromValues);
+
     setTimeout(() => setShowAddGroupModal(false), 100);
-
-
   };
 
   return (
@@ -185,7 +175,6 @@ export default function CreateGroup(props) {
       ref={containerRef}
       className="relative flex md:flex-row flex-col-reverse  select-none lg:min-w-[900px] md:min-w-[800px] min-w-[90%]  mx-auto  bg-[#FFFAF5] rounded-3xl  shadow-lg"
     >
-
       <div className="bg-white p-6 rounded-tl-3xl rounded-es-3xl ">
         <h1 className=" md:block  hidden text-2xl font-semibold text-center text-[#2D2B4A] mb-6">
           Create Group Chat
@@ -242,21 +231,17 @@ export default function CreateGroup(props) {
       </div>
 
       <div className=" rounded-lg  p-6  mx-auto flex-1 md:px-20">
-      <div className="md:hidden block">
-        <h1 className="text-2xl font-semibold text-center text-[#2D2B4A] mb-6">
-          Create Group Chat
-        </h1>
-        <div
-          onClick={toggleGroupModal}
-          className="cursor-pointer flex justify-end top-6  z-50 absolute right-5 text-xl font-bold "
-        >
-          <p>X</p>
+        <div className="md:hidden block">
+          <h1 className="text-2xl font-semibold text-center text-[#2D2B4A] mb-6">
+            Create Group Chat
+          </h1>
+          <div
+            onClick={toggleGroupModal}
+            className="cursor-pointer flex justify-end top-6  z-50 absolute right-5 text-xl font-bold "
+          >
+            <p>X</p>
+          </div>
         </div>
-
- 
-        </div>
-
-
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <div className="relative w-fit">
@@ -267,12 +252,15 @@ export default function CreateGroup(props) {
               height={0}
               className="w-40 h-40 rounded-full object-cover object-top border border-secondary-color"
             />
-                <div onClick={()=>setImageUrl(groupProfile)} className={`${imageUrl === groupProfile && "hidden"} cursor-pointer w-fit p-2 border bg-[#F88D58] border-white absolute left-28 bottom-0 bg-secondary-color rounded-full`}>
-                  {/* <AiOutlineEdit className="text-primary-color " /> */}
-                  <FaTrashAlt className=" text-white"/>
-
-                </div>
-
+            <div
+              onClick={() => setImageUrl(groupProfile)}
+              className={`${
+                imageUrl === groupProfile && "hidden"
+              } cursor-pointer w-fit p-2 border bg-[#F88D58] border-white absolute left-28 bottom-0 bg-secondary-color rounded-full`}
+            >
+              {/* <AiOutlineEdit className="text-primary-color " /> */}
+              <FaTrashAlt className=" text-white" />
+            </div>
           </div>
           <Form.Item label="Full Name" name="fullName">
             <Input placeholder="Enter Full Name " className="py-2 !text-lg" />
@@ -329,7 +317,7 @@ export default function CreateGroup(props) {
           </Form.Item> */}
           <div className="flex justify-between gap-3">
             <Upload
-            name="picture"
+              name="picture"
               maxCount={1}
               showUploadList={false}
               beforeUpload={() => false}

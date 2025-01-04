@@ -6,7 +6,7 @@ import { decodedToken } from "@/utils/jwt";
 import { tagTypes } from "../../tagTypes";
 
 const profileUrl = "/user-profile";
-const petProfileUrl = "pet-profile";
+const petProfileUrl = "/pet-profile";
 
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -22,7 +22,6 @@ export const profileApi = baseApi.injectEndpoints({
     }),
     createUserProfile: build.mutation({
       query: (data) => {
-        console.log("RTK data", data);
         return {
           url: `${profileUrl}/add`,
           method: "POST",
@@ -77,6 +76,16 @@ export const profileApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.petProfile],
     }),
+    //*--------------------------- Nearby Friends ---------------------------*//
+    nearbyFriends: build.query({
+      query: ({ id }) => {
+        return {
+          url: `/near-friends/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: [tagTypes.userProfile],
+    }),
   }),
 });
 
@@ -87,4 +96,5 @@ export const {
   usePetProfileQuery,
   useCreatePetProfileMutation,
   useUpdatePetProfileMutation,
+  useNearbyFriendsQuery,
 } = profileApi;

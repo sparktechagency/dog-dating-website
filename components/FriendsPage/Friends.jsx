@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Friend from "./Friend";
 import HowDoYouPlay from "../HomePage/HowDoYouPlay";
 import Pagination from "./Pagination";
@@ -6,104 +7,98 @@ import img1 from "../../asserts/memo.jpeg";
 import img2 from "../../asserts/jack.jpeg";
 import img3 from "../../asserts/lily.jpeg";
 import img4 from "../../asserts/sparrow.jpeg";
+import {
+  useNearbyFriendsQuery,
+  usePetProfileQuery,
+  useUserProfileQuery,
+} from "@/redux/api/features/profileApi";
+import { useSelector } from "react-redux";
+import { decodedToken } from "@/utils/jwt";
 
 const Friends = () => {
-  const petPartners = [
-    {
-      id:1,
-      name: "Memo",
-      age: 2,
-      gender: "Male",
-      size: "Small (10-30 lbs)",
-      breed: "Corgi",
-      location: "Houston, TX",
-      img: img1,
-      distance: 1.2,
-      description: "Memo is a small-sized male Corgi, weighing between 10-30 lbs, and located in Houston, TX. He is neutered, loves playing fetch, enjoys the company of small crowds, and gets along well with other small-sized dogs.",
-      preferences: {
-        spayedNeutered: "Yes",
-        playStyle: "Focused Play; throw the ball!",
-        crowdPreference: "I prefer one friend at a time",
-        sizePreference: "I'm comfortable with friends my own size.",
-        locationPreference: "Backyard/Home playdate"
-      }
-    },
-    {
-      id:2,
-      name: "Jack",
-      age: 2,
-      gender: "Male",
-      size: "Medium (30-50 lbs)",
-      breed: "Beagle",
-      location: "Houston, TX",
-      img: img2,
-      distance: 1.5,
-      description: "Jack is a medium-sized male Beagle, weighing between 30-50 lbs, and located in Houston, TX. He loves sniffing around, enjoys a good chase, and prefers an open space to run.",
-      preferences: {
-        spayedNeutered: "Yes",
-        playStyle: "Running and chasing",
-        crowdPreference: "I love being in a pack!",
-        sizePreference: "No preference, I get along with all sizes.",
-        locationPreference: "Dog park or open fields"
-      }
-    },
-    {
-      id:3,
-      name: "Lily",
-      age: 2,
-      gender: "Female",
-      size: "Small (10-30 lbs)",
-      breed: "French Bulldog",
-      location: "Houston, TX",
-      img: img3,
-      distance: 2.0,
-      description: "Lily is a small-sized female French Bulldog, weighing between 10-30 lbs, and located in Houston, TX. She is calm, enjoys short play sessions, and loves being around familiar faces.",
-      preferences: {
-        spayedNeutered: "No",
-        playStyle: "Short play sessions with lots of cuddles",
-        crowdPreference: "Prefers smaller groups",
-        sizePreference: "Comfortable with dogs her size or smaller.",
-        locationPreference: "Indoor play or fenced backyard"
-      }
-    },
-    {
-      id:4,
-      name: "Sparrow",
-      age: 2,
-      gender: "Male",
-      size: "Large (50-70 lbs)",
-      breed: "Golden Retriever",
-      location: "Houston, TX",
-      img: img4,
-      distance: 2.3,
-      description: "Sparrow is a large-sized male Golden Retriever, weighing between 50-70 lbs, and located in Houston, TX. He is very friendly, loves to swim, and enjoys playing with other dogs of all sizes.",
-      preferences: {
-        spayedNeutered: "Yes",
-        playStyle: "Swimming and fetching toys",
-        crowdPreference: "Happy in both large and small groups",
-        sizePreference: "Gets along with all dogs, no size preference",
-        locationPreference: "Beach or large park with water access"
+  const [petProfile, setPetProfile] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  const token = useSelector((state) => state.auth.accessToken);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const userInfo = decodedToken(token);
+        setUserData(userInfo);
+      } catch (err) {
+        setUserData(null);
       }
     }
-  ];
+  }, [token]);
+
+  // Fetch pet profile
+  const {
+    data: petProfileData,
+    error: petProfileError,
+    isFetching: isFetchingPetProfile,
+  } = usePetProfileQuery(
+    { id: userData?.userId },
+    {
+      skip: !userData, // Skip query if userData is null or user profile is still fetching
+    }
+  );
+
+  // Handle pet profile data or error
+  useEffect(() => {
+    if (petProfileError) {
+      setPetProfile(null);
+    } else if (petProfileData) {
+      setPetProfile(petProfileData);
+    }
+  }, [petProfileData, petProfileError]);
+
+  const {
+    data: nearByFriends,
+    error,
+    isFetching: nearByFriendsFetching,
+  } = useNearbyFriendsQuery(
+    { id: userData?.userId },
+    {
+      skip: isFetchingPetProfile, // Skip query if userData is null
+    }
+  );
+
+  if (isFetchingPetProfile && nearByFriendsFetching) {
+    return (
+      <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#FFFAF5]">
-      <h1 style={{fontSize:"clamp(16px, 2vw + 1rem ,36px)"}}  className="  text-center font-bold my-[50px]  text-[#302F51]">
+      <h1
+        style={{ fontSize: "clamp(16px, 2vw + 1rem ,36px)" }}
+        className="  text-center font-bold my-[50px]  text-[#302F51]"
+      >
         FRIENDS NEAR YOU
       </h1>
-{
-  petPartners.map((petPartner, index) => (
-    <Friend key={petPartner.id} petPartner={petPartner} index={index} />
-  ))
-}
-
+      {petProfileError ? (
+        <div className="text-center w-full flex flex-col justify-center items-center">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            Please complete your and your pet profile to see friends near you
+          </h2>
+        </div>
+      ) : (
+        nearByFriends?.data?.map((petPartner, index) => (
+          <Friend
+            key={petPartner._id}
+            petPartner={petPartner}
+            index={index}
+            petProfile={petProfile}
+          />
+        ))
+      )}
 
       <div className="pt-[50px] ">
         <HowDoYouPlay />
-      </div>
-
-      <div className="flex flex-col items-center justify-center  bg-gray-50 py-[100px]">
-        <Pagination totalPages={10} initialPage={1} />
       </div>
 
       <div className="text-[#302F51] text-center py-8 px-4 mb-[100px]">

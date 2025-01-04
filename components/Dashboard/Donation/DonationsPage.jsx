@@ -18,8 +18,6 @@ const DonationsPage = () => {
     setSelectedValue(value);
   };
 
-  console.log(donationUser?.data);
-
   const calculateTotalDonation = (donations) => {
     if (!Array.isArray(donations)) {
       return 0; // Return 0 if donations is undefined or not an array
@@ -32,7 +30,6 @@ const DonationsPage = () => {
   };
 
   const totalDonation = calculateTotalDonation(donationUser?.data);
-  console.log("Total Donation: ", totalDonation);
 
   const columns = [
     {
@@ -66,7 +63,6 @@ const DonationsPage = () => {
   ];
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 

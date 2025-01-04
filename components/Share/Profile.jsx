@@ -389,7 +389,7 @@ export default function Profile() {
             </div>
 
             {petProfileEdit && (
-              <div className="inset-0 fixed flex justify-center  bg-black/20 z-50 overflow-y-scroll ">
+              <div className="inset-0 fixed  py-10 flex justify-center  bg-black/20 z-50 overflow-y-scroll ">
                 <EditPetProfille
                   toggleEditPetProfile={toggleEditPetProfile}
                   petProfileEdit={petProfileEdit}

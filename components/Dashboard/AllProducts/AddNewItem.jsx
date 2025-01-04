@@ -67,12 +67,10 @@ const AddNewItem = (props) => {
         productLink: productLink,
       };
 
-      console.log({ data: data, image: image });
       formData.append("data", JSON.stringify(data));
       formData.append("file", image);
 
       const res = await createProduct(formData).unwrap();
-      console.log(res);
 
       toast.success("Product Added Successfully", {
         id: toastId,
@@ -85,7 +83,6 @@ const AddNewItem = (props) => {
       //
       // }
     } catch (error) {
-      console.log(error);
       toast.error(
         error?.data?.message ||
           error.message ||

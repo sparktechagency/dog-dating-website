@@ -10,8 +10,6 @@ const Products = () => {
   const [page, setPage] = useState(1);
   const { data: productsData, isFetching } = useGetAllProductQuery({ page });
 
-  console.log(productsData);
-
   return (
     <div className="bg-[FFFAF5] md:mt-[100px] place-items-center">
       <div className="ProductList text-center text-[#302f51] text-[40px] font-bold md:mb-[52px]">
