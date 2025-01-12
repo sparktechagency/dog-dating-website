@@ -8,6 +8,7 @@ import img1 from "../../asserts/f1.png";
 import img2 from "../../asserts/f2.png";
 import Link from "next/link";
 import { getImageUrl } from "@/helpers/config/envConfig";
+import socket from "@/helpers/config/socket-config";
 
 const mypetInfo = {
   name: "Murphy Bear",
@@ -16,9 +17,9 @@ const mypetInfo = {
   img: img1,
 };
 
-const Friend = ({ petPartner, index, petProfile }) => {
+const Friend = ({ userData, petPartner, index, petProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isMessaging, setIsMessaging] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
@@ -45,6 +46,34 @@ const Friend = ({ petPartner, index, petProfile }) => {
   const url = getImageUrl();
   const userPetImage = url + petProfile?.data?.image;
   const friendPetImage = url + petPartner?.petsProfileId?.image;
+
+  useEffect(() => {
+    if (isMessaging && userData) {
+      // Emit the join event or perform any additional logic
+      socket.emit("join", userData?.userId);
+
+      socket.on("online-users-updated", (onlineUsers) => {
+        console.log("Online Users Updated:", onlineUsers);
+        // Perform additional logic here if needed
+      });
+
+      // Reset isMessaging to avoid repeated calls
+      setIsMessaging(false);
+    }
+
+    // Clean up
+    return () => {
+      socket.off("online-users-updated");
+    };
+  }, [isMessaging, userData]);
+
+  const handleCreateChatRoom = () => {
+    setIsMessaging(true); // Set the state to trigger the useEffect
+    console.log({
+      myPetId: userData?.userId,
+      partnerPet: petPartner?.petsProfileId?._id,
+    });
+  };
 
   return (
     <div
@@ -225,16 +254,15 @@ const Friend = ({ petPartner, index, petProfile }) => {
                 judgment when arranging meetups.
               </p>
               <div className="flex justify-end">
-                <Link href={"/woof-mail"}>
-                  <button
-                    className=" text-white no-underline  bg-[#F88D58] hover:bg-black 
+                <button
+                  onClick={handleCreateChatRoom}
+                  className=" text-white no-underline  bg-[#F88D58] hover:bg-black 
                 xl:px-[48px] xl:py-[20px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 lg:text-fluid-button text-[18px] flex justify-center 
                  items-center md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
-                  >
-                    Message Me
-                    <MdOutlineArrowOutward />
-                  </button>
-                </Link>
+                >
+                  Message Me
+                  <MdOutlineArrowOutward />
+                </button>
               </div>
             </div>
           </div>

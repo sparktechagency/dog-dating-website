@@ -40,19 +40,21 @@ const Friends = () => {
   } = usePetProfileQuery(
     { id: userData?.userId },
     {
-      skip: !userData, // Skip query if userData is null or user profile is still fetching
+      skip: !userData?.userId, // Skip query if userId is not available
     }
   );
 
-  // Handle pet profile data or error
+  // Set pet profile data
   useEffect(() => {
     if (petProfileError) {
+      console.error("Error fetching pet profile:", petProfileError);
       setPetProfile(null);
     } else if (petProfileData) {
       setPetProfile(petProfileData);
     }
   }, [petProfileData, petProfileError]);
 
+  // Fetch nearby friends
   const {
     data: nearByFriends,
     error,
@@ -60,11 +62,11 @@ const Friends = () => {
   } = useNearbyFriendsQuery(
     { id: userData?.userId },
     {
-      skip: isFetchingPetProfile, // Skip query if userData is null
+      skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
     }
   );
 
-  if (isFetchingPetProfile && nearByFriendsFetching) {
+  if (isFetchingPetProfile || nearByFriendsFetching) {
     return (
       <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">
         Loading...
@@ -89,6 +91,7 @@ const Friends = () => {
       ) : (
         nearByFriends?.data?.map((petPartner, index) => (
           <Friend
+            userData={userData}
             key={petPartner._id}
             petPartner={petPartner}
             index={index}

@@ -95,7 +95,7 @@ const FeaturedPups = () => {
                   {shelter?.name}
                 </span>
                 {/* <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
-                 Featch My Info<FiExternalLink className="lg:text-[1.2vw] text-[18px]" />
+                 Fetch My Info<FiExternalLink className="lg:text-[1.2vw] text-[18px]" />
                   </div> */}
               </div>
             </div>

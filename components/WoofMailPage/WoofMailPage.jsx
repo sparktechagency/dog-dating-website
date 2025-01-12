@@ -17,11 +17,17 @@ import { FaCirclePlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import AddNewChat from "./AddNewChat";
 import CreateGroup from "./CreateGroup";
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import socket from "@/helpers/config/socket-config";
 
 const { Header, Content, Sider } = Layout;
 
 const WoofMailPage = () => {
-  const [conversations] = useState([
+  socket.on("connect", () => {
+    console.log("Connected to Socket.IO server");
+  });
+
+  const [conversations, setConversations] = useState([
     {
       id: 1,
       user: "Alice",
@@ -530,6 +536,21 @@ const WoofMailPage = () => {
       ],
     },
   ]);
+
+  socket.on("new-message-received", (message) => {
+    console.log(message);
+    // const { chatId, text, sender } = message;
+    // setConversations((prevConversations) =>
+    //   prevConversations.map((conv) =>
+    //     conv.id === chatId
+    //       ? {
+    //           ...conv,
+    //           messages: [...conv.messages, { text, sender }],
+    //         }
+    //       : conv
+    //   )
+    // );
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
@@ -590,211 +611,165 @@ const WoofMailPage = () => {
 
   return (
     <div className="">
-      <Layout
-        className="!bg-[#FFFAF5] "
-        style={{ height: "88vh", boxShadow: "0px 0px 2px 1px #00000040" }}
-      >
-        <ConfigProvider
-          theme={{
-            components: {
-              Layout: {
-                siderBg: "rgb(255, 255, 255)",
-              },
-              Menu: {
-                itemSelectedBg: "#F88D58",
-                itemSelectedColor: "white",
-              },
-            },
-          }}
+      <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative">
+        <div
+          className={`col-span-1 overflow-y-auto px-3 ${
+            selectedConversation ? "hidden lg:block" : "block lg:block"
+          }`}
         >
-          <div
-            className="md:hidden flex justify-start pt-5 ps-3"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? (
-              <FaBars className="text-xl " />
-            ) : (
-              <RxCross2 className="text-xl font-bold" />
-            )}
-          </div>
-          <Layout className="!bg-[#FFFAF5]">
-            <Sider
-              width={350}
-              trigger={null}
-              collapsible
-              collapsed={collapsed}
-              className={`!bg-[#FFFAF5] m-2   duration-200 ${
-                isOpen ? "!absolute top-0 left-0 z-30" : ""
-              }`}
-            >
-              <div className="sticky top-0 z-20 !bg-[#FFFAF5]    py-5 mb-3 ">
-                <div className=" flex justify-between items-center pe-4  text-base sm:text-xl md:text-2xl lg:text-3xl text-secondary-color font-bold mt-3">
-                  Messages
-                  <div ref={menuRef} className="relative">
-                    <div onClick={toggleMenu}>
-                      <FaCirclePlus className="select-none cursor-pointer text-[#F88D58] text-4xl" />
+          <div className="sticky top-0 z-20 !bg-[#FFFAF5]    py-5 mb-3 ">
+            <div className=" flex justify-between items-center pe-4  text-base sm:text-xl md:text-2xl lg:text-3xl text-secondary-color font-bold mt-3">
+              Messages
+              <div ref={menuRef} className="relative">
+                <div onClick={toggleMenu}>
+                  <FaCirclePlus className="select-none cursor-pointer text-[#F88D58] text-4xl" />
+                </div>
+
+                {open && (
+                  <div className="bg-[#F3F5FB] py-3 shadow-md absolute -left-32 top-9 rounded z-[99999] w-44 p-1">
+                    <div className="flex gap-2">
+                      <Image alt="profileImage" src={userImage} className="" />
+                      <p
+                        onClick={toggleUserModal}
+                        className="text-[#302F51] text-[20px] cursor-pointer font-bold"
+                      >
+                        Add New
+                      </p>
                     </div>
-
-                    {open && (
-                      <div className="bg-[#F3F5FB] py-3 shadow-md absolute top-9 rounded z-50 w-44 p-1">
-                        <div className="flex gap-2">
-                          <Image
-                            alt="profileImage"
-                            src={userImage}
-                            className=""
-                          />
-                          <p
-                            onClick={toggleUserModal}
-                            className="text-[#302F51] text-[20px] cursor-pointer font-bold"
-                          >
-                            Add New
-                          </p>
-                        </div>
-                        <div className="flex gap-2 whitespace-nowrap">
-                          <Image
-                            alt="profileImage"
-                            src={groupImage}
-                            className=""
-                          />
-                          <p
-                            onClick={toggleGroupModal}
-                            className="text-[#302F51] cursor-pointer text-[20px] font-bold"
-                          >
-                            Create Group
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <Input
-                  placeholder="Search Conversations"
-                  prefix={<SearchOutlined />}
-                  className=" text-base-color mt-2 py-3 px-2 w-full"
-                  onChange={handleSearch}
-                />
-              </div>
-              <div className="md:h-full h-fit !overflow-y-auto">
-                <Menu mode="vertical" className=" text-gray-300  !pb-16">
-                  {filteredConversations.map((conversation) => (
-                    <Menu.Item
-                      key={conversation.id}
-                      onClick={() => handleConversationSelect(conversation)}
-                      className={` py-10  border-b border-gray-200 bg-[#FFFAF5] text-black `}
-                    >
-                      <div className="-mt-6 flex justify-between ">
-                        <div className="flex items-center gap-2">
-                          <Image
-                            className="rounded aspect-square h-12 w-fit object-cover relative"
-                            src={profileImage}
-                            alt="Profile"
-                          />
-                          <div>
-                            <div className="text-xl">{conversation.user}</div>
-                            <div className="text-sm">Okay, I got you</div>
-                          </div>
-                        </div>
-                        <div className="text-sm">
-                          {conversation.lastMessageTime}
-                        </div>
-                      </div>
-                    </Menu.Item>
-                  ))}
-                </Menu>
-              </div>
-            </Sider>
-            <div className="!bg-[#FFFAF5] m-2  "></div>
-
-            <Layout className="p-6 pl-0 !bg-[#FFFAF5]">
-              <Header className="!bg-[#FFFFFF] p-4  flex justify-between">
-                <div className="flex items-center gap-5">
-                  <Typography.Title level={3} type="secondary">
-                    <BarsOutlined
-                      onClick={() => setCollapsed(!collapsed)}
-                      className="text-3xl"
-                    />
-                  </Typography.Title>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      className="h-10 w-10 relative"
-                      src={profileImage}
-                      alt="Profile"
-                    />
-                    <p className="font-bold text-base sm:text-lg lg:text-xl">
-                      {selectedConversation?.user}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-full bg-[#EDE9E9]">
-                    <GoDeviceCameraVideo className="cursor-pointer text-secondary-color text-xl" />
-                  </div>
-                  <div className="p-2 rounded-full bg-[#EDE9E9]">
-                    <LuPhone className="cursor-pointer text-secondary-color text-xl" />
-                  </div>
-                  <div className="p-2 rounded-full bg-[#EDE9E9]">
-                    <PiImagesThin className="cursor-pointer text-secondary-color text-xl" />
-                  </div>
-                  <div className="p-2 rounded-full bg-[#EDE9E9]">
-                    <CiMenuKebab className="cursor-pointer text-base-color text-xl" />
-                  </div>
-                </div>
-              </Header>
-
-              <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
-                {selectedConversation ? (
-                  <div className="h-full flex flex-col justify-end">
-                    <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
-                      {selectedConversation.messages.map((msg) => (
-                        <div key={msg.id}>
-                          <p
-                            className={`py-1 px-3 my-2 rounded-md ${
-                              msg.sender === "You"
-                                ? "w-fit ml-auto text-right text-base-color text-white bg-[#F88D58]"
-                                : "w-fit text-left text-base-color bg-[#F1F1F1]"
-                            }`}
-                          >
-                            {msg.text}
-                          </p>
-                          <div
-                            className={`flex items-center gap-2 w-full ${
-                              msg.sender === "You"
-                                ? "justify-end"
-                                : "justify-start"
-                            }`}
-                          >
-                            <p
-                              className={`font-bold text-xs ${
-                                msg.sender === "You"
-                                  ? "text-right"
-                                  : "text-left"
-                              }`}
-                            >
-                              {msg.sender}
-                            </p>
-                            <p
-                              className={`font-bold text-xs text-secondary-color ${
-                                msg.sender === "You"
-                                  ? "text-right"
-                                  : "text-left"
-                              }`}
-                            >
-                              10:40 AM
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </Card>
-                  </div>
-                ) : (
-                  <div className="text-center h-full mt-16 text-secondary-color">
-                    Select a conversation to view messages
+                    <div className="flex gap-2 whitespace-nowrap">
+                      <Image alt="profileImage" src={groupImage} className="" />
+                      <p
+                        onClick={toggleGroupModal}
+                        className="text-[#302F51] cursor-pointer text-[20px] font-bold"
+                      >
+                        Create Group
+                      </p>
+                    </div>
                   </div>
                 )}
+              </div>
+            </div>
+            <Input
+              placeholder="Search Conversations"
+              prefix={<SearchOutlined />}
+              className=" text-base-color mt-2 py-3 px-2 w-full"
+              onChange={handleSearch}
+            />
+          </div>
+          <div className="md:h-full h-fit mb-3">
+            <div className=" text-gray-300 bg-white   ">
+              {filteredConversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  onClick={() => handleConversationSelect(conversation)}
+                  className={`m-1 rounded  border-b border-gray-200 bg-[#FFFAF5] text-black ${
+                    conversation.id === selectedConversation?.id
+                      ? "!bg-[#F88D58] text-white"
+                      : ""
+                  }`}
+                >
+                  <div className="py-4 px-2 cursor-pointer flex justify-between ">
+                    <div className="flex items-center gap-2">
+                      <Image
+                        className="rounded aspect-square h-12 w-fit object-cover relative"
+                        src={profileImage}
+                        alt="Profile"
+                      />
+                      <div>
+                        <div className="flex items-center gap-1 text-xl">
+                          {conversation.user}{" "}
+                          <div className="size-2 rounded-full bg-green-500"></div>
+                        </div>
+                        <div className="text-sm">Okay, I got you</div>
+                      </div>
+                    </div>
+                    <div className="text-sm">
+                      {conversation.lastMessageTime}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {selectedConversation ? (
+          <div
+            className={`lg:col-span-3 xl:col-span-4  overflow-y-auto  ${
+              selectedConversation ? "block lg:block" : "hidden lg:block"
+            }`}
+          >
+            <Layout
+              className={`py-6 px-2 !bg-[#FFFAF5] lg:col-span-3 xl:col-span-4 h-full`}
+            >
+              <div className="!bg-[#FFFFFF] p-2 lg:p-4 border-b-2 flex ">
+                <div className="flex items-center mr-2">
+                  <MdOutlineArrowBackIosNew
+                    onClick={() => setSelectedConversation(null)}
+                    className="text-2xl cursor-pointer text-[#F88D58] "
+                  />
+                </div>
+                <div className="flex justify-center items-center gap-2">
+                  <Image
+                    className="h-12 w-12 lg:h-12 lg:w-12 object-cover rounded-md relative"
+                    src={profileImage}
+                    alt="Profile"
+                  />
+                  <div>
+                    <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
+                      {selectedConversation?.user}{" "}
+                      <span className="size-2 rounded-full bg-green-500"></span>
+                    </span>
+                    <span className="text-xs lg:text-sm h-fit">
+                      {selectedConversation?.user} is typing
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
+                <div className="h-full flex flex-col justify-end">
+                  <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
+                    {selectedConversation.messages.map((msg) => (
+                      <div key={msg.id}>
+                        <p
+                          className={`py-1 px-3 my-2 rounded-md ${
+                            msg.sender === "You"
+                              ? "w-fit ml-auto text-right text-base-color text-white bg-[#F88D58]"
+                              : "w-fit text-left text-base-color bg-[#F1F1F1]"
+                          }`}
+                        >
+                          {msg.text}
+                        </p>
+                        <div
+                          className={`flex items-center gap-2 w-full ${
+                            msg.sender === "You"
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
+                        >
+                          <p
+                            className={`font-bold text-xs ${
+                              msg.sender === "You" ? "text-right" : "text-left"
+                            }`}
+                          >
+                            {msg.sender}
+                          </p>
+                          <p
+                            className={`font-bold text-xs text-secondary-color ${
+                              msg.sender === "You" ? "text-right" : "text-left"
+                            }`}
+                          >
+                            10:40 AM
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </Card>
+                </div>
 
                 {selectedConversation && (
-                  <div className="w-full !bg-white ">
-                    <div className=" absolute -bottom-5 flex justify-center items-center w-full p-4">
+                  <div className="w-full ">
+                    <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
                       <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
                         {/* Emoji Icon */}
                         <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600" />
@@ -819,27 +794,32 @@ const WoofMailPage = () => {
                 )}
               </Content>
             </Layout>
-          </Layout>
-          {showAddUserModal && (
-            <div className="inset-0 fixed flex justify-center items-center bg-black/20 z-50">
-              <AddNewChat
-                toggleUserModal={toggleUserModal}
-                showAddUserModal={showAddUserModal}
-                setShowAddUserModal={setShowAddUserModal}
-              />
-            </div>
-          )}
-          {showAddGroupModal && (
-            <div className="inset-0 overflow-y-auto fixed  flex justify-center md:items-center items-start md:mt-0 mt-16 bg-black/20 z-50">
-              <CreateGroup
-                toggleGroupModal={toggleGroupModal}
-                showAddGroupModal={showAddGroupModal}
-                setShowAddGroupModal={setShowAddGroupModal}
-              />
-            </div>
-          )}
-        </ConfigProvider>
-      </Layout>
+          </div>
+        ) : (
+          <div className="hidden  lg:col-span-3 xl:col-span-4 lg:flex justify-center items-center text-center w-full h-full  text-secondary-color">
+            Select a conversation to view messages
+          </div>
+        )}
+      </div>
+
+      {showAddUserModal && (
+        <div className="inset-0 fixed flex justify-center items-center bg-black/20 z-50">
+          <AddNewChat
+            toggleUserModal={toggleUserModal}
+            showAddUserModal={showAddUserModal}
+            setShowAddUserModal={setShowAddUserModal}
+          />
+        </div>
+      )}
+      {showAddGroupModal && (
+        <div className="inset-0 overflow-y-auto fixed  flex justify-center md:items-center items-start md:mt-0 mt-16 bg-black/20 z-50">
+          <CreateGroup
+            toggleGroupModal={toggleGroupModal}
+            showAddGroupModal={showAddGroupModal}
+            setShowAddGroupModal={setShowAddGroupModal}
+          />
+        </div>
+      )}
     </div>
   );
 };

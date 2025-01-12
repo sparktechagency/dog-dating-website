@@ -163,7 +163,7 @@ const DonateNow = (params) => {
         xl:px-[48px] xl:py-[16px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 text-[18px]
            md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
                 >
-                  Featch My Info
+                  Fetch My Info
                 </button>
               </div>
             </Link>
