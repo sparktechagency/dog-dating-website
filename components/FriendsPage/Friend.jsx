@@ -9,6 +9,8 @@ import img2 from "../../asserts/f2.png";
 import Link from "next/link";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import socket from "@/helpers/config/socket-config";
+import { toast } from "sonner";
+import { useCreateChatMutation } from "@/redux/api/features/chatApi";
 
 const mypetInfo = {
   name: "Murphy Bear",
@@ -18,10 +20,13 @@ const mypetInfo = {
 };
 
 const Friend = ({ userData, petPartner, index, petProfile }) => {
+  console.log("ami mara khabo", petPartner);
   const [isOpen, setIsOpen] = useState(false);
-  const [isMessaging, setIsMessaging] = useState(false);
+
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+
+  const [createChat] = useCreateChatMutation();
 
   const containerRef = useRef(null); // Ref for the dropdown
 
@@ -47,32 +52,54 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
   const userPetImage = url + petProfile?.data?.image;
   const friendPetImage = url + petPartner?.petsProfileId?.image;
 
-  useEffect(() => {
-    if (isMessaging && userData) {
-      // Emit the join event or perform any additional logic
-      socket.emit("join", userData?.userId);
+  // useEffect(() => {
+  //   if (isMessaging && userData) {
+  //     // Emit the join event or perform any additional logic
+  //     socket.emit("join", userData?.userId);
 
-      socket.on("online-users-updated", (onlineUsers) => {
-        console.log("Online Users Updated:", onlineUsers);
-        // Perform additional logic here if needed
-      });
+  //     socket.on("online-users-updated", (onlineUsers) => {
+  //       console.log("Online Users Updated:", onlineUsers);
+  //       // Perform additional logic here if needed
+  //     });
 
-      // Reset isMessaging to avoid repeated calls
-      setIsMessaging(false);
-    }
+  //     // Reset isMessaging to avoid repeated calls
+  //     setIsMessaging(false);
+  //   }
 
-    // Clean up
-    return () => {
-      socket.off("online-users-updated");
+  //   // Clean up
+  //   return () => {
+  //     socket.off("online-users-updated");
+  //   };
+  // }, [isMessaging, userData]);
+
+  const handleCreateChatRoom = async (partnerId) => {
+    console.log("partnerId", partnerId);
+    const formData = new FormData();
+    const toastId = toast.loading("creatng chat...");
+
+    const data = {
+      createdBy: userData?.userId,
+      users: [userData?.userId, partnerId],
     };
-  }, [isMessaging, userData]);
 
-  const handleCreateChatRoom = () => {
-    setIsMessaging(true); // Set the state to trigger the useEffect
-    console.log({
-      myPetId: userData?.userId,
-      partnerPet: petPartner?.petsProfileId?._id,
-    });
+    console.log("chatCreatedData", data);
+
+    formData.append("data", JSON.stringify(data));
+
+    try {
+      const res = await createChat(formData).unwrap();
+      console.log("res", res);
+      toast.success(res.message, {
+        id: toastId,
+        duration: 2000,
+      });
+    } catch (error) {
+      console.log("error", error);
+      toast.error(error?.data?.message || "Failed to create chat", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
   };
 
   return (
@@ -255,7 +282,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
               </p>
               <div className="flex justify-end">
                 <button
-                  onClick={handleCreateChatRoom}
+                  onClick={() => handleCreateChatRoom(petPartner?.userId)}
                   className=" text-white no-underline  bg-[#F88D58] hover:bg-black 
                 xl:px-[48px] xl:py-[20px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 lg:text-fluid-button text-[18px] flex justify-center 
                  items-center md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "

@@ -1,559 +1,66 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Layout, Menu, Card, Input, ConfigProvider, Typography } from "antd";
-import { BarsOutlined, SearchOutlined } from "@ant-design/icons";
-import profileImage from "../../asserts/ced.png";
+import { Layout, Card, Input, Form } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import userImage from "./asserts/user.svg";
 import groupImage from "./asserts/group.svg";
-import { GoDeviceCameraVideo } from "react-icons/go";
-import { PiImagesThin } from "react-icons/pi";
-import { LuPhone } from "react-icons/lu";
-import { CiMenuKebab } from "react-icons/ci";
 import { BsEmojiSmile, BsImage, BsPaperclip } from "react-icons/bs";
 import Image from "next/image";
-import { FaBars, FaCross, FaTelegramPlane } from "react-icons/fa";
+import { FaTelegramPlane } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
-
-import { RxCross2 } from "react-icons/rx";
 import AddNewChat from "./AddNewChat";
 import CreateGroup from "./CreateGroup";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import socket from "@/helpers/config/socket-config";
-
-const { Header, Content, Sider } = Layout;
+import {
+  useGetAllChatByUserQuery,
+  useGetAllMessageByChatIdQuery,
+  useSendMessageMutation,
+} from "@/redux/api/features/chatApi";
+import { useSelector } from "react-redux";
+import { decodedToken } from "@/utils/jwt";
+import { getImageUrl } from "@/helpers/config/envConfig";
+import { toast } from "sonner";
+import { formatDateTime } from "@/helpers/date-formats";
 
 const WoofMailPage = () => {
-  socket.on("connect", () => {
-    console.log("Connected to Socket.IO server");
-  });
-
-  const [conversations, setConversations] = useState([
-    {
-      id: 1,
-      user: "Alice",
-      lastMessageTime: "10:30 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Hello!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 2,
-          text: "How are you?",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 3,
-          text: "I'm fine, thanks!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "What about you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Doing great!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 6,
-          text: "Hello!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 7,
-          text: "How are you?",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 8,
-          text: "I'm fine, thanks!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 9,
-          text: "What about you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 10,
-          text: "Doing great!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 11,
-          text: "Hello!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 12,
-          text: "How are you?",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 13,
-          text: "I'm fine, thanks!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 14,
-          text: "What about you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 15,
-          text: "Doing great!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 16,
-          text: "Hello!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 17,
-          text: "How are you?",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 18,
-          text: "I'm fine, thanks!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 19,
-          text: "What about you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 20,
-          text: "Doing great!",
-          sender: "Alice",
-          senderRole: "user",
-          unread: true,
-        },
-      ],
-    },
-    {
-      id: 2,
-      user: "Bob",
-      lastMessageTime: "11:15 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Hi!",
-          sender: "Bob",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 2,
-          text: "How's it going?",
-          sender: "Bob",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Pretty good, you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "Great!",
-          sender: "Bob",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Good to hear!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 3,
-      user: "Charlie",
-      lastMessageTime: "09:45 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Hey!",
-          sender: "Charlie",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 2,
-          text: "Long time no see.",
-          sender: "Charlie",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 3,
-          text: "Indeed!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "How have you been?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Busy but good.",
-          sender: "Charlie",
-          senderRole: "user",
-          unread: true,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: "David",
-      lastMessageTime: "08:50 AM",
-      senderRole: "admin",
-      messages: [
-        {
-          id: 1,
-          text: "Good morning!",
-          sender: "David",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 2,
-          text: "Good morning to you too!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Have a nice day!",
-          sender: "David",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "You too!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Take care!",
-          sender: "David",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 5,
-      user: "Eve",
-      lastMessageTime: "10:00 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "How are you?",
-          sender: "Eve",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 2,
-          text: "I'm good. You?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Doing well, thanks!",
-          sender: "Eve",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 4,
-          text: "Great to hear!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Let's catch up soon.",
-          sender: "Eve",
-          senderRole: "user",
-          unread: true,
-        },
-      ],
-    },
-    {
-      id: 6,
-      user: "Frank",
-      lastMessageTime: "11:30 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "See you later!",
-          sender: "Frank",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 2,
-          text: "Sure, bye!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Take care!",
-          sender: "Frank",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "You too!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 5,
-          text: "Catch you later!",
-          sender: "Frank",
-          senderRole: "user",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 7,
-      user: "Grace",
-      lastMessageTime: "09:20 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Bye!",
-          sender: "Grace",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 2,
-          text: "See you!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Catch you later!",
-          sender: "Grace",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 4,
-          text: "Sure!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 8,
-      user: "Hank",
-      lastMessageTime: "08:00 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "What's up?",
-          sender: "Hank",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 2,
-          text: "Not much, you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Same here.",
-          sender: "Hank",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "Alright.",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 9,
-      user: "Ivy",
-      lastMessageTime: "09:10 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Hello again!",
-          sender: "Ivy",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 2,
-          text: "Hi Ivy!",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "How have you been?",
-          sender: "Ivy",
-          senderRole: "user",
-          unread: true,
-        },
-        {
-          id: 4,
-          text: "Pretty good, you?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-    {
-      id: 10,
-      user: "Jack",
-      lastMessageTime: "11:00 AM",
-      senderRole: "user",
-      messages: [
-        {
-          id: 1,
-          text: "Long time no see!",
-          sender: "Jack",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 2,
-          text: "Indeed, how have you been?",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-        {
-          id: 3,
-          text: "Busy, but good.",
-          sender: "Jack",
-          senderRole: "user",
-          unread: false,
-        },
-        {
-          id: 4,
-          text: "That's good to hear.",
-          sender: "You",
-          senderRole: "admin",
-          unread: false,
-        },
-      ],
-    },
-  ]);
-
-  socket.on("new-message-received", (message) => {
-    console.log(message);
-    // const { chatId, text, sender } = message;
-    // setConversations((prevConversations) =>
-    //   prevConversations.map((conv) =>
-    //     conv.id === chatId
-    //       ? {
-    //           ...conv,
-    //           messages: [...conv.messages, { text, sender }],
-    //         }
-    //       : conv
-    //   )
-    // );
-  });
-  const [isOpen, setIsOpen] = useState(false);
+  const [form] = Form.useForm();
+  const { Content } = Layout;
+  const [userData, setUserData] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const [collapsed, setCollapsed] = useState(false);
+
+  const token = useSelector((state) => state.auth.accessToken);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const userInfo = decodedToken(token);
+        setUserData(userInfo);
+      } catch (err) {
+        setUserData(null);
+      }
+    }
+  }, [token]);
+
+  const { data: allChatList, isFetching: isAllChatFeacthing } =
+    useGetAllChatByUserQuery(
+      { id: userData?.userId },
+      {
+        skip: !userData?.userId,
+      }
+    );
+
+  const { data: allMessages, isFetching: isAllMessageFetching } =
+    useGetAllMessageByChatIdQuery(
+      { id: selectedConversation?._id },
+      {
+        skip: !selectedConversation?._id,
+      }
+    );
+
+  console.log("All Messages", allMessages);
+
+  const [sendMessage] = useSendMessageMutation();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -588,27 +95,44 @@ const WoofMailPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredConversations = conversations.filter((conversation) =>
-    conversation.user.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredConversations = conversations.filter((conversation) =>
+  //   conversation.user.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setCollapsed(true);
-      } else {
-        setCollapsed(false);
-      }
+  const handleMessageSend = async (values) => {
+    const toastId = toast.loading("Sending Message...");
+    const formData = new FormData();
+    const data = {
+      chat: selectedConversation?._id,
+      sender: userData?.userId,
+      text: values?.message,
     };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+    formData.append("data", JSON.stringify(data));
+    try {
+      const res = await sendMessage(formData).unwrap();
+      form.resetFields();
+      toast.success(res.message, {
+        id: toastId,
+        duration: 2000,
+      });
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to send message", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
+  };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const imageUrl = getImageUrl();
 
+  const SelectedmageUrlSrc = selectedConversation?.isGroupChat
+    ? `${imageUrl}${selectedConversation?.groupProfilePicture}`
+    : selectedConversation?.users[0]?._id === userData?.userId
+    ? `${imageUrl}${selectedConversation?.users[1]?.image}`
+    : `${imageUrl}${selectedConversation?.users[0]?.image}`;
+
+  if (isAllChatFeacthing) return <div>Loading</div>;
   return (
     <div className="">
       <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative">
@@ -658,37 +182,62 @@ const WoofMailPage = () => {
           </div>
           <div className="md:h-full h-fit mb-3">
             <div className=" text-gray-300 bg-white   ">
-              {filteredConversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  onClick={() => handleConversationSelect(conversation)}
-                  className={`m-1 rounded  border-b border-gray-200 bg-[#FFFAF5] text-black ${
-                    conversation.id === selectedConversation?.id
-                      ? "!bg-[#F88D58] text-white"
-                      : ""
-                  }`}
-                >
-                  <div className="py-4 px-2 cursor-pointer flex justify-between ">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        className="rounded aspect-square h-12 w-fit object-cover relative"
-                        src={profileImage}
-                        alt="Profile"
-                      />
-                      <div>
-                        <div className="flex items-center gap-1 text-xl">
-                          {conversation.user}{" "}
-                          <div className="size-2 rounded-full bg-green-500"></div>
+              {allChatList?.data?.map((conversation) => {
+                // Compute the image source URL
+                const imageUrlSrc = conversation?.isGroupChat
+                  ? `${imageUrl}${conversation?.groupProfilePicture}`
+                  : conversation?.users[0]?._id === userData?.userId
+                  ? `${imageUrl}${conversation?.users[1]?.image}`
+                  : `${imageUrl}${conversation?.users[0]?.image}`;
+
+                console.log(conversation);
+
+                // Return the JSX
+                return (
+                  <div
+                    key={conversation?._id}
+                    onClick={() => handleConversationSelect(conversation)}
+                    className={`m-1 rounded  border-b border-gray-200 bg-[#FFFAF5] text-black ${
+                      conversation?._id === selectedConversation?._id
+                        ? "!bg-[#F88D58] text-white"
+                        : ""
+                    }`}
+                  >
+                    <div className="py-4 px-2 cursor-pointer flex justify-between ">
+                      <div className="flex items-center gap-2">
+                        <Image
+                          className="rounded aspect-square h-12 w-fit object-cover relative"
+                          src={imageUrlSrc}
+                          width={100}
+                          height={100}
+                          sixes="100vw"
+                          alt="Profile"
+                        />
+                        <div>
+                          <div className="flex items-center gap-1 text-xl">
+                            {conversation?.isGroupChat
+                              ? `${conversation?.groupName}`
+                              : conversation?.users[0]?._id === userData?.userId
+                              ? `${conversation?.users[1]?.fullName}`
+                              : `${conversation?.users[0]?.fullName}`}
+                            <div className="size-2 rounded-full bg-green-500"></div>
+                          </div>
+                          <div className="text-sm">
+                            {conversation?.lastMessage?.text
+                              ? conversation?.lastMessage?.text
+                              : ""}
+                          </div>
                         </div>
-                        <div className="text-sm">Okay, I got you</div>
+                      </div>
+                      <div className="text-sm">
+                        {conversation?.lastMessage?.createdAt
+                          ? formatDateTime(conversation?.lastMessage?.createdAt)
+                          : ""}
                       </div>
                     </div>
-                    <div className="text-sm">
-                      {conversation.lastMessageTime}
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -701,6 +250,7 @@ const WoofMailPage = () => {
             <Layout
               className={`py-6 px-2 !bg-[#FFFAF5] lg:col-span-3 xl:col-span-4 h-full`}
             >
+              {/* Header Part  */}
               <div className="!bg-[#FFFFFF] p-2 lg:p-4 border-b-2 flex ">
                 <div className="flex items-center mr-2">
                   <MdOutlineArrowBackIosNew
@@ -711,12 +261,19 @@ const WoofMailPage = () => {
                 <div className="flex justify-center items-center gap-2">
                   <Image
                     className="h-12 w-12 lg:h-12 lg:w-12 object-cover rounded-md relative"
-                    src={profileImage}
+                    src={SelectedmageUrlSrc}
+                    width={100}
+                    height={100}
                     alt="Profile"
                   />
                   <div>
                     <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
-                      {selectedConversation?.user}{" "}
+                      {selectedConversation?.isGroupChat
+                        ? `${selectedConversation?.groupName}`
+                        : selectedConversation?.users[0]?._id ===
+                          userData?.userId
+                        ? `${selectedConversation?.users[1]?.fullName}`
+                        : `${selectedConversation?.users[0]?.fullName}`}
                       <span className="size-2 rounded-full bg-green-500"></span>
                     </span>
                     <span className="text-xs lg:text-sm h-fit">
@@ -726,40 +283,45 @@ const WoofMailPage = () => {
                 </div>
               </div>
 
+              {/* message Part  */}
               <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
                 <div className="h-full flex flex-col justify-end">
                   <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
-                    {selectedConversation.messages.map((msg) => (
-                      <div key={msg.id}>
+                    {allMessages?.data?.map((msg) => (
+                      <div key={msg?._id}>
                         <p
                           className={`py-1 px-3 my-2 rounded-md ${
-                            msg.sender === "You"
+                            msg?.sender?._id === userData?.userId
                               ? "w-fit ml-auto text-right text-base-color text-white bg-[#F88D58]"
                               : "w-fit text-left text-base-color bg-[#F1F1F1]"
                           }`}
                         >
-                          {msg.text}
+                          {msg?.text}
                         </p>
                         <div
                           className={`flex items-center gap-2 w-full ${
-                            msg.sender === "You"
+                            msg?.sender?._id === userData?.userId
                               ? "justify-end"
                               : "justify-start"
                           }`}
                         >
-                          <p
+                          {/* <p
                             className={`font-bold text-xs ${
-                              msg.sender === "You" ? "text-right" : "text-left"
+                              msg?.sender?._id === userData?.userId
+                                ? "text-right"
+                                : "text-left"
                             }`}
                           >
                             {msg.sender}
-                          </p>
+                          </p> */}
                           <p
                             className={`font-bold text-xs text-secondary-color ${
-                              msg.sender === "You" ? "text-right" : "text-left"
+                              msg?.sender?._id === userData?.userId
+                                ? "text-right"
+                                : "text-left"
                             }`}
                           >
-                            10:40 AM
+                            {formatDateTime(msg?.sender?.createdAt)}
                           </p>
                         </div>
                       </div>
@@ -769,27 +331,34 @@ const WoofMailPage = () => {
 
                 {selectedConversation && (
                   <div className="w-full ">
-                    <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
-                      <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
-                        {/* Emoji Icon */}
-                        <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600" />
+                    <Form onFinish={handleMessageSend}>
+                      <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
+                        <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
+                          {/* Emoji Icon */}
+                          <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" />
 
-                        {/* Input Field */}
-                        <Input
-                          placeholder="Send your message..."
-                          className="border-none focus:ring-0 outline-none !bg-transparent text-black"
-                        />
+                          {/* Input Field */}
+                          <Form.Item
+                            className="w-full !p-0 !m-0"
+                            name="message"
+                          >
+                            <Input
+                              placeholder="Send your message..."
+                              className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                            />
+                          </Form.Item>
 
-                        {/* Image Icon */}
-                        <BsImage className="cursor-pointer text-xl text-gray-500" />
+                          {/* Image Icon */}
+                          <BsImage className="cursor-pointer text-xl text-gray-500" />
 
-                        {/* Paperclip Icon */}
-                        <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                          {/* Paperclip Icon */}
+                          <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                        </div>
+                        <button type="submit">
+                          <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
+                        </button>
                       </div>
-                      <div>
-                        <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
-                      </div>
-                    </div>
+                    </Form>
                   </div>
                 )}
               </Content>
