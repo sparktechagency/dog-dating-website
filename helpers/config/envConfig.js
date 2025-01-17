@@ -1,7 +1,7 @@
 export const getBaseUrl = () => {
-  return process.env.API_BASE_URL || "http://10.0.70.38:8000/api/v1";
+  return process.env.NEXT_PUBLIC_API_BASE_URL;
 };
 
 export const getImageUrl = () => {
-  return process.env.IMAGE_URL || "http://10.0.70.38:8000/";
+  return process.env.NEXT_PUBLIC_IMAGE_URL;
 };

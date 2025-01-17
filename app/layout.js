@@ -37,10 +37,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden bg-[#FFFAF5]`}>
-        {/* Fixed Navbar */}
-        {/* <div className="sticky top-0  z-50 ">
-          <Navbar />
-        </div> */}
         <Providers>
           <Toaster richColors={true} position="top-center" />
           <AntdRegistry>{children}</AntdRegistry>

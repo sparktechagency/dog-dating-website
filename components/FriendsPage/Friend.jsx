@@ -11,6 +11,7 @@ import { getImageUrl } from "@/helpers/config/envConfig";
 import socket from "@/helpers/config/socket-config";
 import { toast } from "sonner";
 import { useCreateChatMutation } from "@/redux/api/features/chatApi";
+import { useRouter } from "next/navigation";
 
 const mypetInfo = {
   name: "Murphy Bear",
@@ -20,7 +21,7 @@ const mypetInfo = {
 };
 
 const Friend = ({ userData, petPartner, index, petProfile }) => {
-  console.log("ami mara khabo", petPartner);
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => setIsOpen(true);
@@ -88,7 +89,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
 
     try {
       const res = await createChat(formData).unwrap();
-      console.log("res", res);
+      router.push("woof-mail/");
       toast.success(res.message, {
         id: toastId,
         duration: 2000,

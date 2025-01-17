@@ -66,6 +66,8 @@ const Friends = () => {
     }
   );
 
+  console.log("nearByFriends", nearByFriends);
+
   if (isFetchingPetProfile || nearByFriendsFetching) {
     return (
       <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">

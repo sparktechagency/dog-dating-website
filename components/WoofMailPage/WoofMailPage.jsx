@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Layout, Card, Input, Form } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import userImage from "./asserts/user.svg";
@@ -14,53 +14,22 @@ import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import {
   useGetAllChatByUserQuery,
   useGetAllMessageByChatIdQuery,
-  useSendMessageMutation,
 } from "@/redux/api/features/chatApi";
 import { useSelector } from "react-redux";
-import { decodedToken } from "@/utils/jwt";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import { toast } from "sonner";
 import { formatDateTime } from "@/helpers/date-formats";
+import { SocketContext } from "@/context/SocketContextApi";
+import { selectUser } from "@/redux/slices/authSlice";
 
 const WoofMailPage = () => {
+  const { socket } = useContext(SocketContext);
   const [form] = Form.useForm();
   const { Content } = Layout;
-  const [userData, setUserData] = useState(null);
+
+  const userData = useSelector(selectUser);
+
   const [selectedConversation, setSelectedConversation] = useState(null);
-
-  const token = useSelector((state) => state.auth.accessToken);
-
-  useEffect(() => {
-    if (token) {
-      try {
-        const userInfo = decodedToken(token);
-        setUserData(userInfo);
-      } catch (err) {
-        setUserData(null);
-      }
-    }
-  }, [token]);
-
-  const { data: allChatList, isFetching: isAllChatFeacthing } =
-    useGetAllChatByUserQuery(
-      { id: userData?.userId },
-      {
-        skip: !userData?.userId,
-      }
-    );
-
-  const { data: allMessages, isFetching: isAllMessageFetching } =
-    useGetAllMessageByChatIdQuery(
-      { id: selectedConversation?._id },
-      {
-        skip: !selectedConversation?._id,
-      }
-    );
-
-  console.log("All Messages", allMessages);
-
-  const [sendMessage] = useSendMessageMutation();
-
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -95,34 +64,51 @@ const WoofMailPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  // const filteredConversations = conversations.filter((conversation) =>
-  //   conversation.user.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+  const [messages, setMessages] = useState([]);
 
-  const handleMessageSend = async (values) => {
-    const toastId = toast.loading("Sending Message...");
-    const formData = new FormData();
-    const data = {
-      chat: selectedConversation?._id,
-      sender: userData?.userId,
-      text: values?.message,
-    };
+  const { data: allChatList, isFetching: isAllChatFeacthing } =
+    useGetAllChatByUserQuery(
+      { id: userData?.userId },
+      {
+        skip: !userData?.userId,
+      }
+    );
 
-    formData.append("data", JSON.stringify(data));
-    try {
-      const res = await sendMessage(formData).unwrap();
-      form.resetFields();
-      toast.success(res.message, {
-        id: toastId,
-        duration: 2000,
-      });
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to send message", {
-        id: toastId,
-        duration: 2000,
-      });
+  const filteredConversations = allChatList?.data?.filter((conversation) =>
+    conversation?.isGroupChat
+      ? conversation?.groupName
+          ?.toLowerCase()
+          ?.includes(searchTerm.toLowerCase())
+      : conversation?.users[0]?._id === userData?.userId
+      ? conversation?.users[1]?.fullName
+          ?.toLowerCase()
+          ?.includes(searchTerm.toLowerCase())
+      : conversation?.users[0]?.fullName
+          ?.toLowerCase()
+          ?.includes(searchTerm.toLowerCase())
+  );
+
+  console.log("All Chat List:", allChatList?.data);
+
+  const {
+    data: allMessages,
+    isFetching: isAllMessageFetching,
+    refetch,
+  } = useGetAllMessageByChatIdQuery(
+    { id: selectedConversation?._id },
+    {
+      skip: !selectedConversation?._id,
     }
-  };
+  );
+
+  useEffect(() => {
+    if (selectedConversation?._id) {
+      refetch();
+    }
+    if (allMessages?.data) {
+      setMessages(allMessages?.data);
+    }
+  }, [allMessages, refetch, selectedConversation?._id]);
 
   const imageUrl = getImageUrl();
 
@@ -131,6 +117,68 @@ const WoofMailPage = () => {
     : selectedConversation?.users[0]?._id === userData?.userId
     ? `${imageUrl}${selectedConversation?.users[1]?.image}`
     : `${imageUrl}${selectedConversation?.users[0]?.image}`;
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  const handleMessage = (message) => {
+    console.log("check maren vai doya koirra:", message);
+
+    setMessages((prev) => [...prev, message]);
+  };
+
+  useEffect(() => {
+    const roomId = selectedConversation?._id;
+    console.log(`Joining room: ${roomId}`);
+    socket.emit("join", roomId?.toString());
+    if (selectedConversation?._id && socket) {
+      socket.on(
+        `new-message-received::${selectedConversation?._id}`,
+        handleMessage
+      );
+    }
+
+    return () => {
+      socket.off(`new-message-received::${selectedConversation?._id}`);
+      socket.emit("leave", roomId);
+    };
+  }, [socket, selectedConversation?._id]);
+
+  //* For Sending Message
+  const handleMessageSend = async (values) => {
+    const toastId = toast.loading("Sending Message...");
+
+    const data = {
+      chat: selectedConversation?._id,
+      sender: userData?.userId,
+      text: values?.message,
+      senderDetails: userData,
+    };
+
+    console.log("chat data", data);
+
+    try {
+      socket.emit("send-new-message", data);
+      form.resetFields();
+      toast.success("Message sent successfully!", {
+        id: toastId,
+        duration: 2000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || "Failed to send message", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
+  };
 
   if (isAllChatFeacthing) return <div>Loading</div>;
   return (
@@ -182,15 +230,13 @@ const WoofMailPage = () => {
           </div>
           <div className="md:h-full h-fit mb-3">
             <div className=" text-gray-300 bg-white   ">
-              {allChatList?.data?.map((conversation) => {
+              {filteredConversations?.map((conversation) => {
                 // Compute the image source URL
                 const imageUrlSrc = conversation?.isGroupChat
                   ? `${imageUrl}${conversation?.groupProfilePicture}`
                   : conversation?.users[0]?._id === userData?.userId
                   ? `${imageUrl}${conversation?.users[1]?.image}`
                   : `${imageUrl}${conversation?.users[0]?.image}`;
-
-                console.log(conversation);
 
                 // Return the JSX
                 return (
@@ -241,132 +287,149 @@ const WoofMailPage = () => {
             </div>
           </div>
         </div>
-        {selectedConversation ? (
+        {isAllMessageFetching ? (
+          <div className="lg:col-span-3 xl:col-span-4  ">Loading</div>
+        ) : (
           <div
-            className={`lg:col-span-3 xl:col-span-4  overflow-y-auto  ${
+            className={`lg:col-span-3 xl:col-span-4 overflow-y-auto  ${
               selectedConversation ? "block lg:block" : "hidden lg:block"
             }`}
           >
-            <Layout
-              className={`py-6 px-2 !bg-[#FFFAF5] lg:col-span-3 xl:col-span-4 h-full`}
-            >
-              {/* Header Part  */}
-              <div className="!bg-[#FFFFFF] p-2 lg:p-4 border-b-2 flex ">
-                <div className="flex items-center mr-2">
-                  <MdOutlineArrowBackIosNew
-                    onClick={() => setSelectedConversation(null)}
-                    className="text-2xl cursor-pointer text-[#F88D58] "
-                  />
-                </div>
-                <div className="flex justify-center items-center gap-2">
-                  <Image
-                    className="h-12 w-12 lg:h-12 lg:w-12 object-cover rounded-md relative"
-                    src={SelectedmageUrlSrc}
-                    width={100}
-                    height={100}
-                    alt="Profile"
-                  />
-                  <div>
-                    <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
-                      {selectedConversation?.isGroupChat
-                        ? `${selectedConversation?.groupName}`
-                        : selectedConversation?.users[0]?._id ===
-                          userData?.userId
-                        ? `${selectedConversation?.users[1]?.fullName}`
-                        : `${selectedConversation?.users[0]?.fullName}`}
-                      <span className="size-2 rounded-full bg-green-500"></span>
-                    </span>
-                    <span className="text-xs lg:text-sm h-fit">
-                      {selectedConversation?.user} is typing
-                    </span>
+            {selectedConversation ? (
+              <Layout
+                className={`py-6 px-2 !bg-[#FFFAF5] lg:col-span-3 xl:col-span-4 h-full`}
+              >
+                {/* Header Part  */}
+                <div className="!bg-[#FFFFFF] p-2 lg:p-4 border-b-2 flex ">
+                  <div className="flex items-center mr-2">
+                    <MdOutlineArrowBackIosNew
+                      onClick={() => setSelectedConversation(null)}
+                      className="text-2xl cursor-pointer text-[#F88D58] "
+                    />
+                  </div>
+                  <div className="flex justify-center items-center gap-2">
+                    <Image
+                      className="h-12 w-12 lg:h-12 lg:w-12 object-cover rounded-md relative"
+                      src={SelectedmageUrlSrc}
+                      width={100}
+                      height={100}
+                      alt="Profile"
+                    />
+                    <div>
+                      <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
+                        {selectedConversation?.isGroupChat
+                          ? `${selectedConversation?.groupName}`
+                          : selectedConversation?.users[0]?._id ===
+                            userData?.userId
+                          ? `${selectedConversation?.users[1]?.fullName}`
+                          : `${selectedConversation?.users[0]?.fullName}`}
+                        <span className="size-2 rounded-full bg-green-500"></span>
+                      </span>
+                      <span className="text-xs lg:text-sm h-fit">
+                        {selectedConversation?.user} is typing
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* message Part  */}
-              <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
-                <div className="h-full flex flex-col justify-end">
-                  <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
-                    {allMessages?.data?.map((msg) => (
-                      <div key={msg?._id}>
-                        <p
-                          className={`py-1 px-3 my-2 rounded-md ${
-                            msg?.sender?._id === userData?.userId
-                              ? "w-fit ml-auto text-right text-base-color text-white bg-[#F88D58]"
-                              : "w-fit text-left text-base-color bg-[#F1F1F1]"
-                          }`}
-                        >
-                          {msg?.text}
-                        </p>
-                        <div
-                          className={`flex items-center gap-2 w-full ${
-                            msg?.sender?._id === userData?.userId
-                              ? "justify-end"
-                              : "justify-start"
-                          }`}
-                        >
-                          {/* <p
-                            className={`font-bold text-xs ${
-                              msg?.sender?._id === userData?.userId
-                                ? "text-right"
-                                : "text-left"
-                            }`}
-                          >
-                            {msg.sender}
-                          </p> */}
-                          <p
-                            className={`font-bold text-xs text-secondary-color ${
-                              msg?.sender?._id === userData?.userId
-                                ? "text-right"
-                                : "text-left"
-                            }`}
-                          >
-                            {formatDateTime(msg?.sender?.createdAt)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </Card>
-                </div>
-
-                {selectedConversation && (
-                  <div className="w-full ">
-                    <Form onFinish={handleMessageSend}>
-                      <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
-                        <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
-                          {/* Emoji Icon */}
-                          <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" />
-
-                          {/* Input Field */}
-                          <Form.Item
-                            className="w-full !p-0 !m-0"
-                            name="message"
-                          >
-                            <Input
-                              placeholder="Send your message..."
-                              className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                {/* message Part  */}
+                <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
+                  <div className="h-full flex flex-col justify-end">
+                    <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
+                      {messages?.map((msg, i) => (
+                        <div key={i}>
+                          <div className="flex items-start gap-1">
+                            <Image
+                              src={SelectedmageUrlSrc}
+                              width={1000}
+                              height={1000}
+                              alt="Profile"
+                              className={`h-6 w-6 object-cover rounded-md relative mt-2 ${
+                                msg?.sender?._id === userData?.userId ||
+                                msg?.sender?.toString() === userData?.userId
+                                  ? "order-last"
+                                  : " order-first "
+                              }`}
+                              sizes="100vw"
                             />
-                          </Form.Item>
+                            <div
+                              className={`flex items-center gap-2 w-full ${
+                                msg?.sender?._id === userData?.userId ||
+                                msg?.sender?.toString() === userData?.userId
+                                  ? "justify-end"
+                                  : "justify-start"
+                              }`}
+                            >
+                              <div>
+                                <p
+                                  className={`py-1 px-3 my-2 rounded-md ${
+                                    msg?.sender?._id === userData?.userId ||
+                                    msg?.sender?.toString() === userData?.userId
+                                      ? "w-fit ml-auto text-right text-base-color text-white bg-[#F88D58]"
+                                      : "w-fit text-left text-base-color bg-[#F1F1F1]"
+                                  }`}
+                                >
+                                  {msg?.text}
+                                </p>
 
-                          {/* Image Icon */}
-                          <BsImage className="cursor-pointer text-xl text-gray-500" />
-
-                          {/* Paperclip Icon */}
-                          <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                                <p
+                                  className={`text-[11px] text-secondary-color ${
+                                    msg?.sender?._id === userData?.userId ||
+                                    msg?.sender?.toString() === userData?.userId
+                                      ? "text-right"
+                                      : "text-left"
+                                  }`}
+                                >
+                                  {formatDateTime(msg?.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div></div>
                         </div>
-                        <button type="submit">
-                          <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
-                        </button>
-                      </div>
-                    </Form>
+                      ))}
+                    </Card>
                   </div>
-                )}
-              </Content>
-            </Layout>
-          </div>
-        ) : (
-          <div className="hidden  lg:col-span-3 xl:col-span-4 lg:flex justify-center items-center text-center w-full h-full  text-secondary-color">
-            Select a conversation to view messages
+
+                  {selectedConversation && (
+                    <div className="w-full ">
+                      <Form form={form} onFinish={handleMessageSend}>
+                        <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
+                          <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
+                            {/* Emoji Icon */}
+                            <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" />
+
+                            {/* Input Field */}
+                            <Form.Item
+                              className="w-full !p-0 !m-0"
+                              name="message"
+                            >
+                              <Input
+                                placeholder="Send your message..."
+                                className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                              />
+                            </Form.Item>
+
+                            {/* Image Icon */}
+                            <BsImage className="cursor-pointer text-xl text-gray-500" />
+
+                            {/* Paperclip Icon */}
+                            <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                          </div>
+                          <button type="submit">
+                            <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
+                          </button>
+                        </div>
+                      </Form>
+                    </div>
+                  )}
+                </Content>
+              </Layout>
+            ) : (
+              <div className="hidden  lg:col-span-3 xl:col-span-4 lg:flex justify-center items-center text-center w-full h-full  text-secondary-color">
+                Select a conversation to view messages
+              </div>
+            )}
           </div>
         )}
       </div>

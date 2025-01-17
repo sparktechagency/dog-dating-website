@@ -11,7 +11,7 @@ import Cookies from "universal-cookie";
 import { toast } from "sonner";
 import { useUserLoginMutation } from "@/redux/api/features/authApi";
 import { useRouter } from "next/navigation";
-import { setAccessToken } from "@/redux/slices/authSlice";
+import { setAccessToken, setUserInfo } from "@/redux/slices/authSlice";
 
 const Login = () => {
   const [userLogin] = useUserLoginMutation();
@@ -40,6 +40,7 @@ const Login = () => {
 
         //* Dispatch the accessToken and userInfo to Redux store
         dispatch(setAccessToken(res?.data?.accessToken));
+        dispatch(setUserInfo(res?.data?.accessToken));
         // dispatch(setAccessToken(res?.data?.user));
 
         //* Set cookies if needed
