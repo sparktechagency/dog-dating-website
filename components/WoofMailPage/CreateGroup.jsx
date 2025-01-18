@@ -1,22 +1,32 @@
 "use client";
 
-import { Form, Input, Upload } from "antd";
+import { Button, Form, Input, Typography, Upload } from "antd";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { FaImage, FaTrashAlt } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
-import groupProfile from "./asserts/groupProfile.png";
+import groupProfile from "./asserts/groupDefault.png";
 import profileImage from "./asserts/newChat.png";
+import { getImageUrl } from "@/helpers/config/envConfig";
+import { useCreateChatMutation } from "@/redux/api/features/chatApi";
+import { toast } from "sonner";
 
 export default function CreateGroup(props) {
+  const {
+    showAddGroupModal,
+    setShowAddGroupModal,
+    toggleGroupModal,
+    userData,
+    allChatList,
+  } = props;
+
+  const [createChat] = useCreateChatMutation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const containerRef = useRef(null);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [form] = Form.useForm();
-
-  const { showAddGroupModal, setShowAddGroupModal, toggleGroupModal } = props;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,18 +45,54 @@ export default function CreateGroup(props) {
     };
   }, [showAddGroupModal, setShowAddGroupModal]);
 
-  // Mock user data
-  const users = Array.from({ length: 6 }, (_, i) => ({
-    id: i + 1,
-    name: "Larry",
-    avatar: profileImage,
-  }));
+  const getFilteredConversations = (allChatList) => {
+    const uniqueUsers = new Set();
+    const filteredConversations = [];
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    allChatList?.data?.forEach((conversation) => {
+      if (conversation?.isGroupChat) {
+        return; // Skip group chats
+      }
+
+      // Extract user IDs from the conversation
+      const userIds = conversation.users.map((user) => user._id);
+
+      // Check for duplicate users
+      const newUsers = userIds.filter((id) => !uniqueUsers.has(id));
+
+      if (newUsers.length > 0) {
+        // Add unique users to the Set
+        newUsers.forEach((id) => uniqueUsers.add(id));
+
+        // Clone the conversation and include only unique users
+        const filteredConversation = {
+          ...conversation,
+          users: conversation.users.filter((user) =>
+            newUsers.includes(user._id)
+          ),
+        };
+
+        filteredConversations.push(filteredConversation);
+      }
+    });
+
+    return filteredConversations;
+  };
+
+  const allUsers = getFilteredConversations(allChatList);
+
+  const filteredConversations = allUsers?.filter((conversation) =>
+    conversation?.users[0]?._id === userData?.userId
+      ? conversation?.users[1]?.fullName
+          ?.toLowerCase()
+          ?.includes(searchQuery.toLowerCase())
+      : conversation?.users[0]?.fullName
+          ?.toLowerCase()
+          ?.includes(searchQuery.toLowerCase())
   );
 
   const toggleUser = (userId) => {
+    console.log(userId);
     setSelectedUsers((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
@@ -54,100 +100,9 @@ export default function CreateGroup(props) {
     );
   };
 
-  const [imageUrl, setImageUrl] = useState(groupProfile);
+  const imageLiveUrl = getImageUrl();
 
-  //   const countryCodes = [
-  //     { label: "+1", value: "US", flag: "https://flagcdn.com/w320/us.png" },
-  //     { label: "+1", value: "CA", flag: "https://flagcdn.com/w320/ca.png" },
-  //     { label: "+7", value: "RU", flag: "https://flagcdn.com/w320/ru.png" },
-  //     { label: "+20", value: "EG", flag: "https://flagcdn.com/w320/eg.png" },
-  //     { label: "+27", value: "ZA", flag: "https://flagcdn.com/w320/za.png" },
-  //     { label: "+30", value: "GR", flag: "https://flagcdn.com/w320/gr.png" },
-  //     { label: "+31", value: "NL", flag: "https://flagcdn.com/w320/nl.png" },
-  //     { label: "+32", value: "BE", flag: "https://flagcdn.com/w320/be.png" },
-  //     { label: "+33", value: "FR", flag: "https://flagcdn.com/w320/fr.png" },
-  //     { label: "+34", value: "ES", flag: "https://flagcdn.com/w320/es.png" },
-  //     { label: "+36", value: "HU", flag: "https://flagcdn.com/w320/hu.png" },
-  //     { label: "+39", value: "IT", flag: "https://flagcdn.com/w320/it.png" },
-  //     { label: "+40", value: "RO", flag: "https://flagcdn.com/w320/ro.png" },
-  //     { label: "+41", value: "CH", flag: "https://flagcdn.com/w320/ch.png" },
-  //     { label: "+44", value: "GB", flag: "https://flagcdn.com/w320/gb.png" },
-  //     { label: "+45", value: "DK", flag: "https://flagcdn.com/w320/dk.png" },
-  //     { label: "+46", value: "SE", flag: "https://flagcdn.com/w320/se.png" },
-  //     { label: "+47", value: "NO", flag: "https://flagcdn.com/w320/no.png" },
-  //     { label: "+48", value: "PL", flag: "https://flagcdn.com/w320/pl.png" },
-  //     { label: "+49", value: "DE", flag: "https://flagcdn.com/w320/de.png" },
-  //     { label: "+51", value: "PE", flag: "https://flagcdn.com/w320/pe.png" },
-  //     { label: "+52", value: "MX", flag: "https://flagcdn.com/w320/mx.png" },
-  //     { label: "+53", value: "CU", flag: "https://flagcdn.com/w320/cu.png" },
-  //     { label: "+54", value: "AR", flag: "https://flagcdn.com/w320/ar.png" },
-  //     { label: "+55", value: "BR", flag: "https://flagcdn.com/w320/br.png" },
-  //     { label: "+56", value: "CL", flag: "https://flagcdn.com/w320/cl.png" },
-  //     { label: "+57", value: "CO", flag: "https://flagcdn.com/w320/co.png" },
-  //     { label: "+58", value: "VE", flag: "https://flagcdn.com/w320/ve.png" },
-  //     { label: "+60", value: "MY", flag: "https://flagcdn.com/w320/my.png" },
-  //     { label: "+61", value: "AU", flag: "https://flagcdn.com/w320/au.png" },
-  //     { label: "+62", value: "ID", flag: "https://flagcdn.com/w320/id.png" },
-  //     { label: "+63", value: "PH", flag: "https://flagcdn.com/w320/ph.png" },
-  //     { label: "+64", value: "NZ", flag: "https://flagcdn.com/w320/nz.png" },
-  //     { label: "+65", value: "SG", flag: "https://flagcdn.com/w320/sg.png" },
-  //     { label: "+66", value: "TH", flag: "https://flagcdn.com/w320/th.png" },
-  //     { label: "+81", value: "JP", flag: "https://flagcdn.com/w320/jp.png" },
-  //     { label: "+82", value: "KR", flag: "https://flagcdn.com/w320/kr.png" },
-  //     { label: "+84", value: "VN", flag: "https://flagcdn.com/w320/vn.png" },
-  //     { label: "+86", value: "CN", flag: "https://flagcdn.com/w320/cn.png" },
-  //     { label: "+880", value: "BD", flag: "https://flagcdn.com/w320/bd.png" }, // Bangladesh
-  //     { label: "+90", value: "TR", flag: "https://flagcdn.com/w320/tr.png" },
-  //     { label: "+91", value: "IN", flag: "https://flagcdn.com/w320/in.png" },
-  //     { label: "+92", value: "PK", flag: "https://flagcdn.com/w320/pk.png" },
-  //     { label: "+93", value: "AF", flag: "https://flagcdn.com/w320/af.png" },
-  //     { label: "+94", value: "LK", flag: "https://flagcdn.com/w320/lk.png" },
-  //     { label: "+95", value: "MM", flag: "https://flagcdn.com/w320/mm.png" },
-  //     { label: "+98", value: "IR", flag: "https://flagcdn.com/w320/ir.png" },
-  //     { label: "+211", value: "SS", flag: "https://flagcdn.com/w320/ss.png" },
-  //     { label: "+212", value: "MA", flag: "https://flagcdn.com/w320/ma.png" },
-  //     { label: "+213", value: "DZ", flag: "https://flagcdn.com/w320/dz.png" },
-  //     { label: "+216", value: "TN", flag: "https://flagcdn.com/w320/tn.png" },
-  //     { label: "+218", value: "LY", flag: "https://flagcdn.com/w320/ly.png" },
-  //     { label: "+220", value: "GM", flag: "https://flagcdn.com/w320/gm.png" },
-  //     { label: "+221", value: "SN", flag: "https://flagcdn.com/w320/sn.png" },
-  //     { label: "+222", value: "MR", flag: "https://flagcdn.com/w320/mr.png" },
-  //     { label: "+223", value: "ML", flag: "https://flagcdn.com/w320/ml.png" },
-  //     { label: "+224", value: "GN", flag: "https://flagcdn.com/w320/gn.png" },
-  //     { label: "+225", value: "CI", flag: "https://flagcdn.com/w320/ci.png" },
-  //     { label: "+226", value: "BF", flag: "https://flagcdn.com/w320/bf.png" },
-  //     { label: "+227", value: "NE", flag: "https://flagcdn.com/w320/ne.png" },
-  //     { label: "+228", value: "TG", flag: "https://flagcdn.com/w320/tg.png" },
-  //     { label: "+229", value: "BJ", flag: "https://flagcdn.com/w320/bj.png" },
-  //     { label: "+230", value: "MU", flag: "https://flagcdn.com/w320/mu.png" },
-  //     { label: "+231", value: "LR", flag: "https://flagcdn.com/w320/lr.png" },
-  //     { label: "+232", value: "SL", flag: "https://flagcdn.com/w320/sl.png" },
-  //     { label: "+233", value: "GH", flag: "https://flagcdn.com/w320/gh.png" },
-  //     { label: "+234", value: "NG", flag: "https://flagcdn.com/w320/ng.png" },
-  //     { label: "+235", value: "TD", flag: "https://flagcdn.com/w320/td.png" },
-  //     { label: "+236", value: "CF", flag: "https://flagcdn.com/w320/cf.png" },
-  //     { label: "+237", value: "CM", flag: "https://flagcdn.com/w320/cm.png" },
-  //     { label: "+238", value: "CV", flag: "https://flagcdn.com/w320/cv.png" },
-  //     { label: "+239", value: "ST", flag: "https://flagcdn.com/w320/st.png" },
-  //     { label: "+240", value: "GQ", flag: "https://flagcdn.com/w320/gq.png" },
-  //     { label: "+241", value: "GA", flag: "https://flagcdn.com/w320/ga.png" },
-  //     { label: "+242", value: "CG", flag: "https://flagcdn.com/w320/cg.png" },
-  //     { label: "+243", value: "CD", flag: "https://flagcdn.com/w320/cd.png" },
-  //     { label: "+244", value: "AO", flag: "https://flagcdn.com/w320/ao.png" },
-  //     { label: "+248", value: "SC", flag: "https://flagcdn.com/w320/sc.png" },
-  //     { label: "+249", value: "SD", flag: "https://flagcdn.com/w320/sd.png" },
-  //     { label: "+250", value: "RW", flag: "https://flagcdn.com/w320/rw.png" },
-  //     { label: "+251", value: "ET", flag: "https://flagcdn.com/w320/et.png" },
-  //     { label: "+252", value: "SO", flag: "https://flagcdn.com/w320/so.png" },
-  //     { label: "+253", value: "DJ", flag: "https://flagcdn.com/w320/dj.png" },
-  //     { label: "+254", value: "KE", flag: "https://flagcdn.com/w320/ke.png" },
-  //     { label: "+255", value: "TZ", flag: "https://flagcdn.com/w320/tz.png" },
-  //     { label: "+256", value: "UG", flag: "https://flagcdn.com/w320/ug.png" },
-  //     { label: "+260", value: "ZM", flag: "https://flagcdn.com/w320/zm.png" },
-  //     { label: "+263", value: "ZW", flag: "https://flagcdn.com/w320/zw.png" },
-  //     { label: "+264", value: "NA", flag: "https://flagcdn.com/w320/na.png" },
-  //     { label: "+265", value: "MW", flag: "https://flagcdn.com/w320/mw.png" },
-  //   ];
+  const [imageUrl, setImageUrl] = useState(groupProfile);
 
   const handleImageUpload = (info) => {
     if (info.file.status === "removed") {
@@ -161,13 +116,38 @@ export default function CreateGroup(props) {
     }
   };
 
-  const onFinish = (values) => {
-    const fromValues = { ...values, picture: imageUrl, selectedUsers };
-    setSelectedUsers([]);
-    setImageUrl(groupProfile);
-    form.resetFields();
+  const onFinish = async (values) => {
+    const toastId = toast.loading("creatng group chat...");
+    const formData = new FormData();
 
-    setTimeout(() => setShowAddGroupModal(false), 100);
+    const data = {
+      groupAdmins: [userData?.userId],
+      createdBy: userData?.userId,
+      users: [userData?.userId, ...selectedUsers],
+      groupName: values?.groupName,
+      isGroupChat: true,
+    };
+
+    formData.append("data", JSON.stringify(data));
+    formData.append("file", values?.groupProfilePicture?.file?.originFileObj);
+
+    try {
+      const res = await createChat(formData).unwrap();
+      toast.success(res.message, {
+        id: toastId,
+        duration: 2000,
+      });
+      setSelectedUsers([]);
+      setImageUrl(groupProfile);
+      form.resetFields();
+      toggleGroupModal();
+    } catch (error) {
+      console.log("error", error);
+      toast.error(error?.data?.message || "Failed to create chat", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
   };
 
   return (
@@ -201,14 +181,24 @@ export default function CreateGroup(props) {
         </p>
 
         <div className="space-y-3">
-          {filteredUsers.map((user) => (
+          {filteredConversations?.map((user) => (
             <div
-              key={user.id}
-              className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer"
-              onClick={() => toggleUser(user.id)}
+              key={user._id}
+              className="flex items-center gap-1 p-2 rounded-xl hover:bg-gray-50 cursor-pointer"
+              onClick={() =>
+                toggleUser(
+                  user?.users[0]?._id === userData?.userId
+                    ? `${user?.users[1]?._id}`
+                    : `${user?.users[0]?._id}`
+                )
+              }
             >
-              <div className="relative flex items-center justify-center gap-2">
-                {selectedUsers.includes(user.id) ? (
+              <div className="relative flex items-center justify-center gap-1">
+                {selectedUsers.includes(
+                  user?.users[0]?._id === userData?.userId
+                    ? `${user?.users[1]?._id}`
+                    : `${user?.users[0]?._id}`
+                ) ? (
                   <div className="">
                     <BsCheckCircleFill
                       className="text-[#FF7F57] bg-white rounded-full"
@@ -219,12 +209,26 @@ export default function CreateGroup(props) {
                   <div className="w-5 h-5 border-2 border-gray-200 rounded-md" />
                 )}
                 <Image
-                  src={user.avatar}
-                  alt={`${user.name}'s avatar`}
+                  src={
+                    user?.users[0]?._id === userData?.userId
+                      ? `${imageLiveUrl}${user?.users[1]?.image}`
+                      : `${imageLiveUrl}${user?.users[0]?.image}`
+                  }
+                  width={1000}
+                  height={1000}
+                  alt={`${
+                    user?.users[0]?._id === userData?.userId
+                      ? `${user?.users[1]?.fullName}`
+                      : `${user?.users[0]?.fullName}`
+                  }'s avatar`}
                   className="w-12 h-12 rounded-xl object-cover"
                 />
               </div>
-              <span className="text-gray-700 font-medium">{user.name}</span>
+              <span className="text-gray-700 font-medium">
+                {user?.users[0]?._id === userData?.userId
+                  ? `${user?.users[1]?.fullName}`
+                  : `${user?.users[0]?.fullName}`}
+              </span>
             </div>
           ))}
         </div>
@@ -262,17 +266,45 @@ export default function CreateGroup(props) {
               <FaTrashAlt className=" text-white" />
             </div>
           </div>
-          <Form.Item label="Full Name" name="fullName">
-            <Input placeholder="Enter Full Name " className="py-2 !text-lg" />
+          <Form.Item
+            rules={[{ required: true, message: "Please upload group picture" }]}
+            name="groupProfilePicture"
+            className="mt-2 mb-5"
+          >
+            <Upload
+              className="cursor-pointer"
+              maxCount={1}
+              showUploadList={false}
+              customRequest={(options) => {
+                // Handle file upload manually here
+                console.log("File to upload:", options.file);
+                // Example: Simulate a successful upload
+                setTimeout(() => {
+                  options.onSuccess("ok");
+                }, 1000);
+              }}
+              accept="image/*"
+              multiple={false}
+              onChange={handleImageUpload}
+            >
+              <div className="flex items-center gap-2 text-[12px] border border-[#F88D58] py-3 px-3 rounded-md text-[#F88D58]">
+                {" "}
+                <FaImage className="text-lg" />
+                Upload Group Picture
+              </div>
+            </Upload>
           </Form.Item>
 
+          <Typography label={5} className="mb-1">
+            Group Name
+          </Typography>
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ type: "email", message: "Please enter a valid email!" }]}
+            rules={[{ required: true, message: "Please enter group name" }]}
+            name="groupName"
           >
-            <Input placeholder="Enter Email" className="py-2 !text-lg" />
+            <Input placeholder="Enter Group Name " className="py-2 !text-lg" />
           </Form.Item>
+
           {/* <Typography label={5} className="mb-1">
             Phone Number
           </Typography> */}
@@ -315,39 +347,15 @@ export default function CreateGroup(props) {
           {/* <Form.Item label="Date of Birth" name="birthday">
             <DatePicker format="YYYY-MM-DD" />
           </Form.Item> */}
-          <div className="flex justify-between gap-3">
-            <Upload
-              name="picture"
-              maxCount={1}
-              showUploadList={false}
-              beforeUpload={() => false}
-              accept="image/*"
-              multiple={false}
-              onChange={handleImageUpload}
-            >
-              <div className="flex items-center gap-2 text-[14px] bg-[#F88D58] py-3 px-3 rounded-md text-white">
-                {" "}
-                <FaImage className="text-lg" />
-                Upload Group Picture
-              </div>
-            </Upload>
-
-            <button
+          <div className="">
+            <Button
+              className="!bg-[#F88D58] mt-4 py-3 inline-block w-fit h-fit"
+              type="primary"
+              block
               htmlType="submit"
-              className="flex items-center text-[14px] bg-[#F88D58] py-3 px-3 rounded-md text-white"
             >
-              {" "}
               Save Changes
-            </button>
-
-            {/* <Button
-            className="!bg-[#2B4257] mt-4 py-5"
-            type="primary"
-            block
-            htmlType="submit"
-          >
-            Save Changes
-          </Button>            */}
+            </Button>
           </div>
         </Form>
       </div>

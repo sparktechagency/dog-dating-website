@@ -14,8 +14,6 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const token = useSelector(selectToken);
 
-  console.log("token", token);
-
   const socket = useMemo(() => {
     if (token) {
       const socketStore = io(getSocketUrl(), {

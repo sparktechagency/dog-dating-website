@@ -11,24 +11,19 @@ const chatApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: [tagTypes.chat],
     }),
     getAllChatByUser: build.query({
       query: ({ id }) => ({
         url: `${chatUrl}/user/${id}`,
         method: "GET",
       }),
+      providesTags: [tagTypes.chat],
     }),
     getAllMessageByChatId: build.query({
       query: ({ id }) => ({
         url: `/message/full-chat/${id}`,
         method: "GET",
-      }),
-    }),
-    sendMessage: build.mutation({
-      query: (formData) => ({
-        url: `/message/add-message`,
-        method: "POST",
-        body: formData,
       }),
     }),
   }),
@@ -38,5 +33,4 @@ export const {
   useCreateChatMutation,
   useGetAllChatByUserQuery,
   useGetAllMessageByChatIdQuery,
-  useSendMessageMutation,
 } = chatApi;

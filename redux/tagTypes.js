@@ -4,6 +4,7 @@ export const tagTypes = {
   shelter: "Shelter",
   userProfile: "UserProfile",
   petProfile: "PetProfile",
+  chat: "Chat",
 };
 
 export const tagTypesList = [
@@ -12,4 +13,5 @@ export const tagTypesList = [
   tagTypes.shelter,
   tagTypes.userProfile,
   tagTypes.petProfile,
+  tagTypes.chat,
 ];

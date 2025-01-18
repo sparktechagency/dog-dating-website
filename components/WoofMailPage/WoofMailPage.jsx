@@ -15,19 +15,28 @@ import {
   useGetAllChatByUserQuery,
   useGetAllMessageByChatIdQuery,
 } from "@/redux/api/features/chatApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import { toast } from "sonner";
 import { formatDateTime } from "@/helpers/date-formats";
 import { SocketContext } from "@/context/SocketContextApi";
 import { selectUser } from "@/redux/slices/authSlice";
+import { setOnlineUsers } from "@/redux/slices/chatSlice";
 
 const WoofMailPage = () => {
   const { socket } = useContext(SocketContext);
   const [form] = Form.useForm();
   const { Content } = Layout;
+  const imageUrl = getImageUrl();
+
+  const dispatch = useDispatch();
 
   const userData = useSelector(selectUser);
+  const onlineUsers = useSelector((state) => state.chat.onlineUser);
+
+  const messagesContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const menuRef = useRef(null);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,7 +47,6 @@ const WoofMailPage = () => {
   const toggleUserModal = () => setShowAddUserModal((prev) => !prev);
   const toggleGroupModal = () => setShowAddGroupModal((prev) => !prev);
 
-  const menuRef = useRef(null);
   const toggleMenu = () => {
     setOpen((prev) => !prev);
   };
@@ -66,6 +74,8 @@ const WoofMailPage = () => {
 
   const [messages, setMessages] = useState([]);
 
+  // Run this effect when `messages` change
+
   const { data: allChatList, isFetching: isAllChatFeacthing } =
     useGetAllChatByUserQuery(
       { id: userData?.userId },
@@ -74,21 +84,23 @@ const WoofMailPage = () => {
       }
     );
 
-  const filteredConversations = allChatList?.data?.filter((conversation) =>
-    conversation?.isGroupChat
-      ? conversation?.groupName
-          ?.toLowerCase()
-          ?.includes(searchTerm.toLowerCase())
-      : conversation?.users[0]?._id === userData?.userId
-      ? conversation?.users[1]?.fullName
-          ?.toLowerCase()
-          ?.includes(searchTerm.toLowerCase())
-      : conversation?.users[0]?.fullName
-          ?.toLowerCase()
-          ?.includes(searchTerm.toLowerCase())
-  );
+  const filteredConversations = allChatList?.data
+    ?.filter((conversation) =>
+      conversation?.isGroupChat
+        ? conversation?.groupName
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase())
+        : conversation?.users[0]?._id === userData?.userId
+        ? conversation?.users[1]?.fullName
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase())
+        : conversation?.users[0]?.fullName
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-  console.log("All Chat List:", allChatList?.data);
+  console.log(filteredConversations);
 
   const {
     data: allMessages,
@@ -110,7 +122,12 @@ const WoofMailPage = () => {
     }
   }, [allMessages, refetch, selectedConversation?._id]);
 
-  const imageUrl = getImageUrl();
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  });
 
   const SelectedmageUrlSrc = selectedConversation?.isGroupChat
     ? `${imageUrl}${selectedConversation?.groupProfilePicture}`
@@ -129,15 +146,17 @@ const WoofMailPage = () => {
   //
   //
   const handleMessage = (message) => {
-    console.log("check maren vai doya koirra:", message);
+    console.log("check maren vai doya koirra:", imageUrl + message?.image);
 
     setMessages((prev) => [...prev, message]);
   };
 
   useEffect(() => {
     const roomId = selectedConversation?._id;
-    console.log(`Joining room: ${roomId}`);
     socket.emit("join", roomId?.toString());
+    socket.on("online-users-updated", (online) => {
+      dispatch(setOnlineUsers(online));
+    });
     if (selectedConversation?._id && socket) {
       socket.on(
         `new-message-received::${selectedConversation?._id}`,
@@ -162,8 +181,6 @@ const WoofMailPage = () => {
       senderDetails: userData,
     };
 
-    console.log("chat data", data);
-
     try {
       socket.emit("send-new-message", data);
       form.resetFields();
@@ -180,7 +197,8 @@ const WoofMailPage = () => {
     }
   };
 
-  if (isAllChatFeacthing) return <div>Loading</div>;
+  console.log("online-users-updated", onlineUsers);
+
   return (
     <div className="">
       <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative">
@@ -228,64 +246,101 @@ const WoofMailPage = () => {
               onChange={handleSearch}
             />
           </div>
-          <div className="md:h-full h-fit mb-3">
-            <div className=" text-gray-300 bg-white   ">
-              {filteredConversations?.map((conversation) => {
-                // Compute the image source URL
-                const imageUrlSrc = conversation?.isGroupChat
-                  ? `${imageUrl}${conversation?.groupProfilePicture}`
-                  : conversation?.users[0]?._id === userData?.userId
-                  ? `${imageUrl}${conversation?.users[1]?.image}`
-                  : `${imageUrl}${conversation?.users[0]?.image}`;
+          {isAllChatFeacthing ? (
+            <div className="lg:col-span-3 xl:col-span-4  ">Loading</div>
+          ) : (
+            <div className="md:h-full h-fit mb-3">
+              <div className=" text-gray-300 bg-white   ">
+                {filteredConversations?.map((conversation) => {
+                  // Compute the image source URL
+                  const imageUrlSrc = conversation?.isGroupChat
+                    ? `${imageUrl}${conversation?.groupProfilePicture}`
+                    : conversation?.users[0]?._id === userData?.userId
+                    ? `${imageUrl}${conversation?.users[1]?.image}`
+                    : `${imageUrl}${conversation?.users[0]?.image}`;
 
-                // Return the JSX
-                return (
-                  <div
-                    key={conversation?._id}
-                    onClick={() => handleConversationSelect(conversation)}
-                    className={`m-1 rounded  border-b border-gray-200 bg-[#FFFAF5] text-black ${
-                      conversation?._id === selectedConversation?._id
-                        ? "!bg-[#F88D58] text-white"
-                        : ""
-                    }`}
-                  >
-                    <div className="py-4 px-2 cursor-pointer flex justify-between ">
-                      <div className="flex items-center gap-2">
-                        <Image
-                          className="rounded aspect-square h-12 w-fit object-cover relative"
-                          src={imageUrlSrc}
-                          width={100}
-                          height={100}
-                          sixes="100vw"
-                          alt="Profile"
-                        />
-                        <div>
-                          <div className="flex items-center gap-1 text-xl">
-                            {conversation?.isGroupChat
-                              ? `${conversation?.groupName}`
-                              : conversation?.users[0]?._id === userData?.userId
-                              ? `${conversation?.users[1]?.fullName}`
-                              : `${conversation?.users[0]?.fullName}`}
-                            <div className="size-2 rounded-full bg-green-500"></div>
-                          </div>
-                          <div className="text-sm">
-                            {conversation?.lastMessage?.text
-                              ? conversation?.lastMessage?.text
-                              : ""}
+                  // Return the JSX
+                  return (
+                    <div
+                      key={conversation?._id}
+                      onClick={() => handleConversationSelect(conversation)}
+                      className={`m-1 rounded  border-b border-gray-200 bg-[#FFFAF5] text-black ${
+                        conversation?._id === selectedConversation?._id
+                          ? "!bg-[#F88D58] text-white"
+                          : ""
+                      }`}
+                    >
+                      <div className="py-4 px-2 cursor-pointer flex justify-between ">
+                        <div className="flex items-center gap-2">
+                          <Image
+                            className="rounded aspect-square h-12 w-fit object-cover relative"
+                            src={imageUrlSrc}
+                            width={100}
+                            height={100}
+                            sixes="100vw"
+                            alt="Profile"
+                          />
+                          <div>
+                            <div className="flex items-center gap-1 text-xl">
+                              <div>
+                                {conversation?.isGroupChat
+                                  ? conversation?.groupName.length > 15
+                                    ? `${conversation?.groupName.slice(
+                                        0,
+                                        10
+                                      )}...`
+                                    : conversation?.groupName
+                                  : conversation?.users[0]?._id ===
+                                    userData?.userId
+                                  ? conversation?.users[1]?.fullName.length > 15
+                                    ? `${conversation?.users[1]?.fullName.slice(
+                                        0,
+                                        15
+                                      )}...`
+                                    : conversation?.users[1]?.fullName
+                                  : conversation?.users[0]?.fullName.length > 15
+                                  ? `${conversation?.users[0]?.fullName.slice(
+                                      0,
+                                      15
+                                    )}...`
+                                  : conversation?.users[0]?.fullName}
+                              </div>
+
+                              {!conversation?.isGroupChat &&
+                                (conversation?.users[0]?._id ===
+                                userData?.userId
+                                  ? onlineUsers.includes(
+                                      conversation?.users[1]?._id
+                                    ) && (
+                                      <div className="size-2 rounded-full bg-green-500"></div>
+                                    )
+                                  : onlineUsers.includes(
+                                      conversation?.users[0]?._id
+                                    ) && (
+                                      <div className="size-2 rounded-full bg-green-500"></div>
+                                    ))}
+                            </div>
+                            <div className="text-sm">
+                              {conversation?.lastMessage?.text
+                                ? conversation?.lastMessage?.text
+                                : ""}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-sm">
-                        {conversation?.lastMessage?.createdAt
-                          ? formatDateTime(conversation?.lastMessage?.createdAt)
-                          : ""}
+                        <div className="text-sm">
+                          {conversation?.lastMessage?.createdAt
+                            ? formatDateTime(
+                                conversation?.lastMessage?.createdAt
+                              )
+                            : ""}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         {isAllMessageFetching ? (
           <div className="lg:col-span-3 xl:col-span-4  ">Loading</div>
@@ -323,7 +378,20 @@ const WoofMailPage = () => {
                             userData?.userId
                           ? `${selectedConversation?.users[1]?.fullName}`
                           : `${selectedConversation?.users[0]?.fullName}`}
-                        <span className="size-2 rounded-full bg-green-500"></span>
+
+                        {!selectedConversation?.isGroupChat &&
+                          (selectedConversation?.users[0]?._id ===
+                          userData?.userId
+                            ? onlineUsers.includes(
+                                selectedConversation?.users[1]?._id
+                              ) && (
+                                <span className="size-2 rounded-full bg-green-500"></span>
+                              )
+                            : onlineUsers.includes(
+                                selectedConversation?.users[0]?._id
+                              ) && (
+                                <span className="size-2 rounded-full bg-green-500"></span>
+                              ))}
                       </span>
                       <span className="text-xs lg:text-sm h-fit">
                         {selectedConversation?.user} is typing
@@ -335,12 +403,21 @@ const WoofMailPage = () => {
                 {/* message Part  */}
                 <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
                   <div className="h-full flex flex-col justify-end">
-                    <Card className="!border-0  !pb-14 overflow-y-auto border-none ">
+                    <Card
+                      className="!border-0 !pb-14 overflow-y-auto border-none"
+                      ref={messagesContainerRef}
+                    >
                       {messages?.map((msg, i) => (
                         <div key={i}>
                           <div className="flex items-start gap-1">
                             <Image
-                              src={SelectedmageUrlSrc}
+                              src={
+                                msg?.sender?.image
+                                  ? imageUrl + msg.sender.image
+                                  : msg?.image
+                                  ? imageUrl + msg.image
+                                  : "fallback-image-url"
+                              }
                               width={1000}
                               height={1000}
                               alt="Profile"
@@ -348,7 +425,7 @@ const WoofMailPage = () => {
                                 msg?.sender?._id === userData?.userId ||
                                 msg?.sender?.toString() === userData?.userId
                                   ? "order-last"
-                                  : " order-first "
+                                  : "order-first"
                               }`}
                               sizes="100vw"
                             />
@@ -385,9 +462,10 @@ const WoofMailPage = () => {
                               </div>
                             </div>
                           </div>
-                          <div></div>
                         </div>
                       ))}
+                      {/* Add this div for the scroll target */}
+                      <div ref={messagesEndRef}></div>
                     </Card>
                   </div>
 
@@ -397,7 +475,7 @@ const WoofMailPage = () => {
                         <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
                           <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
                             {/* Emoji Icon */}
-                            <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" />
+                            {/* <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" /> */}
 
                             {/* Input Field */}
                             <Form.Item
@@ -414,7 +492,7 @@ const WoofMailPage = () => {
                             <BsImage className="cursor-pointer text-xl text-gray-500" />
 
                             {/* Paperclip Icon */}
-                            <BsPaperclip className="cursor-pointer text-xl text-gray-500" />
+                            {/* <BsPaperclip className="cursor-pointer text-xl text-gray-500" /> */}
                           </div>
                           <button type="submit">
                             <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
@@ -424,6 +502,7 @@ const WoofMailPage = () => {
                     </div>
                   )}
                 </Content>
+                <div ref={messagesEndRef} />
               </Layout>
             ) : (
               <div className="hidden  lg:col-span-3 xl:col-span-4 lg:flex justify-center items-center text-center w-full h-full  text-secondary-color">
@@ -449,6 +528,8 @@ const WoofMailPage = () => {
             toggleGroupModal={toggleGroupModal}
             showAddGroupModal={showAddGroupModal}
             setShowAddGroupModal={setShowAddGroupModal}
+            userData={userData}
+            allChatList={allChatList}
           />
         </div>
       )}
