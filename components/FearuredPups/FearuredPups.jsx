@@ -20,6 +20,7 @@ import { useGetAllShelterQuery } from "@/redux/api/features/shelterApi";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import { ConfigProvider, Pagination } from "antd";
 import DonatePayment from "./DonateNow/DonatePayment";
+import Loader from "../ui/Loader";
 
 const FeaturedPups = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,38 +72,42 @@ const FeaturedPups = () => {
           Meet our Featured Shelter Pups
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-[100px] gap-x-[24px] mx-[7.8125vw]">
-          {shelterData?.data?.map((shelter) => (
-            <div
-              onClick={() => openModal(shelter?._id, shelter)}
-              key={shelter?._id}
-              className=" cursor-pointer relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
-            >
-              {/* Image Section with Full Width and Height */}
-              <div className="absolute inset-0">
-                <Image
-                  src={url + shelter?.image}
-                  alt={shelter?.name}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  className="w-full h-full object-cover object-top "
-                />
-              </div>
+          {isFetching ? (
+            <Loader className="h-screen" />
+          ) : (
+            shelterData?.data?.map((shelter) => (
+              <div
+                onClick={() => openModal(shelter?._id, shelter)}
+                key={shelter?._id}
+                className=" cursor-pointer relative bg-white shadow-lg rounded-lg overflow-hidden   min-h-[74.3321vh] flex flex-col justify-end items-center"
+              >
+                {/* Image Section with Full Width and Height */}
+                <div className="absolute inset-0">
+                  <Image
+                    src={url + shelter?.image}
+                    alt={shelter?.name}
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="w-full h-full object-cover object-top "
+                  />
+                </div>
 
-              {/* Black overlay on the left side */}
-              <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                {/* Black overlay on the left side */}
+                <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-black/90 via-transparent to-transparent" />
 
-              {/* Text and Icon Overlay */}
-              <div className="relative z-10 text-white p-4 flex justify-between items-center w-full">
-                <span className="lg:text-[1.2vw] text-[18px] font-semibold">
-                  {shelter?.name}
-                </span>
-                {/* <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
+                {/* Text and Icon Overlay */}
+                <div className="relative z-10 text-white p-4 flex justify-between items-center w-full">
+                  <span className="lg:text-[1.2vw] text-[18px] font-semibold">
+                    {shelter?.name}
+                  </span>
+                  {/* <div className="flex items-center gap-2 hover:text-blue-400 cursor-pointer lg:text-[1.2vw] text-[18px] font-semibold" onClick={()=>openModal(shelter?.id)}>
                  Fetch My Info<FiExternalLink className="lg:text-[1.2vw] text-[18px]" />
                   </div> */}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         <div className="flex justify-center mt-20 mb-10">
           <ConfigProvider
@@ -116,11 +121,13 @@ const FeaturedPups = () => {
               },
             }}
           >
-            <Pagination
-              onChange={(page) => setPage(page)}
-              pageSize={12}
-              total={shelterData?.meta?.total}
-            />
+            {shelterData?.data?.length > 0 && (
+              <Pagination
+                onChange={(page) => setPage(page)}
+                pageSize={12}
+                total={shelterData?.meta?.total}
+              />
+            )}
           </ConfigProvider>
         </div>
       </div>

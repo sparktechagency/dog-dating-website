@@ -5,6 +5,7 @@ import Shelter from "./Shelter";
 import AddNewShelter from "./AddNewShelter";
 import { useGetAllShelterQuery } from "@/redux/api/features/shelterApi";
 import { ConfigProvider, Pagination } from "antd";
+import Loader from "@/components/ui/Loader";
 
 const ShelterPage = () => {
   const [page, setPage] = useState(1);
@@ -72,9 +73,12 @@ const ShelterPage = () => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 items-stretch gap-4 my-5">
-        {filteredData?.map((shelter) => (
-          <Shelter shelter={shelter} key={shelter.id} />
-        ))}
+        {isFetching
+          ? ""
+          : // <Loader className="h-screen" />
+            filteredData?.map((shelter) => (
+              <Shelter shelter={shelter} key={shelter.id} />
+            ))}
       </div>
       <div className="flex justify-center my-20">
         <ConfigProvider
@@ -88,11 +92,13 @@ const ShelterPage = () => {
             },
           }}
         >
-          <Pagination
-            onChange={(page) => setPage(page)}
-            pageSize={12}
-            total={shelterData?.meta?.total}
-          />
+          {filteredData?.length > 0 && (
+            <Pagination
+              onChange={(page) => setPage(page)}
+              pageSize={12}
+              total={shelterData?.meta?.total}
+            />
+          )}
         </ConfigProvider>
       </div>
     </div>

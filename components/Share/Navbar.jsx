@@ -13,6 +13,7 @@ import blankImg from "../../asserts/blankProfile.png";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "universal-cookie";
 import {
+  clearAuth,
   selectUser,
   setAccessToken,
   setUserInfo,
@@ -90,8 +91,7 @@ const Navbar = () => {
   }, [open]);
 
   const handleLogout = () => {
-    dispatch(setAccessToken(null));
-    dispatch(setUserInfo(null));
+    dispatch(clearAuth());
     cookies.remove("woof_spot_accessToken", { path: "/" });
     cookies.remove("woof_spot_refreshToken", { path: "/" });
     router.push("/login");
@@ -133,7 +133,7 @@ const Navbar = () => {
 
   return (
     // Navbar items Section
-    <nav className="bg-[#FFFAF5] md:py-4 py-1 px-2  shadow  w-full z-50">
+    <nav className="bg-[#FFFAF5] py-1 px-2  shadow  w-full z-50">
       <div className="container mx-auto flex justify-between items-center lg:flex-row flex-row-reverse">
         {/* Mobile Menu Toggle */}
         <div className="lg:hidden block text-right relative " ref={menuRef}>
@@ -160,19 +160,34 @@ const Navbar = () => {
                   href={`${item?.path}`}
                   className={`${
                     pathName == item.path ? "text-[#F88D58]" : ""
-                  } block px-3  rounded-md text-base font-medium   hover:text-[#F88D58] transition duration-150 ease-in-out`}
+                  } text-center w-full block px-3  rounded-md text-base font-medium   hover:text-[#F88D58] transition duration-150 ease-in-out`}
                   aria-label={item.name}
                 >
                   {item.name}
                 </Link>
               ))}
-              {userData && (
-                <div className="me-3">
-                  <Link href={`/profile`}>
+              {userData ? (
+                <div className="me-3 text-center">
+                  <Link href={`/profile`} className="w-full">
                     <p className="text-black">Profile</p>
                   </Link>
-                  <Link href={`/login`}>
+                  <Link href={`/login`} className="w-full">
                     <p className="text-black">Log Out</p>
+                  </Link>
+                </div>
+              ) : (
+                <div className="">
+                  <Link
+                    href="/login"
+                    className={`w-[90%] mx-auto mt-3 mb-2 text-center  block py-1 px-4 border border-[#F88D58]  rounded-md     text-[#F88D58] transition duration-150 ease-in-out`}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className={`w-[90%] mx-auto text-center  block py-1 px-4 border border-[#F88D58]  rounded-md   bg-[#F88D58]  text-white transition duration-150 ease-in-out`}
+                  >
+                    Sign Up
                   </Link>
                 </div>
               )}
@@ -253,7 +268,7 @@ const Navbar = () => {
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-5">
+          <div className=" hidden lg:flex items-center gap-5">
             <Link
               href="/login"
               className={` block py-1 px-4 border border-[#F88D58]  rounded-md text-lg font-bold    text-[#F88D58] transition duration-150 ease-in-out`}

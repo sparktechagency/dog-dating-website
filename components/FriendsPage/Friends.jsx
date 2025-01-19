@@ -14,6 +14,7 @@ import {
 } from "@/redux/api/features/profileApi";
 import { useSelector } from "react-redux";
 import { decodedToken } from "@/utils/jwt";
+import Loader from "../ui/Loader";
 
 const Friends = () => {
   const [petProfile, setPetProfile] = useState(null);
@@ -65,14 +66,6 @@ const Friends = () => {
     }
   );
 
-  if (isFetchingPetProfile || nearByFriendsFetching) {
-    return (
-      <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">
-        Loading...
-      </div>
-    );
-  }
-
   return (
     <div className="bg-[#FFFAF5]">
       <h1
@@ -87,6 +80,8 @@ const Friends = () => {
             Please complete your and your pet profile to see friends near you
           </h2>
         </div>
+      ) : nearByFriendsFetching ? (
+        <Loader className="h-screen" />
       ) : (
         nearByFriends?.data?.map((petPartner, index) => (
           <Friend

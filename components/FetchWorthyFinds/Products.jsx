@@ -5,6 +5,7 @@ import Product from "./Product";
 import img1 from "../../asserts/product.png";
 import { useGetAllProductQuery } from "@/redux/api/features/productApi";
 import { ConfigProvider, Pagination } from "antd";
+import Loader from "../ui/Loader";
 
 const Products = () => {
   const [page, setPage] = useState(1);
@@ -17,9 +18,13 @@ const Products = () => {
       </div>
 
       <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-10 ">
-        {productsData?.data?.map((product) => (
-          <Product key={product.id} product={product} />
-        ))}
+        {isFetching ? (
+          <Loader className="h-screen" />
+        ) : (
+          productsData?.data?.map((product) => (
+            <Product key={product.id} product={product} />
+          ))
+        )}
       </main>
 
       <div className="flex justify-center my-20">
@@ -34,11 +39,13 @@ const Products = () => {
             },
           }}
         >
-          <Pagination
-            onChange={(page) => setPage(page)}
-            pageSize={12}
-            total={productsData?.meta?.total}
-          />
+          {productsData?.data?.length > 0 && (
+            <Pagination
+              onChange={(page) => setPage(page)}
+              pageSize={12}
+              total={productsData?.meta?.total}
+            />
+          )}
         </ConfigProvider>
       </div>
     </div>

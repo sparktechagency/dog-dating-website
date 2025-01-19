@@ -3,15 +3,34 @@ import React from "react";
 import img from "../../asserts/contract.png";
 
 import Image from "next/image";
+import { toast } from "sonner";
+import { useSendMessageMutation } from "@/redux/api/features/contactApi";
 
 const ContractPage = () => {
-  const handleFormSubmit = (e) => {
+  const [sendMessage] = useSendMessageMutation();
+  const handleFormSubmit = async (e) => {
+    const toastId = toast.loading("Sending Message...");
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
     const message = e.target.message.value;
 
-    e.target.reset();
+    const data = { name, email, message };
+
+    try {
+      const res = await sendMessage(data).unwrap();
+      console.log(res);
+      toast.success("Message Sent Successfully", {
+        id: toastId,
+        duration: 2000,
+      });
+      e.target.reset();
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to send message", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
 
     // Handle form submission logic here
   };

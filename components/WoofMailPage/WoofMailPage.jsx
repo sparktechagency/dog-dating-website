@@ -22,6 +22,7 @@ import { formatDateTime } from "@/helpers/date-formats";
 import { SocketContext } from "@/context/SocketContextApi";
 import { selectUser } from "@/redux/slices/authSlice";
 import { setOnlineUsers } from "@/redux/slices/chatSlice";
+import Loader from "../ui/Loader";
 
 const WoofMailPage = () => {
   const { socket } = useContext(SocketContext);
@@ -194,7 +195,7 @@ const WoofMailPage = () => {
 
   return (
     <div className="">
-      <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative">
+      <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative overflow-hidden">
         <div
           className={`col-span-1 overflow-y-auto px-3 ${
             selectedConversation ? "hidden lg:block" : "block lg:block"
@@ -240,7 +241,7 @@ const WoofMailPage = () => {
             />
           </div>
           {isAllChatFeacthing ? (
-            <div className="lg:col-span-3 xl:col-span-4  ">Loading</div>
+            <Loader className="h-fit" />
           ) : (
             <div className="md:h-full h-fit mb-3">
               <div className=" text-gray-300 bg-white   ">
@@ -336,7 +337,9 @@ const WoofMailPage = () => {
           )}
         </div>
         {isAllMessageFetching ? (
-          <div className="lg:col-span-3 xl:col-span-4  ">Loading</div>
+          <div className="mx-auto w-[80vw]">
+            <Loader className="h-ful" />
+          </div>
         ) : (
           <div
             className={`lg:col-span-3 xl:col-span-4 overflow-y-auto  ${

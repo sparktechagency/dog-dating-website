@@ -5,6 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import AddNewItem from "./AddNewItem";
 import { useGetAllProductQuery } from "@/redux/api/features/productApi";
 import { ConfigProvider, Pagination } from "antd";
+import Loader from "@/components/ui/Loader";
 
 const AllProductsPage = () => {
   const [page, setPage] = useState(1);
@@ -71,9 +72,9 @@ const AllProductsPage = () => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 justify-items-center items-stretch gap-10 my-5">
-        {filteredData?.map((item) => (
-          <Item item={item} key={item.id} />
-        ))}
+        {isFetching
+          ? ""
+          : filteredData?.map((item) => <Item item={item} key={item.id} />)}
       </div>
       <div className="flex justify-center my-20">
         <ConfigProvider
@@ -87,11 +88,13 @@ const AllProductsPage = () => {
             },
           }}
         >
-          <Pagination
-            onChange={(page) => setPage(page)}
-            pageSize={12}
-            total={productData?.meta?.total}
-          />
+          {filteredData?.length > 0 && (
+            <Pagination
+              onChange={(page) => setPage(page)}
+              pageSize={12}
+              total={productData?.meta?.total}
+            />
+          )}
         </ConfigProvider>
       </div>
     </div>

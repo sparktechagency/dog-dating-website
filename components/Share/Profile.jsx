@@ -14,6 +14,7 @@ import {
 } from "@/redux/api/features/profileApi";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import CreatePetProfile from "./addProfile/CreatePetProfile";
+import Loader from "../ui/Loader";
 
 export default function Profile() {
   const [createUserProfile, setCreateUserProfile] = useState(false);
@@ -116,11 +117,7 @@ export default function Profile() {
   const petImage = url + petProfile?.data?.image;
 
   if (isFetchingProfile && isFetchingPetProfile) {
-    return (
-      <div className="text-center w-full min-h-screen flex flex-col justify-center items-center">
-        Loading...
-      </div>
-    );
+    return <Loader className={"h-screen"} />;
   }
 
   return (
