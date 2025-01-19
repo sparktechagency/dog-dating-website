@@ -35,28 +35,34 @@ const baseQuery = fetchBaseQuery({
 });
 
 // const baseQueryWithRefreshToken = async (args, api, extraOptions) => {
+//   const cookies = new Cookies();
+
 //   let result = await baseQuery(args, api, extraOptions);
 
-//   if (result?.error?.status === 401) {
+//   if (result?.error?.status === 403) {
 //     const res = await fetch(`${getBaseUrl()}/auth/refresh-token`, {
 //       method: "POST",
 //       credentials: "include",
+//       headers: {
+//         refreshToken: cookies.get("woof_spot_refreshToken"),
+//       },
 //     });
 
 //     const data = await res.json();
+//     console.log("Ami Refresh token er function theke bolci", data);
 //     if (data?.data?.accessToken) {
-//       const user = api.getState().auth.user;
-
-//       api.dispatch(
-//         setUser({
-//           user,
-//           token: data.data.accessToken,
-//         })
-//       );
+//       const accessToken = api.getState().auth.accessToken;
+//       cookies.get("woof_spot_refreshToken");
+//       api.dispatch(setAccessToken(accessToken));
+//       api.dispatch(setUserInfo(accessToken));
 
 //       result = await baseQuery(args, api, extraOptions);
 //     } else {
-//       // api.dispatch(logout());
+//       api.dispatch(clearAuth());
+//       cookies.remove("woof_spot_accessToken", { path: "/" });
+//       cookies.remove("woof_spot_refreshToken", { path: "/" });
+
+//       window.location.href = "/login";
 //     }
 //   }
 

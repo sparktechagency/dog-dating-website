@@ -156,20 +156,20 @@ const WoofMailPage = () => {
 
   useEffect(() => {
     const roomId = selectedConversation?._id;
-    socket.emit("join", roomId?.toString());
-    socket.on("online-users-updated", (online) => {
+    socket?.emit("join", roomId?.toString());
+    socket?.on("online-users-updated", (online) => {
       dispatch(setOnlineUsers(online));
     });
     if (selectedConversation?._id && socket) {
-      socket.on(
+      socket?.on(
         `new-message-received::${selectedConversation?._id}`,
         handleMessage
       );
     }
 
     return () => {
-      socket.off(`new-message-received::${selectedConversation?._id}`);
-      socket.emit("leave", roomId);
+      socket?.off(`new-message-received::${selectedConversation?._id}`);
+      socket?.emit("leave", roomId);
     };
   }, [socket, selectedConversation?._id, dispatch, handleMessage]);
 

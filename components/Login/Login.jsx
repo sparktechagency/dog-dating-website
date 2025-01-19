@@ -17,7 +17,7 @@ const Login = () => {
   const [userLogin] = useUserLoginMutation();
   const dispatch = useDispatch();
   const navigate = useRouter();
-  // const cookies = new Cookies();
+  const cookies = new Cookies();
 
   const handleFormSubmit = async (e) => {
     const toastId = toast.loading(" Logging in...");
@@ -44,17 +44,17 @@ const Login = () => {
         // dispatch(setAccessToken(res?.data?.user));
 
         //* Set cookies if needed
-        // cookies.set("woof_spot_accessToken", res?.data?.accessToken, {
-        //   path: "/",
-        // });
-        // cookies.set("woof_spot_refreshToken", res?.data?.refreshToken, {
-        //   path: "/",
-        // });
+        cookies.set("woof_spot_accessToken", res?.data?.accessToken, {
+          path: "/",
+        });
+        cookies.set("woof_spot_refreshToken", res?.data?.refreshToken, {
+          path: "/",
+        });
 
         e.target.reset();
         // Navigate after login
         navigate.refresh();
-        navigate.push("/");
+        // navigate.push("/");
       }
     } catch (error) {
       toast.error(

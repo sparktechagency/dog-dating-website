@@ -6,17 +6,46 @@ import { ImCross } from "react-icons/im";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import logo from "../../asserts/logo.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import logOut from "./asserts/logOut.svg";
 import profile from "./asserts/profile.svg";
-import ceo from "../../asserts/ceo.png";
+import blankImg from "../../asserts/blankProfile.png";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from "universal-cookie";
+import {
+  selectUser,
+  setAccessToken,
+  setUserInfo,
+} from "@/redux/slices/authSlice";
+import { useUserProfileQuery } from "@/redux/api/features/profileApi";
+import { getImageUrl } from "@/helpers/config/envConfig";
 
 const Navbar = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const profileRef = useRef(null);
   const pathName = usePathname();
+  const dispatch = useDispatch();
+  const cookies = new Cookies();
+
+  const userData = useSelector(selectUser);
+
+  const imageServerUrl = getImageUrl();
+
+  const { data: userProfileData, isFetching } = useUserProfileQuery(
+    {
+      id: userData?.userId,
+    },
+    {
+      skip: !userData?.userId,
+    }
+  );
+
+  const userProfileImg = isFetching
+    ? blankImg
+    : imageServerUrl + userProfileData?.data?.image;
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -60,7 +89,15 @@ const Navbar = () => {
     };
   }, [open]);
 
-  const menuItems = [
+  const handleLogout = () => {
+    dispatch(setAccessToken(null));
+    dispatch(setUserInfo(null));
+    cookies.remove("woof_spot_accessToken", { path: "/" });
+    cookies.remove("woof_spot_refreshToken", { path: "/" });
+    router.push("/login");
+  };
+
+  const adminRoutes = [
     { name: "Home", path: "/" },
     { name: "Friends", path: "/friends" },
     { name: "Woof Mail", path: "/woof-mail" },
@@ -70,6 +107,29 @@ const Navbar = () => {
     { name: "Contact us", path: "/contact-us" },
     { name: "Dashboard", path: "/dashboard/all-products" },
   ];
+
+  const userRoute = [
+    { name: "Home", path: "/" },
+    { name: "Friends", path: "/friends" },
+    { name: "Woof Mail", path: "/woof-mail" },
+    { name: "Fetch-Worthy Finds", path: "/fetch-worthy-finds" },
+    { name: "Featured Pups", path: "/featured-pups" },
+    { name: "Our Pack", path: "/our-pack" },
+    { name: "Contact us", path: "/contact-us" },
+  ];
+
+  const normalRoute = [
+    { name: "Home", path: "/" },
+    { name: "Our Pack", path: "/our-pack" },
+    { name: "Contact us", path: "/contact-us" },
+  ];
+
+  const menuItems =
+    userData?.role === "admin"
+      ? adminRoutes
+      : userData?.role === "user"
+      ? userRoute
+      : normalRoute;
 
   return (
     // Navbar items Section
@@ -106,14 +166,16 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="me-3">
-                <Link href={`/profile`}>
-                  <p className="text-black">Profile</p>
-                </Link>
-                <Link href={`/login`}>
-                  <p className="text-black">Log Out</p>
-                </Link>
-              </div>
+              {userData && (
+                <div className="me-3">
+                  <Link href={`/profile`}>
+                    <p className="text-black">Profile</p>
+                  </Link>
+                  <Link href={`/login`}>
+                    <p className="text-black">Log Out</p>
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -146,47 +208,66 @@ const Navbar = () => {
 
         {/* Profile Icon */}
         {/* <Link href="/sign-up" className="cursor-pointer"> */}
-        <div
-          ref={profileRef}
-          className="relative lg:block hidden cursor-pointer select-none"
-        >
-          <div onClick={toggleProfile}>
-            {/* <IoPersonCircleOutline className="text-5xl" /> */}
-            <Image
-            src={ceo}
-            alt={`profile`}
-            width={0}
-            height={0}
-            className="rounded-full mr-4 w-12 ring-1 ring-[#F88D58] object-cover aspect-square"
-          />
-          </div>
-          {open && (
-            <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-32 p-1">
-              <Link href="/profile">
-                <div className="flex gap-3">
-                  <Image alt="profileImage" src={profile} className="w-4" />
-                  <p
-                    // onClick={toggleUserModal}
-                    className="text-[#302F51] text-[18px] cursor-pointer font-bold"
-                  >
-                    Profile
-                  </p>
-                </div>
-              </Link>
-              <div className="flex gap-3 mt-2 whitespace-nowrap">
-                <Image alt="LogoutImage" src={logOut} className="w-4" />
-                <Link href={`/login`}>
+        {userData ? (
+          <div
+            ref={profileRef}
+            className="relative lg:block hidden cursor-pointer select-none"
+          >
+            <div onClick={toggleProfile}>
+              {/* <IoPersonCircleOutline className="text-5xl" /> */}
+              <Image
+                src={userProfileImg}
+                alt={`profile`}
+                width={1000}
+                height={1000}
+                className="rounded-full mr-4 w-12 ring-1 ring-[#F88D58] object-cover aspect-square"
+              />
+            </div>
+            {open && (
+              <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-32 p-1">
+                <Link href="/profile">
+                  <div className="flex gap-3">
+                    <Image alt="profileImage" src={profile} className="w-4" />
+                    <p
+                      // onClick={toggleUserModal}
+                      className="text-[#302F51] text-[18px] cursor-pointer font-bold"
+                    >
+                      Profile
+                    </p>
+                  </div>
+                </Link>
+                <div
+                  onClick={handleLogout}
+                  className="flex gap-3 mt-2 whitespace-nowrap"
+                >
+                  <Image alt="LogoutImage" src={logOut} className="w-4" />
+
                   <p
                     // onClick={toggleGroupModal}
                     className="text-[#302F51] cursor-pointer text-[18px] font-bold"
                   >
                     Log Out
                   </p>
-                </Link>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-5">
+            <Link
+              href="/login"
+              className={` block py-1 px-4 border border-[#F88D58]  rounded-md text-lg font-bold    text-[#F88D58] transition duration-150 ease-in-out`}
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className={` block py-1 px-4 border border-[#F88D58]  rounded-md text-lg font-bold  bg-[#F88D58]  text-white transition duration-150 ease-in-out`}
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
         {/* </Link> */}
       </div>
     </nav>

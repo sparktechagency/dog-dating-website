@@ -26,7 +26,10 @@ const DonatePayment = ({
     >
       <button
         className="absolute  top-5 md:right-10 right-8 font-bold text-2xl text-white "
-        // onClick={closeModal}
+        onClick={() => {
+          setDonationAmount(0);
+          setPaymentDonationOpen(false);
+        }}
       >
         X
       </button>
