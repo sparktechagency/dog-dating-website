@@ -47,7 +47,6 @@ const Friends = () => {
   // Set pet profile data
   useEffect(() => {
     if (petProfileError) {
-      console.error("Error fetching pet profile:", petProfileError);
       setPetProfile(null);
     } else if (petProfileData) {
       setPetProfile(petProfileData);
@@ -65,8 +64,6 @@ const Friends = () => {
       skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
     }
   );
-
-  console.log("nearByFriends", nearByFriends);
 
   if (isFetchingPetProfile || nearByFriendsFetching) {
     return (

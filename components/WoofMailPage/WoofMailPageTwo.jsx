@@ -36,9 +36,7 @@ const WoofMailPageTwo = () => {
   useEffect(() => {
     const socketIo = io("http://10.0.70.42:8001");
 
-    socketIo.on("connect", () => {
-      console.log("Connected to Socket.IO server");
-    });
+    socketIo.on("connect", () => {});
 
     // Listen for incoming messages
     socketIo.on("new-message-received", (message) => {

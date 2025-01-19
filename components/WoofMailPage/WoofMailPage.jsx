@@ -100,8 +100,6 @@ const WoofMailPage = () => {
     )
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-  console.log(filteredConversations);
-
   const {
     data: allMessages,
     isFetching: isAllMessageFetching,
@@ -145,14 +143,9 @@ const WoofMailPage = () => {
   //
   //
   //
-  const handleMessage = useCallback(
-    (message) => {
-      console.log("check maren vai doya koirra:", imageUrl + message?.image);
-
-      setMessages((prev) => [...prev, message]);
-    },
-    [imageUrl]
-  );
+  const handleMessage = useCallback((message) => {
+    setMessages((prev) => [...prev, message]);
+  }, []);
 
   useEffect(() => {
     const roomId = selectedConversation?._id;
@@ -192,15 +185,12 @@ const WoofMailPage = () => {
         duration: 2000,
       });
     } catch (error) {
-      console.log(error);
       toast.error(error?.data?.message || "Failed to send message", {
         id: toastId,
         duration: 2000,
       });
     }
   };
-
-  console.log("online-users-updated", onlineUsers);
 
   return (
     <div className="">
@@ -397,7 +387,7 @@ const WoofMailPage = () => {
                               ))}
                       </span>
                       <span className="text-xs lg:text-sm h-fit">
-                        {selectedConversation?.user} is typing
+                        {selectedConversation?.user}
                       </span>
                     </div>
                   </div>

@@ -18,7 +18,7 @@ const DonatePayment = ({
   setOpen,
 }) => {
   const userData = useSelector(selectUser);
-  console.log(userData);
+
   return (
     <div
       //   ref={containerRef}

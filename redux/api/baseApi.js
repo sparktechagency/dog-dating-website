@@ -49,7 +49,6 @@ const baseQuery = fetchBaseQuery({
 //     });
 
 //     const data = await res.json();
-//     console.log("Ami Refresh token er function theke bolci", data);
 //     if (data?.data?.accessToken) {
 //       const accessToken = api.getState().auth.accessToken;
 //       cookies.get("woof_spot_refreshToken");

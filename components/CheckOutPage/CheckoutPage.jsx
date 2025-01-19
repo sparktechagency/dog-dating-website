@@ -82,7 +82,7 @@ const CheckoutPage = ({
 
       try {
         const res = await createPayment(data).unwrap();
-        console.log("Payment Korci ami", res);
+
         toast.success("Payment successful!", { id: toastId, duration: 2000 });
         setDonationAmount(0);
         setPaymentDonationOpen(false);

@@ -12,7 +12,7 @@ const DonateButtonPage = (params) => {
     donationAmount,
     setDonationAmount,
   } = params;
-  console.log(donationAmount);
+
   const handleButtonClick = () => {
     closeModal();
     setPaymentDonationOpen(true);

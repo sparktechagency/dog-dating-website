@@ -92,7 +92,6 @@ export default function CreateGroup(props) {
   );
 
   const toggleUser = (userId) => {
-    console.log(userId);
     setSelectedUsers((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
@@ -142,7 +141,6 @@ export default function CreateGroup(props) {
       form.resetFields();
       toggleGroupModal();
     } catch (error) {
-      console.log("error", error);
       toast.error(error?.data?.message || "Failed to create chat", {
         id: toastId,
         duration: 2000,
@@ -277,7 +275,7 @@ export default function CreateGroup(props) {
               showUploadList={false}
               customRequest={(options) => {
                 // Handle file upload manually here
-                console.log("File to upload:", options.file);
+
                 // Example: Simulate a successful upload
                 setTimeout(() => {
                   options.onSuccess("ok");

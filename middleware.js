@@ -7,20 +7,16 @@ export async function middleware(request) {
 
   // Get the accessToken from cookies
   const accessToken = cookies().get("woof_spot_accessToken")?.value;
-  console.log("Access Token:", accessToken);
 
   if (!accessToken) {
-    console.log("No token found. Redirecting to login.");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   try {
     // Decode the token
     const decodedData = jwtDecode(accessToken);
-    console.log("Decoded Data:", decodedData);
 
     const role = decodedData?.role;
-    console.log("User Role:", role);
 
     // Admin-only routes
     const adminRoutes = [
@@ -35,7 +31,6 @@ export async function middleware(request) {
       if (role === "admin") {
         return NextResponse.next(); // Allow admin access
       } else {
-        console.log("Unauthorized: User is not an admin.");
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
@@ -53,10 +48,8 @@ export async function middleware(request) {
       return NextResponse.next(); // Allow access to logged-in users
     }
 
-    console.log("Unauthorized access to an undefined route.");
     return NextResponse.redirect(new URL("/login", request.url));
   } catch (error) {
-    console.error("Error decoding token:", error.message);
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }

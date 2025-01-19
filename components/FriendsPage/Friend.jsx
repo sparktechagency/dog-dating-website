@@ -53,28 +53,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
   const userPetImage = url + petProfile?.data?.image;
   const friendPetImage = url + petPartner?.petsProfileId?.image;
 
-  // useEffect(() => {
-  //   if (isMessaging && userData) {
-  //     // Emit the join event or perform any additional logic
-  //     socket.emit("join", userData?.userId);
-
-  //     socket.on("online-users-updated", (onlineUsers) => {
-  //       console.log("Online Users Updated:", onlineUsers);
-  //       // Perform additional logic here if needed
-  //     });
-
-  //     // Reset isMessaging to avoid repeated calls
-  //     setIsMessaging(false);
-  //   }
-
-  //   // Clean up
-  //   return () => {
-  //     socket.off("online-users-updated");
-  //   };
-  // }, [isMessaging, userData]);
-
   const handleCreateChatRoom = async (partnerId) => {
-    console.log("partnerId", partnerId);
     const formData = new FormData();
     const toastId = toast.loading("creatng chat...");
 
@@ -82,8 +61,6 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
       createdBy: userData?.userId,
       users: [userData?.userId, partnerId],
     };
-
-    console.log("chatCreatedData", data);
 
     formData.append("data", JSON.stringify(data));
 
@@ -95,7 +72,6 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
         duration: 2000,
       });
     } catch (error) {
-      console.log("error", error);
       toast.error(error?.data?.message || "Failed to create chat", {
         id: toastId,
         duration: 2000,

@@ -54,7 +54,7 @@ const Login = () => {
         e.target.reset();
         // Navigate after login
         navigate.refresh();
-        // navigate.push("/");
+        navigate.push("/");
       }
     } catch (error) {
       toast.error(
