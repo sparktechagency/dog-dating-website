@@ -19,14 +19,17 @@ import DonateButtonPage from "./DonateNow/DonateButtonPage";
 import { useGetAllShelterQuery } from "@/redux/api/features/shelterApi";
 import { getImageUrl } from "@/helpers/config/envConfig";
 import { ConfigProvider, Pagination } from "antd";
+import DonatePayment from "./DonateNow/DonatePayment";
 
 const FeaturedPups = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDonation, setIsOpenDonation] = useState(false);
   const [open, setOpen] = useState(false);
+  const [paymentDonationopen, setPaymentDonationOpen] = useState(false);
   const [id, setId] = useState(null);
   const [selectedShelter, setSelectedShelter] = useState(null);
   const [page, setPage] = useState(1);
+  const [donationAmount, setDonationAmount] = useState();
 
   const openModal = (id, shelter) => {
     setSelectedShelter(shelter);
@@ -155,9 +158,21 @@ const FeaturedPups = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-50">
             <DonateButtonPage
               closeModal={closeDonationModal}
-              setOpen={setOpen}
+              setPaymentDonationOpen={setPaymentDonationOpen}
               setIsOpen={setIsOpenDonation}
+              donationAmount={donationAmount}
+              setDonationAmount={setDonationAmount}
               isOpen={isOpenDonation}
+            />
+          </div>
+        )}
+        {paymentDonationopen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-50">
+            <DonatePayment
+              setPaymentDonationOpen={setPaymentDonationOpen}
+              donationAmount={donationAmount}
+              setDonationAmount={setDonationAmount}
+              setOpen={setOpen}
             />
           </div>
         )}

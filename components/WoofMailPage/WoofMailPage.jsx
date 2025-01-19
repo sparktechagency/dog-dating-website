@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Layout, Card, Input, Form } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import userImage from "./asserts/user.svg";
@@ -145,11 +145,14 @@ const WoofMailPage = () => {
   //
   //
   //
-  const handleMessage = (message) => {
-    console.log("check maren vai doya koirra:", imageUrl + message?.image);
+  const handleMessage = useCallback(
+    (message) => {
+      console.log("check maren vai doya koirra:", imageUrl + message?.image);
 
-    setMessages((prev) => [...prev, message]);
-  };
+      setMessages((prev) => [...prev, message]);
+    },
+    [imageUrl]
+  );
 
   useEffect(() => {
     const roomId = selectedConversation?._id;
@@ -168,7 +171,7 @@ const WoofMailPage = () => {
       socket.off(`new-message-received::${selectedConversation?._id}`);
       socket.emit("leave", roomId);
     };
-  }, [socket, selectedConversation?._id]);
+  }, [socket, selectedConversation?._id, dispatch, handleMessage]);
 
   //* For Sending Message
   const handleMessageSend = async (values) => {

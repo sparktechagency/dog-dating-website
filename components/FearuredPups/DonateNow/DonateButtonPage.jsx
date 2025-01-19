@@ -4,13 +4,18 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const DonateButtonPage = (params) => {
-  const [donationAmount, setDonationAmount] = useState("160.00");
-
-  const { closeModal, setOpen, setIsOpen, isOpen } = params;
-
+  const {
+    closeModal,
+    setPaymentDonationOpen,
+    setIsOpen,
+    isOpen,
+    donationAmount,
+    setDonationAmount,
+  } = params;
+  console.log(donationAmount);
   const handleButtonClick = () => {
     closeModal();
-    setOpen(true);
+    setPaymentDonationOpen(true);
   };
 
   const containerRef = useRef(null); // Ref for the dropdown
@@ -62,7 +67,7 @@ const DonateButtonPage = (params) => {
                 Age: 
               </p> */}
 
-            <p>
+            <p className="text-base">
               Your donation helps give shelter dogs the care and love they need
               while waiting for their forever homes. Every contribution makes a
               tail wag and a heart hopeful. Click below to make a difference
@@ -73,20 +78,23 @@ const DonateButtonPage = (params) => {
               <input
                 value={`${donationAmount}`}
                 onChange={(e) => setDonationAmount(e.target.value)}
-                type="text"
-                className="ring-2 w-1/2 ring-[#F88D58] rounded-lg px-2 ps-5 py-1 focus:outline-none  focus:ring-[#F88D58]"
+                type="number"
+                className="ring-2 w-1/2 ring-[#F88D58] rounded-lg px-2 ps-7 py-2 text-lg focus:outline-none  focus:ring-[#F88D58]"
               />
 
-              <p className="absolute left-3 top-1/2 -translate-y-1/2 ">$</p>
+              <p className="absolute left-3 top-1/2 -translate-y-1/2 text-lg ">
+                $
+              </p>
             </div>
           </div>
           {/* <Link href={selectedShelter.link}> */}
           <div className="w-full flex justify-end ">
             <button
+              disabled={donationAmount <= 0 || donationAmount === undefined}
               onClick={handleButtonClick}
               className="md:mt-0 mt-3  text-white no-underline  bg-[#F88D58] hover:bg-black 
                   xl:px-[48px] xl:py-[16px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[10px]  py-[8px] md:mb-0 mb-4 lg:text-fluid-button text-[18px] flex  
-                   items-center md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
+                   items-center md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  disabled:opacity-20 disabled:cursor-not-allowed"
             >
               Donate
             </button>
