@@ -19,6 +19,7 @@ import LeaveConversation from "./LeaveConversation";
 import WoofMailMessageCard from "./WoofMailMessageCard";
 import Loader from "../ui/Loader";
 import WoofMailSendMessage from "./WoofMailSendMessage";
+import WoofMailSendMessageTwo from "./WoofMailSendMessageTwo";
 
 const WoofMailMessage = ({
   selectedConversation,
@@ -113,6 +114,8 @@ const WoofMailMessage = ({
     };
   }, [socket, selectedConversation?._id, dispatch, handleMessage]);
 
+  console.log("messages", messages);
+
   return (
     <div
       className={`lg:col-span-3 xl:col-span-4 overflow-y-auto  ${
@@ -139,8 +142,8 @@ const WoofMailMessage = ({
                     selectedConversation?.isGroupChat
                       ? `${imageUrl}${selectedConversation?.groupProfilePicture}`
                       : selectedConversation?.users[0]?._id === userData?.userId
-                      ? `${imageUrl}${selectedConversation?.users[1]?.image}`
-                      : `${imageUrl}${selectedConversation?.users[0]?.image}`
+                      ? `${imageUrl}${selectedConversation?.users[1]?.petImage}`
+                      : `${imageUrl}${selectedConversation?.users[0]?.petImage}`
                   }
                   width={100}
                   height={100}
@@ -151,8 +154,8 @@ const WoofMailMessage = ({
                     {selectedConversation?.isGroupChat
                       ? `${selectedConversation?.groupName}`
                       : selectedConversation?.users[0]?._id === userData?.userId
-                      ? `${selectedConversation?.users[1]?.fullName}`
-                      : `${selectedConversation?.users[0]?.fullName}`}
+                      ? `${selectedConversation?.users[1]?.petName}`
+                      : `${selectedConversation?.users[0]?.petName}`}
 
                     {!selectedConversation?.isGroupChat &&
                       (selectedConversation?.users[0]?._id === userData?.userId
@@ -227,9 +230,12 @@ const WoofMailMessage = ({
 
       {leaveConversationModal && (
         <LeaveConversation
+          socket={socket}
           leaveConversationModal={leaveConversationModal}
+          setSelectedConversation={setSelectedConversation}
           setLeaveConversationModal={setLeaveConversationModal}
           userData={userData}
+          chatId={selectedConversation?._id}
         />
       )}
     </div>

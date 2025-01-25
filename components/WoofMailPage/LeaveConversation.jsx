@@ -1,12 +1,40 @@
+import { useLeaveGroupChatMutation } from "@/redux/api/features/chatApi";
 import { Button, Modal } from "antd";
+import { toast } from "sonner";
 
 const LeaveConversation = ({
+  socket,
   leaveConversationModal,
+  setSelectedConversation,
   setLeaveConversationModal,
   userData,
+  chatId,
 }) => {
+  const [leaveConversation] = useLeaveGroupChatMutation();
   const handleLeaveConversation = async (userData) => {
-    setLeaveConversationModal(false);
+    const toastId = toast.loading("Leaving Conversation...");
+    try {
+      const res = await leaveConversation({ id: chatId }).unwrap();
+      const data = {
+        chat: chatId,
+        sender: null,
+        text: res?.message,
+      };
+
+      socket.emit("send-new-message", data);
+
+      toast.success(res.message, {
+        id: toastId,
+        duration: 2000,
+      });
+      setSelectedConversation(null);
+      setLeaveConversationModal(false);
+    } catch (err) {
+      toast.error(err.data.message, {
+        id: toastId,
+        duration: 2000,
+      });
+    }
   };
   return (
     <Modal

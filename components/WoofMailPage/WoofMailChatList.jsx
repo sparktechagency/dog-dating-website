@@ -116,8 +116,8 @@ const WoofMailChatList = ({
               const imageUrlSrc = conversation?.isGroupChat
                 ? `${imageUrl}${conversation?.groupProfilePicture}`
                 : conversation?.users[0]?._id === userData?.userId
-                ? `${imageUrl}${conversation?.users[1]?.image}`
-                : `${imageUrl}${conversation?.users[0]?.image}`;
+                ? `${imageUrl}${conversation?.users[1]?.petImage}`
+                : `${imageUrl}${conversation?.users[0]?.petImage}`;
 
               // Return the JSX
               return (

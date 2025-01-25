@@ -26,6 +26,13 @@ const chatApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    leaveGroupChat: build.mutation({
+      query: ({ id }) => ({
+        url: `/chat/leave-chat/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.chat],
+    }),
   }),
 });
 
@@ -33,4 +40,5 @@ export const {
   useCreateChatMutation,
   useGetAllChatByUserQuery,
   useGetAllMessageByChatIdQuery,
+  useLeaveGroupChatMutation,
 } = chatApi;

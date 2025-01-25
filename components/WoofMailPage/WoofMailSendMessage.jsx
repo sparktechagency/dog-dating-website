@@ -53,7 +53,7 @@ const WoofMailSendMessage = ({
             </Form.Item>
 
             {/* Image Icon */}
-            <BsImage className="cursor-pointer text-xl text-gray-500" />
+            {/* <BsImage className="cursor-pointer text-xl text-gray-500" /> */}
 
             {/* Paperclip Icon */}
             {/* <BsPaperclip className="cursor-pointer text-xl text-gray-500" /> */}

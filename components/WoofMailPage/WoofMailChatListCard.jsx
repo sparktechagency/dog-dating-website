@@ -41,12 +41,12 @@ const WoofMailChatListCard = ({
                     ? `${conversation?.groupName.slice(0, 10)}...`
                     : conversation?.groupName
                   : conversation?.users[0]?._id === userData?.userId
-                  ? conversation?.users[1]?.fullName.length > 15
-                    ? `${conversation?.users[1]?.fullName.slice(0, 15)}...`
-                    : conversation?.users[1]?.fullName
-                  : conversation?.users[0]?.fullName.length > 15
-                  ? `${conversation?.users[0]?.fullName.slice(0, 15)}...`
-                  : conversation?.users[0]?.fullName}
+                  ? conversation?.users[1]?.petName.length > 15
+                    ? `${conversation?.users[1]?.petName.slice(0, 15)}...`
+                    : conversation?.users[1]?.petName
+                  : conversation?.users[0]?.petName.length > 15
+                  ? `${conversation?.users[0]?.petName.slice(0, 15)}...`
+                  : conversation?.users[0]?.petName}
               </div>
 
               {!conversation?.isGroupChat &&

@@ -209,23 +209,23 @@ export default function CreateGroup(props) {
                 <Image
                   src={
                     user?.users[0]?._id === userData?.userId
-                      ? `${imageLiveUrl}${user?.users[1]?.image}`
-                      : `${imageLiveUrl}${user?.users[0]?.image}`
+                      ? `${imageLiveUrl}${user?.users[1]?.petImage}`
+                      : `${imageLiveUrl}${user?.users[0]?.petImage}`
                   }
                   width={1000}
                   height={1000}
                   alt={`${
                     user?.users[0]?._id === userData?.userId
-                      ? `${user?.users[1]?.fullName}`
-                      : `${user?.users[0]?.fullName}`
+                      ? `${user?.users[1]?.petName}`
+                      : `${user?.users[0]?.petName}`
                   }'s avatar`}
                   className="w-12 h-12 rounded-xl object-cover"
                 />
               </div>
               <span className="text-gray-700 font-medium">
                 {user?.users[0]?._id === userData?.userId
-                  ? `${user?.users[1]?.fullName}`
-                  : `${user?.users[0]?.fullName}`}
+                  ? `${user?.users[1]?.petName}`
+                  : `${user?.users[0]?.petName}`}
               </span>
             </div>
           ))}
