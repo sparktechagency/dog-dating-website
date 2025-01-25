@@ -41,9 +41,7 @@ const Login = () => {
         //* Dispatch the accessToken and userInfo to Redux store
         dispatch(setAccessToken(res?.data?.accessToken));
         dispatch(setUserInfo(res?.data?.accessToken));
-        // dispatch(setAccessToken(res?.data?.user));
 
-        //* Set cookies if needed
         cookies.set("woof_spot_accessToken", res?.data?.accessToken, {
           path: "/",
         });

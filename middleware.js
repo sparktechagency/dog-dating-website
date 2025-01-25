@@ -1,11 +1,11 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { getFromLocalStorage } from "./utils/local-storage";
 const { jwtDecode } = require("jwt-decode"); // Use CommonJS import for jwt-decode
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
-  // Get the accessToken from cookies
   const accessToken = cookies().get("woof_spot_accessToken")?.value;
 
   if (!accessToken) {
@@ -45,10 +45,12 @@ export async function middleware(request) {
     ];
 
     if (privateRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.next(); // Allow access to logged-in users
+      if (role === "admin" || role === "user") {
+        return NextResponse.next();
+      } else {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
     }
-
-    return NextResponse.redirect(new URL("/login", request.url));
   } catch (error) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

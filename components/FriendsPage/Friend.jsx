@@ -126,20 +126,18 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
           style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
           className=" font-semibold flex justify-center items-center gap-2 text-[#302F51]"
         >
-          <PiMapPinAreaFill className="text-[#F88D58]" />{" "}
+          <PiMapPinAreaFill className="text-[#F88D58] w-10 h-10" />{" "}
           {petProfile?.data?.address}
         </p>
       </div>
 
-      <div className="flex justify-top items-center flex-col gap-1 md:mb-0 mb-[40px]">
+      <div className="flex justify-between items-center flex-col gap-1 md:mb-0 mb-[40px]">
         <p className="bg-[#F88D58] rounded-full py-4 px-6 text-white font-bold ">
           {index + 1}
         </p>
         <IoIosHeart className="text-red-600 text-[80px] md:mt-[68px] mt-[40px] " />
         <p className="text-fluid-button font-bold">Matched</p>
-        <div className="flex justify-center items-center gap-[11px]">
-          {/* <RiPinDistanceFill className='text-[#F88D58] text-7xl'/> */}
-
+        {/* <div className="flex justify-center items-center gap-[11px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="51"
@@ -168,7 +166,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
           <p className="font-semibold text-fluid-lg-title-2 my-[27px]">
             1 Miles
           </p>
-        </div>
+        </div> */}
         {/* <button className="btn text-white no-underline bg-[#F88D58] hover:bg-black my-2">
                     Message Me <MdOutlineArrowOutward />
                 </button> */}
@@ -220,7 +218,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
         </p>
         <p
           style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
-          className=" font-semibold flex justify-center items-center gap-2 text-[#302F51]"
+          className=" font-semibold flex items-center gap-2 text-[#302F51]"
         >
           <PiMapPinAreaFill className="text-[#F88D58]" />{" "}
           {petPartner?.petsProfileId?.address}

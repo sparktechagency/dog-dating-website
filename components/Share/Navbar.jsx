@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Cookies from "universal-cookie";
 import {
   clearAuth,
+  selectToken,
   selectUser,
   setAccessToken,
   setUserInfo,
@@ -31,6 +32,11 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const cookies = new Cookies();
 
+  const token = useSelector(selectToken);
+
+  if (token) {
+    cookies.set("woof_spot_accessToken", token, { path: "/" });
+  }
   const userData = useSelector(selectUser);
 
   const imageServerUrl = getImageUrl();
@@ -45,7 +51,7 @@ const Navbar = () => {
   );
 
   const userProfileImg = isFetching
-    ? blankImg
+    ? blankImg.src
     : imageServerUrl + userProfileData?.data?.image;
 
   const toggleMenu = () => {
@@ -231,7 +237,7 @@ const Navbar = () => {
             <div onClick={toggleProfile}>
               {/* <IoPersonCircleOutline className="text-5xl" /> */}
               <Image
-                src={userProfileImg}
+                src={userProfileData ? userProfileImg : blankImg}
                 alt={`profile`}
                 width={1000}
                 height={1000}

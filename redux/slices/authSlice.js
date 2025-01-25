@@ -15,7 +15,7 @@ const authSlice = createSlice({
     },
     clearAuth: (state) => {
       state.accessToken = null;
-      // state.userInfo = null;
+      state.userInfo = null;
     },
     setUserInfo: (state, action) => {
       state.userInfo = decodedToken(action.payload);

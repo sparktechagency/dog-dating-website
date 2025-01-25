@@ -124,7 +124,7 @@ export default function Profile() {
     <div className="container mx-auto p-4 flex flex-col md:flex-row gap-8">
       {/* My Profile Section */}
       {userProfileError ? (
-        <div className="flex-1  p-6 ">
+        <div className="flex-1  p-6 h-screen">
           <h2 className="text-2xl font-bold mb-6">My Profile</h2>
           <p className="text-2xl font-bold mb-6">
             No Profile Found, Please Create your own Profile

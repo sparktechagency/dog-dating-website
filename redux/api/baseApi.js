@@ -34,40 +34,6 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-// const baseQueryWithRefreshToken = async (args, api, extraOptions) => {
-//   const cookies = new Cookies();
-
-//   let result = await baseQuery(args, api, extraOptions);
-
-//   if (result?.error?.status === 403) {
-//     const res = await fetch(`${getBaseUrl()}/auth/refresh-token`, {
-//       method: "POST",
-//       credentials: "include",
-//       headers: {
-//         refreshToken: cookies.get("woof_spot_refreshToken"),
-//       },
-//     });
-
-//     const data = await res.json();
-//     if (data?.data?.accessToken) {
-//       const accessToken = api.getState().auth.accessToken;
-//       cookies.get("woof_spot_refreshToken");
-//       api.dispatch(setAccessToken(accessToken));
-//       api.dispatch(setUserInfo(accessToken));
-
-//       result = await baseQuery(args, api, extraOptions);
-//     } else {
-//       api.dispatch(clearAuth());
-//       cookies.remove("woof_spot_accessToken", { path: "/" });
-//       cookies.remove("woof_spot_refreshToken", { path: "/" });
-
-//       window.location.href = "/login";
-//     }
-//   }
-
-//   return result;
-// };
-
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQuery,
