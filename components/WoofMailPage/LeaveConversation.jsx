@@ -6,7 +6,6 @@ const LeaveConversation = ({
   userData,
 }) => {
   const handleLeaveConversation = async (userData) => {
-    console.log("userData", userData);
     setLeaveConversationModal(false);
   };
   return (

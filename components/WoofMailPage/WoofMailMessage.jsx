@@ -47,14 +47,14 @@ const WoofMailMessage = ({
 
   const menu = (
     <Menu>
-      {isAdmin && (
+      {/* {isAdmin && (
         <Menu.Item key="1">
           <div className="flex items-center gap-2 text-base">
             <BsPersonAdd className="text-[#F88D58]" />
             <span className="text-[#F88D58]">Add Member</span>
           </div>
         </Menu.Item>
-      )}
+      )} */}
 
       <Menu.Item key="2">
         <div

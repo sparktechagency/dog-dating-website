@@ -19,7 +19,6 @@ const ContractPage = () => {
 
     try {
       const res = await sendMessage(data).unwrap();
-      console.log(res);
       toast.success("Message Sent Successfully", {
         id: toastId,
         duration: 2000,
