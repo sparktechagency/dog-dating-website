@@ -104,7 +104,6 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
             <Upload
               fileList={fileList}
               customRequest={(options) => {
-                console.log("File to upload:", options.file);
                 setTimeout(() => {
                   options.onSuccess("ok");
                 }, 1000);
