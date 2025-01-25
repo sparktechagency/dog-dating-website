@@ -13,8 +13,12 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   useEffect(() => {
     setFileList([]);
     setPreviewUrls([]);
-    form.resetFields();
-  }, [selectedConversation]); // Dependency array includes selectedConversation
+  }, [selectedConversation?._id]);
+
+  // Dependency array includes selectedConversation
+  useEffect(() => {
+    form.setFieldValue("message", "");
+  }, [selectedConversation._id]); // Dependency array includes selectedConversation
 
   const handleImageChange = ({ fileList: newFileList }) => {
     setFileList(newFileList); // Update the file list
@@ -41,29 +45,29 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   };
 
   const handleMessageSend = async (values) => {
-    const toastId = toast.loading("Sending Message...");
-    const data = {
-      chat: selectedConversation?._id,
-      sender: userData?.userId,
-      text: values?.message,
-      senderDetails: userData,
-    };
-
-    try {
-      socket.emit("send-new-message", data);
-      form.resetFields();
-      setFileList([]); // Clear the fileList after sending message
-      setPreviewUrls([]); // Clear the previews
-      toast.success("Message sent successfully!", {
-        id: toastId,
-        duration: 2000,
-      });
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to send message", {
-        id: toastId,
-        duration: 2000,
-      });
-    }
+    console.log(values);
+    // const toastId = toast.loading("Sending Message...");
+    // const data = {
+    //   chat: selectedConversation?._id,
+    //   sender: userData?.userId,
+    //   text: values?.message,
+    //   senderDetails: userData,
+    // };
+    // try {
+    //   socket.emit("send-new-message", data);
+    //   form.resetFields();
+    //   setFileList([]); // Clear the fileList after sending message
+    //   setPreviewUrls([]); // Clear the previews
+    //   toast.success("Message sent successfully!", {
+    //     id: toastId,
+    //     duration: 2000,
+    //   });
+    // } catch (error) {
+    //   toast.error(error?.data?.message || "Failed to send message", {
+    //     id: toastId,
+    //     duration: 2000,
+    //   });
+    // }
   };
 
   return (
@@ -101,21 +105,23 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
                 className="border-none focus:ring-0 outline-none !bg-transparent text-black"
               />
             </Form.Item>
-            <Upload
-              fileList={fileList}
-              customRequest={(options) => {
-                setTimeout(() => {
-                  options.onSuccess("ok");
-                }, 1000);
-              }}
-              maxCount={4}
-              multiple
-              accept="image/*"
-              showUploadList={false}
-              onChange={handleImageChange}
-            >
-              <BsImage className="cursor-pointer text-xl text-gray-500" />
-            </Upload>
+            <Form.Item className="!p-0 !m-0" name="image">
+              <Upload
+                fileList={fileList}
+                customRequest={(options) => {
+                  setTimeout(() => {
+                    options.onSuccess("ok");
+                  }, 1000);
+                }}
+                maxCount={4}
+                multiple
+                accept="image/*"
+                showUploadList={false}
+                onChange={handleImageChange}
+              >
+                <BsImage className="cursor-pointer text-xl text-gray-500" />
+              </Upload>
+            </Form.Item>
           </div>
           <button type="submit">
             <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />

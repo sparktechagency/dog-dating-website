@@ -177,9 +177,10 @@ const Navbar = () => {
                   <Link href={`/profile`} className="w-full">
                     <p className="text-black">Profile</p>
                   </Link>
-                  <Link href={`/login`} className="w-full">
-                    <p className="text-black">Log Out</p>
-                  </Link>
+
+                  <p onClick={handleLogout} className="text-black w-full">
+                    Log Out
+                  </p>
                 </div>
               ) : (
                 <div className="">

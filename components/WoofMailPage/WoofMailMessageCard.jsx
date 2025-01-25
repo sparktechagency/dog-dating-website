@@ -7,31 +7,35 @@ const WoofMailMessageCard = ({ msg, userData, imageUrl }) => {
     <div>
       <div>
         <div className="flex items-start gap-1">
-          <Image
-            src={
-              msg?.sender?.image
-                ? imageUrl + msg.sender.image
-                : msg?.image
-                ? imageUrl + msg.image
-                : "fallback-image-url"
-            }
-            width={1000}
-            height={1000}
-            alt="Profile"
-            className={`h-6 w-6 object-cover rounded-md relative mt-2 ${
-              msg?.sender?._id === userData?.userId ||
-              msg?.sender?.toString() === userData?.userId
-                ? "order-last"
-                : "order-first"
-            }`}
-            sizes="100vw"
-          />
+          {msg?.sender !== null && (
+            <Image
+              src={
+                msg?.sender?.petImage
+                  ? imageUrl + msg.sender.petImage
+                  : msg?.image
+                  ? imageUrl + msg.image
+                  : "/assets/images/user.png"
+              }
+              width={1000}
+              height={1000}
+              alt="Profile"
+              className={`h-6 w-6 object-cover rounded-md relative mt-2 ${
+                msg?.sender?._id === userData?.userId ||
+                msg?.sender?.toString() === userData?.userId
+                  ? "order-last"
+                  : "order-first"
+              }`}
+              sizes="100vw"
+            />
+          )}
           <div
             className={`flex items-center gap-2 w-full ${
               msg?.sender?._id === userData?.userId ||
               msg?.sender?.toString() === userData?.userId
                 ? "justify-end"
-                : "justify-start"
+                : msg?.sender !== null
+                ? "justify-start"
+                : "justify-center"
             }`}
           >
             <div>
@@ -46,16 +50,18 @@ const WoofMailMessageCard = ({ msg, userData, imageUrl }) => {
                 {msg?.text}
               </p>
 
-              <p
-                className={`text-[11px] text-secondary-color ${
-                  msg?.sender?._id === userData?.userId ||
-                  msg?.sender?.toString() === userData?.userId
-                    ? "text-right"
-                    : "text-left"
-                }`}
-              >
-                {formatDateTime(msg?.createdAt)}
-              </p>
+              {msg?.sender !== null && (
+                <p
+                  className={`text-[11px] text-secondary-color ${
+                    msg?.sender?._id === userData?.userId ||
+                    msg?.sender?.toString() === userData?.userId
+                      ? "text-right"
+                      : "text-left"
+                  }`}
+                >
+                  {formatDateTime(msg?.createdAt)}
+                </p>
+              )}
             </div>
           </div>
         </div>
