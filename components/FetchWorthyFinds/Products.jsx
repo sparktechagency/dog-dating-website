@@ -41,6 +41,7 @@ const Products = () => {
         >
           {productsData?.data?.length > 0 && (
             <Pagination
+              showSizeChanger={false}
               onChange={(page) => setPage(page)}
               pageSize={12}
               total={productsData?.meta?.total}

@@ -1,4 +1,5 @@
 import { Form, Input } from "antd";
+import { useEffect } from "react";
 import { BsImage } from "react-icons/bs";
 import { FaTelegramPlane } from "react-icons/fa";
 import { toast } from "sonner";
@@ -10,6 +11,10 @@ const WoofMailSendMessage = ({
   setMessages,
 }) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldValue("message", "");
+  }, [selectedConversation._id]);
 
   //* For Sending Message
   const handleMessageSend = async (values) => {

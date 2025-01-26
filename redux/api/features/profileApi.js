@@ -78,9 +78,9 @@ export const profileApi = baseApi.injectEndpoints({
     }),
     //*--------------------------- Nearby Friends ---------------------------*//
     nearbyFriends: build.query({
-      query: ({ id }) => {
+      query: ({ id, page }) => {
         return {
-          url: `/near-friends/${id}`,
+          url: `/near-friends/${id}/`,
           method: "GET",
         };
       },

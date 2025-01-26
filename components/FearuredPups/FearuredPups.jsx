@@ -123,6 +123,7 @@ const FeaturedPups = () => {
           >
             {shelterData?.data?.length > 0 && (
               <Pagination
+                showSizeChanger={false}
                 onChange={(page) => setPage(page)}
                 pageSize={12}
                 total={shelterData?.meta?.total}
