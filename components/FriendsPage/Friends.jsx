@@ -15,8 +15,10 @@ import {
 import { useSelector } from "react-redux";
 import { decodedToken } from "@/utils/jwt";
 import Loader from "../ui/Loader";
+import { ConfigProvider } from "antd";
 
 const Friends = () => {
+  const [page, setPage] = useState(1);
   const [petProfile, setPetProfile] = useState(null);
   const [userData, setUserData] = useState(null);
 
@@ -66,6 +68,8 @@ const Friends = () => {
     }
   );
 
+  console.log(nearByFriends);
+
   return (
     <div className="bg-[#FFFAF5]">
       <h1
@@ -93,6 +97,26 @@ const Friends = () => {
           />
         ))
       )}
+      {/* <ConfigProvider
+        theme={{
+          components: {
+            Pagination: {
+              itemActiveBg: "#F88D58",
+              colorPrimary: "#F3F3F3",
+              colorPrimaryHover: "#F3F3F3",
+            },
+          },
+        }}
+      >
+        {nearByFriends?.data?.length > 0 && (
+          <Pagination
+            showSizeChanger={false}
+            onChange={(page) => setPage(page)}
+            pageSize={1}
+            total={nearByFriends?.meta?.total}
+          />
+        )}
+      </ConfigProvider> */}
 
       <div className="pt-[50px] ">
         <HowDoYouPlay />

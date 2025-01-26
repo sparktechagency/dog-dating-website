@@ -90,6 +90,7 @@ const AllProductsPage = () => {
         >
           {filteredData?.length > 0 && (
             <Pagination
+              showSizeChanger={false}
               onChange={(page) => setPage(page)}
               pageSize={12}
               total={productData?.meta?.total}

@@ -119,9 +119,9 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.user], // Ensures that the profile data can be invalidated if needed
     }),
     donationUser: build.query({
-      query: () => {
+      query: ({ page }) => {
         return {
-          url: `/donation`,
+          url: `/donation/?page=${page}&limit=12`,
           method: "GET",
         };
       },

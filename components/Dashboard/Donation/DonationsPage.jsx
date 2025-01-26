@@ -9,7 +9,17 @@ import { useDonationUserQuery } from "@/redux/api/features/authApi";
 const { Option } = Select;
 
 const DonationsPage = () => {
-  const { data: donationUser, isFetching } = useDonationUserQuery();
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 12 });
+  const handleTableChange = (pagination) => {
+    setPagination({
+      page: pagination.current,
+      pageSize: pagination.pageSize,
+    });
+  };
+
+  const { data: donationUser, isFetching } = useDonationUserQuery({
+    page: pagination?.page,
+  });
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const [selectedValue, setSelectedValue] = useState(null);
@@ -44,6 +54,9 @@ const DonationsPage = () => {
         });
         return formattedDate; // e.g., "January 2, 2025"
       },
+      // Adding a sorter for the date
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      sortDirections: ["descend", "ascend"], // This controls the allowed sort directions
     },
     {
       key: "name",
@@ -54,6 +67,9 @@ const DonationsPage = () => {
       key: "amount",
       title: "Amount",
       dataIndex: "amount",
+      // Adding a sorter for the amount
+      sorter: (a, b) => a.amount - b.amount,
+      sortDirections: ["descend", "ascend"], // Allows numeric sorting
     },
     {
       key: "email",
@@ -114,6 +130,11 @@ const DonationsPage = () => {
                 colorLinkActive: "#fffaf5",
                 headerSplitColor: "#0C0C0C",
               },
+              Pagination: {
+                itemActiveBg: "#F88D58",
+                colorPrimary: "#F3F3F3",
+                colorPrimaryHover: "#F3F3F3",
+              },
             },
           }}
         >
@@ -122,6 +143,12 @@ const DonationsPage = () => {
             loading={isFetching}
             columns={columns}
             dataSource={donationUser?.data}
+            pagination={{
+              current: pagination.page,
+              pageSize: pagination.pageSize,
+              total: donationUser?.meta?.total,
+            }}
+            onChange={handleTableChange}
             scroll={{ x: "100%" }}
           />
         </ConfigProvider>

@@ -10,6 +10,14 @@ const { Option } = Select;
 const MembersPage = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 12 });
+  const handleTableChange = (pagination) => {
+    setPagination({
+      page: pagination.current,
+      pageSize: pagination.pageSize,
+    });
+  };
+
   const { data: users, isFetching } = useGetAllUsersQuery();
 
   const getPaidMembers = (users, status) => {
@@ -36,6 +44,22 @@ const MembersPage = () => {
     {
       title: "Status",
       dataIndex: "status",
+      filters: [
+        { text: "Donated", value: "Paid" }, // Filter option that shows "Donated" but filters for "Paid"
+        { text: "General", value: "General" },
+        // Add more status options here as needed
+      ],
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (status) =>
+        status === "Paid" ? (
+          <span className="bg-[#FF6740] text-white px-4 py-2 rounded">
+            Donated
+          </span>
+        ) : (
+          <span className="bg-[#1A2238] text-white px-4 py-2 rounded">
+            {status}
+          </span>
+        ),
     },
   ];
   const [selectedValue, setSelectedValue] = useState(null);
@@ -58,10 +82,6 @@ const MembersPage = () => {
     "November",
     "December",
   ];
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
 
   return (
     <div>
@@ -125,6 +145,11 @@ const MembersPage = () => {
                 colorLinkActive: "#fffaf5",
                 headerSplitColor: "#0C0C0C",
               },
+              Pagination: {
+                itemActiveBg: "#F88D58",
+                colorPrimary: "#F3F3F3",
+                colorPrimaryHover: "#F3F3F3",
+              },
             },
           }}
         >
@@ -132,6 +157,11 @@ const MembersPage = () => {
             loading={isFetching}
             columns={columns}
             dataSource={users?.data}
+            pagination={{
+              current: pagination.page,
+              pageSize: pagination.pageSize,
+            }}
+            onChange={handleTableChange}
             scroll={{ x: "100%" }}
           />
         </ConfigProvider>
