@@ -21,7 +21,6 @@ const mypetInfo = {
 };
 
 const Friend = ({ userData, petPartner, index, petProfile }) => {
-  console.log("petPartner", petPartner);
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
