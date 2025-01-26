@@ -80,8 +80,9 @@ export const profileApi = baseApi.injectEndpoints({
     nearbyFriends: build.query({
       query: ({ id, page }) => {
         return {
-          url: `/near-friends/${id}/`,
+          url: `/near-friends/${id}`,
           method: "GET",
+          params: { page, limit: 10 },
         };
       },
       providesTags: [tagTypes.userProfile],

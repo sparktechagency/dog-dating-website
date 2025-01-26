@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Friend from "./Friend";
 import HowDoYouPlay from "../HomePage/HowDoYouPlay";
-import Pagination from "./Pagination";
+
 import img1 from "../../asserts/memo.jpeg";
 import img2 from "../../asserts/jack.jpeg";
 import img3 from "../../asserts/lily.jpeg";
@@ -15,10 +15,13 @@ import {
 import { useSelector } from "react-redux";
 import { decodedToken } from "@/utils/jwt";
 import Loader from "../ui/Loader";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Pagination } from "antd";
 
 const Friends = () => {
   const [page, setPage] = useState(1);
+
+  // Add a useEffect to debug state changes
+
   const [petProfile, setPetProfile] = useState(null);
   const [userData, setUserData] = useState(null);
 
@@ -57,18 +60,15 @@ const Friends = () => {
   }, [petProfileData, petProfileError]);
 
   // Fetch nearby friends
-  const {
-    data: nearByFriends,
-    error,
-    isFetching: nearByFriendsFetching,
-  } = useNearbyFriendsQuery(
-    { id: userData?.userId },
-    {
-      skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
-    }
-  );
+  const { data: nearByFriends, isFetching: nearByFriendsFetching } =
+    useNearbyFriendsQuery(
+      { id: userData?.userId, page: page },
+      {
+        skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
+      }
+    );
 
-  console.log(nearByFriends);
+  console.log("nearByFriends", nearByFriends?.data?.meta?.total);
 
   return (
     <div className="bg-[#FFFAF5]">
@@ -87,7 +87,7 @@ const Friends = () => {
       ) : nearByFriendsFetching ? (
         <Loader className="h-screen" />
       ) : (
-        nearByFriends?.data?.map((petPartner, index) => (
+        nearByFriends?.data?.result?.map((petPartner, index) => (
           <Friend
             userData={userData}
             key={petPartner._id}
@@ -97,7 +97,7 @@ const Friends = () => {
           />
         ))
       )}
-      {/* <ConfigProvider
+      <ConfigProvider
         theme={{
           components: {
             Pagination: {
@@ -108,15 +108,18 @@ const Friends = () => {
           },
         }}
       >
-        {nearByFriends?.data?.length > 0 && (
-          <Pagination
-            showSizeChanger={false}
-            onChange={(page) => setPage(page)}
-            pageSize={1}
-            total={nearByFriends?.meta?.total}
-          />
+        {nearByFriends?.data?.result?.length > 0 && (
+          // Then use this function in your Pagination component
+          <div className="flex justify-center my-20">
+            <Pagination
+              showSizeChanger={false}
+              onChange={(page) => setPage(page)}
+              pageSize={10}
+              total={nearByFriends?.data?.meta?.total}
+            />
+          </div>
         )}
-      </ConfigProvider> */}
+      </ConfigProvider>
 
       <div className="pt-[50px] ">
         <HowDoYouPlay />

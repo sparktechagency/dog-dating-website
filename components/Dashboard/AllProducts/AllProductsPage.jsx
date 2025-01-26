@@ -9,6 +9,7 @@ import Loader from "@/components/ui/Loader";
 
 const AllProductsPage = () => {
   const [page, setPage] = useState(1);
+
   const { data: productData, isFetching } = useGetAllProductQuery({ page });
 
   const [isOpen, setIsOpen] = useState(false);

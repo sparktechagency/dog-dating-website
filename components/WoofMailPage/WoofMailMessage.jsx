@@ -114,8 +114,6 @@ const WoofMailMessage = ({
     };
   }, [socket, selectedConversation?._id, dispatch, handleMessage]);
 
-  console.log("messages", messages);
-
   return (
     <div
       className={`lg:col-span-3 xl:col-span-4 overflow-y-auto  ${
