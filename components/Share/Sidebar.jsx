@@ -7,10 +7,22 @@ import donationIcon from "../../asserts/donationIcon.svg";
 import logOutIcon from "../../asserts/logOutIcon.svg";
 import memberIcon from "../../asserts/memberIcon.svg";
 import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { clearAuth } from "@/redux/slices/authSlice";
+import Cookies from "universal-cookie";
 
 const Sidebar = ({ slider, setSlider }) => {
+  const dispatch = useDispatch();
+  const cookies = new Cookies();
   const router = useRouter();
   const location = usePathname();
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    cookies.remove("woof_spot_accessToken", { path: "/" });
+    cookies.remove("woof_spot_refreshToken", { path: "/" });
+    router.push("/login");
+  };
 
   return (
     <div className=" bg-[#F88D58] text-white h-[89vh] lg:h-[85vh] pt-5 lg:rounded-tr-3xl lg:rounded-br-3xl overflow-y-auto">
@@ -167,9 +179,7 @@ const Sidebar = ({ slider, setSlider }) => {
           <div
             className={`flex items-center cursor-pointer absolute bottom-14 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
            `}
-            onClick={() => {
-              router.push("/login");
-            }}
+            onClick={handleLogout}
           >
             <Image src={logOutIcon} alt="show-feedback" width={30} />
             <p>Log Out</p>
@@ -269,7 +279,7 @@ const Sidebar = ({ slider, setSlider }) => {
             className={`flex items-center cursor-pointer absolute bottom-0 gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg text-white 
            `}
             onClick={() => {
-              router.push("/login");
+              handleLogout();
               setSlider(!slider);
             }}
           >
