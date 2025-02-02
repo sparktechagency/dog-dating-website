@@ -27,6 +27,12 @@ const EditItem = (props) => {
     };
   }, [isOpen, setIsOpen]);
 
+  const checkImageUrl = (url) => {
+    if (url.start) {
+      return url;
+    }
+  };
+
   const url = getImageUrl();
   const imageUrl = url + item?.image;
 
