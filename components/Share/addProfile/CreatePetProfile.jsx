@@ -116,7 +116,10 @@ const CreatePetProfile = ({
     }
   };
   return (
-    <div ref={profileRef} className="bg-white md:w-[500px] rounded-md mt-5">
+    <div
+      ref={profileRef}
+      className="bg-white md:w-[500px] rounded-md mt-5 h-[95vh]"
+    >
       <div className="w-full relative bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6">
           Create Pet Profile
