@@ -8,6 +8,7 @@ const nextConfig = {
       "127.0.0.1",
       "10.0.70.42",
       "10.0.70.112",
+      "api.woofspot.net",
     ],
   },
 };
