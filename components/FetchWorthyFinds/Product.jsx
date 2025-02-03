@@ -9,7 +9,7 @@ const Product = ({ product }) => {
   const url = getImageUrl();
   const imageUrl = url + product?.image;
   return (
-    <div className="max-w-[387px] rounded overflow-hidden shadow-xl bg-white">
+    <div className="rounded overflow-hidden shadow-xl bg-white">
       {/* Product Image */}
       <div className="relative">
         <Image

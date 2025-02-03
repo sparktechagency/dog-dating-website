@@ -57,10 +57,10 @@ const WoofMailChatList = ({
             ?.toLowerCase()
             ?.includes(searchTerm.toLowerCase())
         : conversation?.users[0]?._id === userData?.userId
-        ? conversation?.users[1]?.fullName
+        ? conversation?.users[1]?.petName
             ?.toLowerCase()
             ?.includes(searchTerm.toLowerCase())
-        : conversation?.users[0]?.fullName
+        : conversation?.users[0]?.petName
             ?.toLowerCase()
             ?.includes(searchTerm.toLowerCase())
     )
