@@ -58,7 +58,7 @@ const AllProductsPage = () => {
             className="flex justify-center items-center cursor-pointer gap-2"
           >
             <span className="text-3xl text-[#F88D58] mb-2 "> +</span>
-            Add New Dog Info
+            Add New Product
           </div>
           {isOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center  z-50">
