@@ -15,6 +15,8 @@ import {
 import { getImageUrl } from "@/helpers/config/envConfig";
 import CreatePetProfile from "./addProfile/CreatePetProfile";
 import Loader from "../ui/Loader";
+import WoofHero from "@/asserts/woofHero.png";
+import WoofSupporter from "@/asserts/woofSupporter.png";
 
 export default function Profile() {
   const [createUserProfile, setCreateUserProfile] = useState(false);
@@ -159,6 +161,26 @@ export default function Profile() {
               className="w-20 h-20 object-cover aspect-square rounded-full ring-1 ring-[#F88D58] mr-4"
             />
             <h3 className="text-xl font-semibold">{userProfile?.data?.name}</h3>
+            <div className="flex items-center gap-1 ml-2">
+              {userProfile?.data?.userId?.isSupported && (
+                <Image
+                  src={WoofSupporter}
+                  className="size-5"
+                  width={1000}
+                  height={1000}
+                  alt="WoofSupporter"
+                />
+              )}
+              {userProfile?.data?.userId?.isHero && (
+                <Image
+                  src={WoofHero}
+                  className="size-5"
+                  width={1000}
+                  height={1000}
+                  alt="WoofSupporter"
+                />
+              )}
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -257,6 +279,26 @@ export default function Profile() {
               className="w-20 h-20 object-cover aspect-square rounded-full ring-1 ring-[#F88D58] mr-4"
             />
             <h3 className="text-xl font-semibold">{petProfile?.data?.name}</h3>
+            <div className="flex items-center gap-1 ml-2">
+              {petProfile?.data?.userId?.isSupported && (
+                <Image
+                  src={WoofSupporter}
+                  className="size-5"
+                  width={1000}
+                  height={1000}
+                  alt="WoofSupporter"
+                />
+              )}
+              {petProfile?.data?.userId?.isHero && (
+                <Image
+                  src={WoofHero}
+                  className="size-5"
+                  width={1000}
+                  height={1000}
+                  alt="WoofSupporter"
+                />
+              )}
+            </div>
           </div>
 
           <div className="space-y-4">

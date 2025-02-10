@@ -109,23 +109,37 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.user], // Ensures that the profile data can be invalidated if needed
     }),
     getAllUsers: build.query({
-      query: () => {
+      query: ({ page }) => {
         return {
-          url: `${AUTH_URL}/all-users`,
+          url: `${AUTH_URL}/all-users/?page=${page}&limit=10`,
           method: "GET",
-          query: {},
         };
       },
-      providesTags: [tagTypes.user], // Ensures that the profile data can be invalidated if needed
+      providesTags: [tagTypes.user, tagTypes.payment], // Ensures that the profile data can be invalidated if needed
     }),
     donationUser: build.query({
       query: ({ page }) => {
         return {
-          url: `/donation/?page=${page}&limit=12`,
+          url: `/donation/?page=${page}&limit=10`,
           method: "GET",
         };
       },
       providesTags: [tagTypes.payment],
+    }),
+    updateUserbatch: build.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/users/badgeUpdate/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: [
+        tagTypes.user,
+        tagTypes.userProfile,
+        tagTypes.petProfile,
+        tagTypes.payment,
+      ],
     }),
   }),
 });
@@ -142,4 +156,5 @@ export const {
   useMyProfileQuery,
   useGetAllUsersQuery,
   useDonationUserQuery,
+  useUpdateUserbatchMutation,
 } = authApi;
