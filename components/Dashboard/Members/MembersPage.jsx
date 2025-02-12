@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, ConfigProvider, Flex, Select, Table } from "antd";
+import { Button, ConfigProvider, Flex, Select, Table, Tooltip } from "antd";
 import { BiMenuAltRight, BiSolidDonateHeart } from "react-icons/bi";
 import { BsFilterRight } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
@@ -76,22 +76,28 @@ const MembersPage = () => {
             <p>{text}</p>{" "}
             <div className="flex items-center gap-1 ">
               {record?.isSupported && (
-                <Image
-                  src={WoofSupporter}
-                  className="size-4"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Supporter">
+                  <Image
+                    loading="lazy"
+                    src={WoofSupporter}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofSupporter"
+                  />
+                </Tooltip>
               )}
               {record?.isHero && (
-                <Image
-                  src={WoofHero}
-                  className="size-4"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Hero">
+                  <Image
+                    loading="lazy"
+                    src={WoofHero}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofHero"
+                  />
+                </Tooltip>
               )}
             </div>
           </h1>

@@ -63,6 +63,7 @@ const Shelter = ({ shelter }) => {
         >
           <div className="flex justify-center flex-col items-center">
             <Image
+              loading="lazy"
               src={imageUrl}
               width={0}
               height={0}
@@ -78,6 +79,7 @@ const Shelter = ({ shelter }) => {
 
         <div className="flex justify-center">
           <Image
+            loading="lazy"
             src={imageUrl}
             alt="shelter name"
             width={0}

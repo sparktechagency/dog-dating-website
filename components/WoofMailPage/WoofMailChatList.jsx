@@ -72,7 +72,7 @@ const WoofMailChatList = ({
 
   return (
     <div
-      className={`col-span-1 overflow-y-auto px-3 ${
+      className={`w-full lg:w-[400px] overflow-y-auto px-3 ${
         selectedConversation ? "hidden lg:block" : "block lg:block"
       }`}
     >
@@ -87,7 +87,12 @@ const WoofMailChatList = ({
             {open && (
               <div className="bg-[#F3F5FB] py-3 shadow-md absolute -left-32 top-9 rounded z-[99999] w-44 p-1">
                 <div className="flex gap-2 whitespace-nowrap">
-                  <Image alt="profileImage" src={groupImage} className="" />
+                  <Image
+                    loading="lazy"
+                    alt="profileImage"
+                    src={groupImage}
+                    className=""
+                  />
                   <p
                     onClick={toggleGroupModal}
                     className="text-[#302F51] cursor-pointer text-[20px] font-bold"

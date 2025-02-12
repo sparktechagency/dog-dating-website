@@ -1,17 +1,17 @@
 import dayjs from "dayjs";
 
 export const formatDateTime = (date) => {
-  // date is less than 1min ago , return "just now"
-  // date is less than 1hr ago , return "x minutes ago"
-  // date is less than 1day ago , return "hh:mm A"
-  // date is greater than 1day ago , return "DDD MMM DD"
   const now = dayjs();
   const messageDate = dayjs(date);
 
-  if (now.diff(messageDate, "minute") < 1) return "just now";
-  if (now.diff(messageDate, "hour") < 1) return messageDate.format("hh:mm A");
-  if (now.diff(messageDate, "day") < 1) return messageDate.format("hh:mm A");
-  if (now.diff(messageDate, "year") < 1)
-    return messageDate.format("MMM DD hh:mm A");
-  return messageDate.format("DDD MM YYYY hh:mm A");
+  const minutesAgo = now.diff(messageDate, "minute");
+  const hoursAgo = now.diff(messageDate, "hour");
+  const daysAgo = now.diff(messageDate, "day");
+  const yearsAgo = now.diff(messageDate, "year");
+
+  if (minutesAgo < 1) return "just now";
+  if (minutesAgo < 60) return `${minutesAgo} min ago`;
+  if (hoursAgo < 24) return messageDate.format("hh:mm A");
+  if (yearsAgo < 1) return messageDate.format("MMM DD");
+  return messageDate.format("MMM DD YYYY");
 };

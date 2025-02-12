@@ -16,7 +16,7 @@ const WoofMailPage = () => {
 
   return (
     <div className="">
-      <div className="grid lg:grid-cols-4 xl:grid-cols-5 h-[91vh] relative overflow-hidden">
+      <div className="flex h-[91vh] relative overflow-hidden">
         <WoofMailChatList
           selectedConversation={selectedConversation}
           setSelectedConversation={setSelectedConversation}

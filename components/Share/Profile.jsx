@@ -17,6 +17,7 @@ import CreatePetProfile from "./addProfile/CreatePetProfile";
 import Loader from "../ui/Loader";
 import WoofHero from "@/asserts/woofHero.png";
 import WoofSupporter from "@/asserts/woofSupporter.png";
+import { Tooltip } from "antd";
 
 export default function Profile() {
   const [createUserProfile, setCreateUserProfile] = useState(false);
@@ -118,41 +119,19 @@ export default function Profile() {
 
   const petImage = url + petProfile?.data?.image;
 
-  if (isFetchingProfile && isFetchingPetProfile) {
+  if (isFetchingProfile || isFetchingPetProfile) {
     return <Loader className={"h-screen"} />;
   }
 
   return (
     <div className="container mx-auto p-4 flex flex-col md:flex-row gap-8">
       {/* My Profile Section */}
-      {userProfileError ? (
-        <div className="flex-1  p-6 h-screen">
-          <h2 className="text-2xl font-bold mb-6">My Profile</h2>
-          <p className="text-2xl font-bold mb-6">
-            No Profile Found, Please Create your own Profile
-          </p>
-          <button
-            onClick={toggleCreateProfile}
-            className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-full mt-4"
-          >
-            Create Profile
-          </button>
-          {createUserProfile && (
-            <div className="inset-0 overflow-y-auto fixed flex justify-center items-center bg-black/20 z-50 ">
-              <CreateUserProfile
-                toggleCreateProfile={toggleCreateProfile}
-                createUserProfile={createUserProfile}
-                setCreateUserProfile={setCreateUserProfile}
-                myProfileData={userData}
-              />
-            </div>
-          )}
-        </div>
-      ) : (
+      {userProfile?.data?.userId?._id ? (
         <div className="flex-1  p-6 ">
           <h2 className="text-2xl font-bold mb-6">My Profile</h2>
           <div className="flex items-center mb-6">
             <Image
+              loading="lazy"
               src={userImage}
               alt="Profile"
               width={0}
@@ -163,22 +142,28 @@ export default function Profile() {
             <h3 className="text-xl font-semibold">{userProfile?.data?.name}</h3>
             <div className="flex items-center gap-1 ml-2">
               {userProfile?.data?.userId?.isSupported && (
-                <Image
-                  src={WoofSupporter}
-                  className="size-5"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Supporter">
+                  <Image
+                    loading="lazy"
+                    src={WoofSupporter}
+                    className="size-5"
+                    width={1000}
+                    height={1000}
+                    alt="WoofSupporter"
+                  />
+                </Tooltip>
               )}
               {userProfile?.data?.userId?.isHero && (
-                <Image
-                  src={WoofHero}
-                  className="size-5"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Hero">
+                  <Image
+                    loading="lazy"
+                    src={WoofHero}
+                    className="size-5"
+                    width={1000}
+                    height={1000}
+                    alt="WoofHero"
+                  />
+                </Tooltip>
               )}
             </div>
           </div>
@@ -240,37 +225,38 @@ export default function Profile() {
             )}
           </div>
         </div>
-      )}
-
-      {/* Pets Profile Section */}
-      {petProfileError ? (
-        <div className="flex-1  p-6 ">
-          <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
+      ) : (
+        <div className="flex-1  p-6 h-screen">
+          <h2 className="text-2xl font-bold mb-6">My Profile</h2>
           <p className="text-2xl font-bold mb-6">
-            No Profile Found, Please Create your pet Profile
+            No Profile Found, Please Create your own Profile
           </p>
           <button
-            onClick={toggleCreatePetProfile}
+            onClick={toggleCreateProfile}
             className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-full mt-4"
           >
-            Create Pet Profile
+            Create Profile
           </button>
-          {createPetProfile && (
+          {createUserProfile && (
             <div className="inset-0 overflow-y-auto fixed flex justify-center items-center bg-black/20 z-50 ">
-              <CreatePetProfile
-                toggleCreatePetProfile={toggleCreatePetProfile}
-                createPetProfile={createPetProfile}
-                setCreatePetProfile={setCreatePetProfile}
+              <CreateUserProfile
+                toggleCreateProfile={toggleCreateProfile}
+                createUserProfile={createUserProfile}
+                setCreateUserProfile={setCreateUserProfile}
                 myProfileData={userData}
               />
             </div>
           )}
         </div>
-      ) : (
+      )}
+
+      {/* Pets Profile Section */}
+      {petProfile?.data?.userId?._id ? (
         <div className="flex-1  p-6 ">
           <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
           <div className="flex items-center mb-6">
             <Image
+              loading="lazy"
               src={petImage}
               alt="Profile"
               width={0}
@@ -281,22 +267,28 @@ export default function Profile() {
             <h3 className="text-xl font-semibold">{petProfile?.data?.name}</h3>
             <div className="flex items-center gap-1 ml-2">
               {petProfile?.data?.userId?.isSupported && (
-                <Image
-                  src={WoofSupporter}
-                  className="size-5"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Supporter">
+                  <Image
+                    loading="lazy"
+                    src={WoofSupporter}
+                    className="size-5"
+                    width={1000}
+                    height={1000}
+                    alt="WoofSupporter"
+                  />
+                </Tooltip>
               )}
               {petProfile?.data?.userId?.isHero && (
-                <Image
-                  src={WoofHero}
-                  className="size-5"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Hero">
+                  <Image
+                    loading="lazy"
+                    src={WoofHero}
+                    className="size-5"
+                    width={1000}
+                    height={1000}
+                    alt="WoofHero"
+                  />
+                </Tooltip>
               )}
             </div>
           </div>
@@ -439,6 +431,29 @@ export default function Profile() {
               </div>
             )}
           </div>
+        </div>
+      ) : (
+        <div className="flex-1  p-6 ">
+          <h2 className="text-2xl font-bold mb-6">Pets Profile</h2>
+          <p className="text-2xl font-bold mb-6">
+            No Profile Found, Please Create your pet Profile
+          </p>
+          <button
+            onClick={toggleCreatePetProfile}
+            className="btn bg-[#F88D58] hover:bg-orange-600 text-white border-none w-full mt-4"
+          >
+            Create Pet Profile
+          </button>
+          {createPetProfile && (
+            <div className="inset-0 overflow-y-auto fixed flex justify-center items-center bg-black/20 z-50 ">
+              <CreatePetProfile
+                toggleCreatePetProfile={toggleCreatePetProfile}
+                createPetProfile={createPetProfile}
+                setCreatePetProfile={setCreatePetProfile}
+                myProfileData={userData}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

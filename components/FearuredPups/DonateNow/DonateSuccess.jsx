@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useRef } from "react";
 // import img1 from "../../../asserts/fp1.png";
 // import img2 from "../../../asserts/fp2.png";
@@ -15,31 +15,26 @@ import Image from "next/image";
 import Link from "next/link";
 
 const DonateSuccess = (params) => {
-  const { setOpen,open, id } = params;
-    
+  const { setOpen, open, id } = params;
+
   const containerRef = useRef(null); // Ref for the dropdown
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        open &&
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    };
 
-useEffect(() => {
-const handleClickOutside = (event) => {
-  if (
-    open &&
-    containerRef.current &&
-    !containerRef.current.contains(event.target)
-  ) {
-    setOpen(false);
-  }
-};
-
-document.addEventListener("mousedown", handleClickOutside);
-return () => {
-  document.removeEventListener("mousedown", handleClickOutside);
-};
-}, [setOpen,open]);
-
-
-
-
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setOpen, open]);
 
   // const shelters = [
   //   { id: 1, name: "ABC Shelter", image: img1 },
@@ -57,7 +52,10 @@ return () => {
   // );
 
   return (
-    <div ref={containerRef} className="bg-white/30 w-[60vw] h-[90vh]  items-center  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl flex flex-col justify-center">
+    <div
+      ref={containerRef}
+      className="bg-white/30 w-[60vw] h-[90vh]  items-center  backdrop-blur-2xl brightness-105% contrast-90% rounded-[50px] border border-white/50 shadow-xl flex flex-col justify-center"
+    >
       <button
         className="absolute right-10 top-10 font-bold text-2xl text-white"
         onClick={() => setOpen(false)}
@@ -67,6 +65,7 @@ return () => {
 
       <div className=" mx-auto">
         <Image
+          loading="lazy"
           alt={"logo"}
           src={logo}
           width={0}
@@ -75,32 +74,31 @@ return () => {
         />
       </div>
       <div className="flex justify-center mt-3">
-      <Image 
-      alt="checkmark"
-      src={checkMark}
-      width={0}
-      height={0}
-      />
+        <Image
+          loading="lazy"
+          alt="checkmark"
+          src={checkMark}
+          width={0}
+          height={0}
+        />
       </div>
-  
-      <h1 className="text-[30px] font-semibold text-white">Donation Successful</h1>
+
+      <h1 className="text-[30px] font-semibold text-white">
+        Donation Successful
+      </h1>
       <p className="text-[16px] text-white">Thank You For Your Donation</p>
 
       <div className="flex justify-center my-5 ">
         <Link href={"/featured-pups"} onClick={() => setOpen(false)}>
-        
-      <button
-              
-              className="md:mt-0 mt-3  text-white no-underline  bg-[#F88D58] hover:bg-black 
+          <button
+            className="md:mt-0 mt-3  text-white no-underline  bg-[#F88D58] hover:bg-black 
                md:px-32 px-10 py-3 lg:text-fluid-button text-[18px] flex  
                  items-center md:gap-[16px] gap-[4px] rounded-lg  flex-shrink-0  "
-            >
-              Continue
-            </button>
+          >
+            Continue
+          </button>
         </Link>
       </div>
- 
-
     </div>
   );
 };

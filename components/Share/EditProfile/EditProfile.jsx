@@ -105,7 +105,7 @@ export default function EditProfile(props) {
 
       const res = await updateUserProfile({
         formData,
-        id: userProfile?.data?.userId,
+        id: userProfile?.data?.userId?._id,
       }).unwrap();
 
       toast.success("Profile Updated Successfully", {
@@ -143,6 +143,7 @@ export default function EditProfile(props) {
             <div className=" w-20 h-20 relative rounded-full overflow-hidden bg-gray-100">
               {photo ? (
                 <Image
+                  loading="lazy"
                   src={photo}
                   alt="Profile"
                   width={0}

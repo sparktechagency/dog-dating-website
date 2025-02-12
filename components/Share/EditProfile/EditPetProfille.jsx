@@ -138,6 +138,7 @@ const EditPetProfile = ({
             <div className=" w-20 h-20 relative rounded-full overflow-hidden bg-gray-100">
               {photo ? (
                 <Image
+                  loading="lazy"
                   src={photo}
                   alt="Profile"
                   width={0}

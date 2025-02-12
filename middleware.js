@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { getFromLocalStorage } from "./utils/local-storage";
 const { jwtDecode } = require("jwt-decode"); // Use CommonJS import for jwt-decode
 
 export async function middleware(request) {
@@ -24,6 +23,7 @@ export async function middleware(request) {
       "/dashboard/shelter",
       "/dashboard/donation",
       "/dashboard/members",
+      "/dashboard/social-links",
     ];
 
     // Check if the route is an admin-only route
@@ -66,6 +66,7 @@ export const config = {
     "/dashboard/shelter",
     "/dashboard/donation",
     "/dashboard/members",
+    "/dashboard/social-links",
     "/profile",
   ],
 };

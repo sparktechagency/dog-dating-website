@@ -12,13 +12,9 @@ import socket from "@/helpers/config/socket-config";
 import { toast } from "sonner";
 import { useCreateChatMutation } from "@/redux/api/features/chatApi";
 import { useRouter } from "next/navigation";
-
-const mypetInfo = {
-  name: "Murphy Bear",
-  age: 2,
-  location: "Houston, TX",
-  img: img1,
-};
+import WoofHero from "@/asserts/woofHero.png";
+import WoofSupporter from "@/asserts/woofSupporter.png";
+import { Tooltip } from "antd";
 
 const Friend = ({ userData, petPartner, index, petProfile }) => {
   const router = useRouter();
@@ -84,6 +80,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
       className="grid md:grid-cols-3 bg-white 
             container mx-auto shadow-lg rounded-lg py-[29px] px-[46px] mt-[50px]"
     >
+      {/* My Pet  */}
       <div className="text-center flex justify-center items-center flex-col">
         {/* Profile Image Wrapper */}
         <div
@@ -100,7 +97,8 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
                 "
         >
           <Image
-            alt={mypetInfo?.name}
+            loading="lazy"
+            alt={petProfile?.data?.name}
             src={userPetImage}
             width={0}
             height={0}
@@ -110,24 +108,43 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
         </div>
 
         {/* Profile Information */}
-        <p
-          style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
-          className=" font-semibold text-[#302F51]"
-        >
-          {petProfile?.data?.name}
-        </p>
+        <div className="flex items-center gap-2">
+          <p
+            style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
+            className=" font-semibold text-[#302F51]"
+          >
+            {petProfile?.data?.name}{" "}
+          </p>
+          {petProfile?.data?.userId?.isSupported && (
+            <Tooltip title="Woof spot Supporter">
+              <Image
+                loading="lazy"
+                src={WoofSupporter}
+                className="size-6"
+                width={1000}
+                height={1000}
+                alt="WoofSupporter"
+              />
+            </Tooltip>
+          )}
+          {petProfile?.data?.userId?.isHero && (
+            <Tooltip title="Woof spot Hero">
+              <Image
+                loading="lazy"
+                src={WoofHero}
+                className="size-6"
+                width={1000}
+                height={1000}
+                alt="WoofSupporter"
+              />
+            </Tooltip>
+          )}
+        </div>
         <p
           style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
           className=" font-semibold text-[#302F51]"
         >
           Age: {petProfile?.data?.age}
-        </p>
-        <p
-          style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
-          className=" font-semibold flex justify-center items-center gap-2 text-[#302F51]"
-        >
-          <PiMapPinAreaFill className="text-[#F88D58] w-10 h-10" />{" "}
-          {petProfile?.data?.address}
         </p>
       </div>
 
@@ -135,9 +152,15 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
         <p className="bg-[#F88D58] rounded-full py-4 px-6 text-white font-bold ">
           {index + 1}
         </p>
-        <IoIosHeart className="text-red-600 text-[80px] md:mt-[68px] mt-[40px] " />
-        <p className="text-fluid-button font-bold">Matched</p>
-        {/* <div className="flex justify-center items-center gap-[11px]">
+
+        <IoIosHeart className="text-red-600 text-[80px] mt-5 " />
+        <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-2">
+          Matched {petPartner?.totalPercentage}%
+        </p>
+        <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-2">
+          {petPartner?.message}
+        </p>
+        <div className="flex justify-center items-center gap-[11px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="51"
@@ -164,12 +187,9 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
           </svg>
 
           <p className="font-semibold text-fluid-lg-title-2 my-[27px]">
-            1 Miles
+            {petPartner?.distanceInMiles?.toFixed(3)} Miles
           </p>
-        </div> */}
-        {/* <button className="btn text-white no-underline bg-[#F88D58] hover:bg-black my-2">
-                    Message Me <MdOutlineArrowOutward />
-                </button> */}
+        </div>
 
         <button
           onClick={openModal}
@@ -184,18 +204,10 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
       <div className="text-center flex justify-center items-center flex-col">
         <div
           className="
-                          relative rounded-full overflow-hidden                   
-                          border-[3px] border-solid border-[#F88D58]           
-                          shadow-[1px_0px_0px_rgba(248,141,88,0.08)] 
-
-                          /* Responsive Sizes */
-                          w-[200px] h-[200px] /* Default size for small screens */
-                          sm:w-[240px] sm:h-[240px]
-                          md:w-[280px] md:h-[280px]
-                          lg:w-[320px] lg:h-[320px]
-                      "
+          relative rounded-full overflow-hidden border-[3px] border-solid border-[#F88D58] shadow-[1px_0px_0px_rgba(248,141,88,0.08)] w-[200px] h-[200px] /* Default size for small screens sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] lg:w-[320px] lg:h-[320px]"
         >
           <Image
+            loading="lazy"
             alt="profile"
             src={friendPetImage}
             width={0}
@@ -204,25 +216,51 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
             className="w-full h-full object-cover rounded-full" /* Ensures circular shape */
           />
         </div>
-        <p
-          style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
-          className=" font-semibold text-[#302F51]"
-        >
-          {petPartner?.petsProfileId?.name}
-        </p>
+        <div className="flex items-center gap-2">
+          <p
+            style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
+            className=" font-semibold text-[#302F51]"
+          >
+            {petPartner?.petsProfileId?.name}
+          </p>
+          {petPartner?.userId?.isSupported && (
+            <Tooltip title="Woof spot Supporter">
+              <Image
+                loading="lazy"
+                src={WoofSupporter}
+                className="size-6"
+                width={1000}
+                height={1000}
+                alt="WoofSupporter"
+              />
+            </Tooltip>
+          )}
+          {petPartner?.userId?.isHero && (
+            <Tooltip title="Woof spot Hero">
+              <Image
+                loading="lazy"
+                src={WoofHero}
+                className="size-6"
+                width={1000}
+                height={1000}
+                alt="WoofSupporter"
+              />
+            </Tooltip>
+          )}
+        </div>
         <p
           style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
           className="font-semibold text-[#302F51]"
         >
           Age: {petPartner?.petsProfileId?.age}
         </p>
-        <p
+        {/* <p
           style={{ fontSize: "clamp(14px, 3vw + 1rem ,30px)" }}
           className=" font-semibold flex items-center gap-2 text-[#302F51]"
         >
           <PiMapPinAreaFill className="text-[#F88D58]" />{" "}
           {petPartner?.petsProfileId?.address}
-        </p>
+        </p> */}
       </div>
 
       {isOpen && (

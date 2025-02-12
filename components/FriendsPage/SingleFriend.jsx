@@ -98,6 +98,7 @@ const SingleFriend = ({ id }) => {
         <div className="flex gap-6 items-center md:items-start sm:flex-row flex-col">
           <div className="w-48 h-48 relative rounded-lg overflow-hidden flex-shrink-0 border-2 shadow-xl">
             <Image
+              loading="lazy"
               src={pet?.img}
               alt={pet?.name}
               className="object-cover object-top"
@@ -131,7 +132,7 @@ const SingleFriend = ({ id }) => {
 
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <Image alt="friend" src={svg} className="w-5" />
+            <Image loading="lazy" alt="friend" src={svg} className="w-5" />
             <span className="font-medium">Spayed/Neutered:</span>
             <span className="text-[#F88D58]">
               {pet?.preferences.spayedNeutered}
@@ -139,13 +140,13 @@ const SingleFriend = ({ id }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Image alt="friend" src={svg} className="w-5" />
+            <Image loading="lazy" alt="friend" src={svg} className="w-5" />
             <span className="font-medium">How do you play:</span>
             <span className="text-[#F88D58]">{pet?.preferences.playStyle}</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <Image alt="friend" src={svg} className="w-5" />
+            <Image loading="lazy" alt="friend" src={svg} className="w-5" />
             <span className="font-medium">Do you like a crowd?:</span>
             <span className="text-[#F88D58]">
               {pet?.preferences.crowdPreference}
@@ -153,7 +154,7 @@ const SingleFriend = ({ id }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Image alt="friend" src={svg} className="w-5" />
+            <Image loading="lazy" alt="friend" src={svg} className="w-5" />
             <span className="font-medium">Play/Size preferences:</span>
             <span className="text-[#F88D58]">
               {" "}
@@ -162,7 +163,7 @@ const SingleFriend = ({ id }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Image alt="friend" src={svg} className="w-5" />
+            <Image loading="lazy" alt="friend" src={svg} className="w-5" />
             <span className="font-medium">Location preferences:</span>
             <span className="text-[#F88D58]">
               {" "}

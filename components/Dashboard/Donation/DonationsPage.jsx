@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, ConfigProvider, Flex, Table } from "antd";
+import { Button, ConfigProvider, Flex, Table, Tooltip } from "antd";
 import { BiMenuAltRight, BiSolidDonateHeart } from "react-icons/bi";
 import { BsFilterRight } from "react-icons/bs";
 import { Select, Space } from "antd";
@@ -64,22 +64,28 @@ const DonationsPage = () => {
             <p>{text}</p>{" "}
             <div className="flex items-center gap-1 ">
               {record?.userId?.isSupported && (
-                <Image
-                  src={WoofSupporter}
-                  className="size-4"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Supporter">
+                  <Image
+                    loading="lazy"
+                    src={WoofSupporter}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofSupporter"
+                  />
+                </Tooltip>
               )}
               {record?.userId?.isHero && (
-                <Image
-                  src={WoofHero}
-                  className="size-4"
-                  width={1000}
-                  height={1000}
-                  alt="WoofSupporter"
-                />
+                <Tooltip title="Woof Spot Hero">
+                  <Image
+                    loading="lazy"
+                    src={WoofHero}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofHero"
+                  />
+                </Tooltip>
               )}
             </div>
           </h1>

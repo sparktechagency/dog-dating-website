@@ -205,7 +205,13 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/">
           <div className="flex justify-center items-center">
-            <Image alt="pic" src={logo} width={100} className="w-16 lg:w-20 " />
+            <Image
+              loading="lazy"
+              alt="pic"
+              src={logo}
+              width={100}
+              className="w-16 lg:w-20 "
+            />
           </div>
         </Link>
 
@@ -238,6 +244,7 @@ const Navbar = () => {
             <div onClick={toggleProfile}>
               {/* <IoPersonCircleOutline className="text-5xl" /> */}
               <Image
+                loading="lazy"
                 src={userProfileData ? userProfileImg : blankImg}
                 alt={`profile`}
                 width={1000}
@@ -249,7 +256,12 @@ const Navbar = () => {
               <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-32 p-1">
                 <Link href="/profile">
                   <div className="flex gap-3">
-                    <Image alt="profileImage" src={profile} className="w-4" />
+                    <Image
+                      loading="lazy"
+                      alt="profileImage"
+                      src={profile}
+                      className="w-4"
+                    />
                     <p
                       // onClick={toggleUserModal}
                       className="text-[#302F51] text-[18px] cursor-pointer font-bold"
@@ -262,7 +274,12 @@ const Navbar = () => {
                   onClick={handleLogout}
                   className="flex gap-3 mt-2 whitespace-nowrap"
                 >
-                  <Image alt="LogoutImage" src={logOut} className="w-4" />
+                  <Image
+                    loading="lazy"
+                    alt="LogoutImage"
+                    src={logOut}
+                    className="w-4"
+                  />
 
                   <p
                     // onClick={toggleGroupModal}

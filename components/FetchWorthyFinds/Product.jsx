@@ -13,6 +13,7 @@ const Product = ({ product }) => {
       {/* Product Image */}
       <div className="relative">
         <Image
+          loading="lazy"
           src={imageUrl} // Replace with your actual image path
           alt="Dog Food"
           width={0}

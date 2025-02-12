@@ -112,6 +112,7 @@ export default function AddNewChat(props) {
                 <div className="w-5 h-5 border-2 border-gray-200 rounded-md" />
               )}
               <Image
+                loading="lazy"
                 src={user.avatar}
                 alt={`${user.name}'s avatar`}
                 className="w-12 h-12 rounded-xl object-cover"

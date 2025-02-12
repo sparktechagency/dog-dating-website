@@ -114,6 +114,7 @@ const AddNewShelter = (props) => {
             <div className="xl:w-80 xl:h-80 md:w-48 md:h-48 w-36 h-36 relative rounded-full overflow-hidden bg-gray-100">
               {photo ? (
                 <Image
+                  loading="lazy"
                   src={photo}
                   alt="Profile"
                   fill

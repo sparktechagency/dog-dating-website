@@ -66,6 +66,7 @@ const Item = ({ item }) => {
         >
           <div className="flex justify-center flex-col items-center">
             <Image
+              loading="lazy"
               src={imageUrl}
               width={0}
               height={0}
@@ -80,6 +81,7 @@ const Item = ({ item }) => {
         </Modal>
         <div className="flex justify-center">
           <Image
+            loading="lazy"
             src={imageUrl}
             width={0}
             height={0}

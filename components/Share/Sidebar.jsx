@@ -6,6 +6,7 @@ import shelterIcon from "../../asserts/shelterIcon.svg";
 import donationIcon from "../../asserts/donationIcon.svg";
 import logOutIcon from "../../asserts/logOutIcon.svg";
 import memberIcon from "../../asserts/memberIcon.svg";
+import socialLinks from "../../asserts/socialLinks.svg";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/redux/slices/authSlice";
@@ -91,6 +92,7 @@ const Sidebar = ({ slider, setSlider }) => {
                   }`}
                 >
                   <Image
+                    loading="lazy"
                     src={allProductIcon}
                     alt="show-feedback"
                     width={30}
@@ -114,6 +116,7 @@ const Sidebar = ({ slider, setSlider }) => {
                   }`}
                 >
                   <Image
+                    loading="lazy"
                     src={shelterIcon}
                     alt="Shelter"
                     width={30}
@@ -137,6 +140,7 @@ const Sidebar = ({ slider, setSlider }) => {
                   }`}
                 >
                   <Image
+                    loading="lazy"
                     src={donationIcon}
                     alt="donation"
                     width={30}
@@ -160,6 +164,7 @@ const Sidebar = ({ slider, setSlider }) => {
                   }`}
                 >
                   <Image
+                    loading="lazy"
                     src={memberIcon}
                     alt="members"
                     width={30}
@@ -173,6 +178,30 @@ const Sidebar = ({ slider, setSlider }) => {
                   Members
                 </li>
               </Link>
+              <Link href="/dashboard/social-links" className="w-full">
+                {" "}
+                <li
+                  className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg lg:rounded-tr-lg lg:rounded-br-lg ${
+                    location === "/dashboard/social-links"
+                      ? "text-[#F88D58] bg-white"
+                      : "text-white"
+                  }`}
+                >
+                  <Image
+                    loading="lazy"
+                    src={socialLinks}
+                    alt="social-links"
+                    width={30}
+                    style={{
+                      filter:
+                        location === "/dashboard/social-links"
+                          ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                          : undefined,
+                    }}
+                  />
+                  Social Links
+                </li>
+              </Link>
             </ul>
           </div>
 
@@ -181,7 +210,12 @@ const Sidebar = ({ slider, setSlider }) => {
            `}
             onClick={handleLogout}
           >
-            <Image src={logOutIcon} alt="show-feedback" width={30} />
+            <Image
+              loading="lazy"
+              src={logOutIcon}
+              alt="show-feedback"
+              width={30}
+            />
             <p>Log Out</p>
           </div>
         </div>
@@ -198,6 +232,7 @@ const Sidebar = ({ slider, setSlider }) => {
                 onClick={() => setSlider(!slider)}
               >
                 <Image
+                  loading="lazy"
                   src={allProductIcon}
                   alt="show-feedback"
                   width={30}
@@ -219,6 +254,7 @@ const Sidebar = ({ slider, setSlider }) => {
                 onClick={() => setSlider(!slider)}
               >
                 <Image
+                  loading="lazy"
                   src={shelterIcon}
                   alt="shelter"
                   width={30}
@@ -240,6 +276,7 @@ const Sidebar = ({ slider, setSlider }) => {
                 onClick={() => setSlider(!slider)}
               >
                 <Image
+                  loading="lazy"
                   src={donationIcon}
                   alt="Donation"
                   width={30}
@@ -261,6 +298,7 @@ const Sidebar = ({ slider, setSlider }) => {
                 onClick={() => setSlider(!slider)}
               >
                 <Image
+                  loading="lazy"
                   src={memberIcon}
                   alt="members"
                   width={30}
@@ -273,6 +311,28 @@ const Sidebar = ({ slider, setSlider }) => {
                 />
                 <Link href="/dashboard/members">Members</Link>
               </li>
+              <li
+                className={`flex items-center gap-x-3 w-full py-3 px-2 text-lg rounded-tr-lg rounded-br-lg ${
+                  location === "/dashboard/social-links"
+                    ? "text-[#F88D58] bg-white"
+                    : "text-white"
+                }`}
+                onClick={() => setSlider(!slider)}
+              >
+                <Image
+                  loading="lazy"
+                  src={socialLinks}
+                  alt="social-links"
+                  width={30}
+                  style={{
+                    filter:
+                      location === "/dashboard/social-links"
+                        ? "brightness(100%) invert(42%) sepia(83%) saturate(569%) hue-rotate(-2deg)"
+                        : undefined,
+                  }}
+                />
+                <Link href="/dashboard/social-links">Social Links</Link>
+              </li>
             </ul>
           </div>
           <div
@@ -283,7 +343,12 @@ const Sidebar = ({ slider, setSlider }) => {
               setSlider(!slider);
             }}
           >
-            <Image src={logOutIcon} alt="show-feedback" width={30} />
+            <Image
+              loading="lazy"
+              src={logOutIcon}
+              alt="show-feedback"
+              width={30}
+            />
             <p>Log Out</p>
           </div>
         </div>
