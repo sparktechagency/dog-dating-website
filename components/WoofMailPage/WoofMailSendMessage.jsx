@@ -29,6 +29,7 @@ const WoofMailSendMessage = ({
 
     try {
       socket.emit("send-new-message", data);
+
       form.resetFields();
       toast.success("Message sent successfully!", {
         id: toastId,
@@ -41,19 +42,33 @@ const WoofMailSendMessage = ({
       });
     }
   };
+  const hanleTyping = async (value) => {
+    const message = {
+      chatId: selectedConversation?._id,
+      users: selectedConversation?.users,
+      status: value,
+    };
+    try {
+      socket?.emit("typing", message, (res) => {
+        console.log(res);
+      });
+    } catch (error) {}
+  };
   return (
     <div className="w-full ">
       <Form form={form} onFinish={handleMessageSend}>
-        <div className="!bg-white  absolute -bottom-5 flex justify-center items-center w-full p-4">
-          <div className="w-full rounded-full bg-white border  px-4 py-2 flex items-center space-x-4">
+        <div className="!bg-white   absolute -bottom-5 flex justify-center items-center w-full p-4">
+          <div className="w-full rounded-full bg-white border border-[#F88D58]  px-4 py-2 flex items-center space-x-4">
             {/* Emoji Icon */}
             {/* <BsEmojiSmile className="cursor-pointer text-xl text-yellow-600 mr-2" /> */}
 
             {/* Input Field */}
             <Form.Item className="w-full !p-0 !m-0" name="message">
               <Input
+                onFocus={() => hanleTyping(true)}
+                onBlur={() => hanleTyping(false)}
                 placeholder="Send your message..."
-                className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                className="!border-none !ring-0 !outline-none !bg-transparent text-black  "
               />
             </Form.Item>
 

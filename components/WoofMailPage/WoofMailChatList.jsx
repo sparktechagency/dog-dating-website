@@ -70,6 +70,8 @@ const WoofMailChatList = ({
     setSearchTerm(event.target.value);
   };
 
+  console.log(" selectedConversation", selectedConversation);
+
   return (
     <div
       className={`w-full lg:w-[400px] overflow-y-auto px-3 ${
