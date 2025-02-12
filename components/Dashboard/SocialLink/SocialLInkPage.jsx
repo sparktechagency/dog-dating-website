@@ -67,7 +67,6 @@ const SocialLInkPage = () => {
   };
 
   const handleFinish = async (values) => {
-    console.log(values);
     const toastId = toast.loading("Updating...");
 
     try {

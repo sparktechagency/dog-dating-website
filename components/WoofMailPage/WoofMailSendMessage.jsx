@@ -49,9 +49,7 @@ const WoofMailSendMessage = ({
       status: value,
     };
     try {
-      socket?.emit("typing", message, (res) => {
-        console.log(res);
-      });
+      socket?.emit("typing", message, (res) => {});
     } catch (error) {}
   };
   return (

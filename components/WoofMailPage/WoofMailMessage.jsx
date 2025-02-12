@@ -298,7 +298,7 @@ const WoofMailMessage = ({
             </div>
 
             {selectedConversation && (
-              <WoofMailSendMessage
+              <WoofMailSendMessageTwo
                 socket={socket}
                 selectedConversation={selectedConversation}
                 userData={userData}

@@ -49,7 +49,7 @@ const MembersPage = () => {
 
     try {
       const res = await batchUpdate({ data: value, id: id }).unwrap();
-      console.log(res);
+
       toast.success(res?.message, {
         id: toastId,
         duration: 2000,
