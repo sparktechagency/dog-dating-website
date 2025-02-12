@@ -1,7 +1,11 @@
 import { SocketContext } from "@/context/SocketContextApi";
 import { useGetAllMessageByChatIdQuery } from "@/redux/api/features/chatApi";
-import { setOnlineUsers } from "@/redux/slices/chatSlice";
-import { Card, Dropdown, Layout, Menu } from "antd";
+import {
+  selectTypingUsers,
+  setOnlineUsers,
+  setTypingUser,
+} from "@/redux/slices/chatSlice";
+import { Card, Dropdown, Layout, Menu, Tooltip } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Image from "next/image";
 import React, {
@@ -14,12 +18,15 @@ import React, {
 import { BsPersonAdd, BsThreeDotsVertical } from "react-icons/bs";
 import { HiMiniArrowLeftStartOnRectangle } from "react-icons/hi2";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LeaveConversation from "./LeaveConversation";
 import WoofMailMessageCard from "./WoofMailMessageCard";
 import Loader from "../ui/Loader";
 import WoofMailSendMessage from "./WoofMailSendMessage";
 import WoofMailSendMessageTwo from "./WoofMailSendMessageTwo";
+
+import WoofHero from "@/asserts/woofHero.png";
+import WoofSupporter from "@/asserts/woofSupporter.png";
 
 const WoofMailMessage = ({
   selectedConversation,
@@ -102,6 +109,9 @@ const WoofMailMessage = ({
       dispatch(setOnlineUsers(online));
     });
     if (selectedConversation?._id && socket) {
+      socket?.on(`typing::${selectedConversation?._id}`, (typing) => {
+        dispatch(setTypingUser(typing));
+      });
       socket?.on(
         `new-message-received::${selectedConversation?._id}`,
         handleMessage
@@ -114,9 +124,11 @@ const WoofMailMessage = ({
     };
   }, [socket, selectedConversation?._id, dispatch, handleMessage]);
 
+  const typingUsers = useSelector(selectTypingUsers);
+
   return (
     <div
-      className={`lg:col-span-3 xl:col-span-4 overflow-y-auto  ${
+      className={`w-full overflow-y-auto  ${
         selectedConversation ? "block lg:block" : "hidden lg:block"
       }`}
     >
@@ -133,8 +145,10 @@ const WoofMailMessage = ({
                   className="text-2xl cursor-pointer text-[#F88D58] "
                 />
               </div>
+
               <div className="flex justify-center items-center gap-2">
                 <Image
+                  loading="lazy"
                   className="h-12 w-12 lg:h-12 lg:w-12 object-cover rounded-md relative"
                   src={
                     selectedConversation?.isGroupChat
@@ -148,32 +162,105 @@ const WoofMailMessage = ({
                   alt="Profile"
                 />
                 <div>
-                  <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
-                    {selectedConversation?.isGroupChat
-                      ? `${selectedConversation?.groupName}`
-                      : selectedConversation?.users[0]?._id === userData?.userId
-                      ? `${selectedConversation?.users[1]?.petName}`
-                      : `${selectedConversation?.users[0]?.petName}`}
+                  <div className="flex justify-center gap-2">
+                    <div>
+                      <span className="font-bold text-base sm:text-lg lg:text-xl flex items-center gap-1">
+                        {selectedConversation?.isGroupChat
+                          ? `${selectedConversation?.groupName}`
+                          : selectedConversation?.users[0]?._id ===
+                            userData?.userId
+                          ? `${selectedConversation?.users[1]?.petName}`
+                          : `${selectedConversation?.users[0]?.petName}`}
 
-                    {!selectedConversation?.isGroupChat &&
-                      (selectedConversation?.users[0]?._id === userData?.userId
-                        ? onlineUsers.includes(
-                            selectedConversation?.users[1]?._id
-                          ) && (
-                            <span className="size-2 rounded-full bg-green-500"></span>
-                          )
-                        : onlineUsers.includes(
-                            selectedConversation?.users[0]?._id
-                          ) && (
-                            <span className="size-2 rounded-full bg-green-500"></span>
-                          ))}
-                  </span>
-                  <span className="text-xs lg:text-sm h-fit">
-                    {selectedConversation?.user}
-                  </span>
+                        <Tooltip title="Online">
+                          {!selectedConversation?.isGroupChat &&
+                            (selectedConversation?.users[0]?._id ===
+                            userData?.userId
+                              ? onlineUsers.includes(
+                                  selectedConversation?.users[1]?._id
+                                ) && (
+                                  <span className="size-2 rounded-full bg-green-500"></span>
+                                )
+                              : onlineUsers.includes(
+                                  selectedConversation?.users[0]?._id
+                                ) && (
+                                  <span className="size-2 rounded-full bg-green-500"></span>
+                                ))}
+                        </Tooltip>
+                      </span>
+                      {/* {typingUser?.message} */}
+                      <span className="text-xs lg:text-sm h-fit">
+                        {selectedConversation?.user}
+                      </span>
+                    </div>
+
+                    {selectedConversation?.isGroupChat ? null : selectedConversation
+                        ?.users[0]?._id === userData?.userId ? (
+                      <div className="flex items-center gap-1">
+                        {" "}
+                        {selectedConversation?.users[1]?.isSupported && (
+                          <Tooltip title="Woof Spot Supporter">
+                            <Image
+                              loading="lazy"
+                              src={WoofSupporter}
+                              className="size-5"
+                              width={1000}
+                              height={1000}
+                              alt="WoofSupporter"
+                            />
+                          </Tooltip>
+                        )}
+                        {selectedConversation?.users[1]?.isHero && (
+                          <Tooltip title="Woof Spot Hero">
+                            <Image
+                              loading="lazy"
+                              src={WoofHero}
+                              className="size-5"
+                              width={1000}
+                              height={1000}
+                              alt="WoofHero"
+                            />
+                          </Tooltip>
+                        )}{" "}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        {" "}
+                        {selectedConversation?.users[0]?.isSupported && (
+                          <Tooltip title="Woof Spot Supporter">
+                            <Image
+                              loading="lazy"
+                              src={WoofSupporter}
+                              className="size-5"
+                              width={1000}
+                              height={1000}
+                              alt="WoofSupporter"
+                            />
+                          </Tooltip>
+                        )}
+                        {selectedConversation?.users[0]?.isHero && (
+                          <Tooltip title="Woof Spot Hero">
+                            <Image
+                              loading="lazy"
+                              src={WoofHero}
+                              className="size-5"
+                              width={1000}
+                              height={1000}
+                              alt="WoofHero"
+                            />
+                          </Tooltip>
+                        )}{" "}
+                      </div>
+                    )}
+                  </div>
+                  <p>
+                    {typingUsers?.writeId !== userData?.userId &&
+                      typingUsers?.message}
+                  </p>
                 </div>
               </div>
             </div>
+
             {selectedConversation?.isGroupChat && (
               <div>
                 <Dropdown overlay={menu} trigger={["click"]}>
@@ -211,7 +298,7 @@ const WoofMailMessage = ({
             </div>
 
             {selectedConversation && (
-              <WoofMailSendMessage
+              <WoofMailSendMessageTwo
                 socket={socket}
                 selectedConversation={selectedConversation}
                 userData={userData}

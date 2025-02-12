@@ -207,6 +207,7 @@ export default function CreateGroup(props) {
                   <div className="w-5 h-5 border-2 border-gray-200 rounded-md" />
                 )}
                 <Image
+                  loading="lazy"
                   src={
                     user?.users[0]?._id === userData?.userId
                       ? `${imageLiveUrl}${user?.users[1]?.petImage}`
@@ -248,6 +249,7 @@ export default function CreateGroup(props) {
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <div className="relative w-fit">
             <Image
+              loading="lazy"
               src={imageUrl}
               alt="Group Image"
               width={0}
@@ -302,49 +304,6 @@ export default function CreateGroup(props) {
           >
             <Input placeholder="Enter Group Name " className="py-2 !text-lg" />
           </Form.Item>
-
-          {/* <Typography label={5} className="mb-1">
-            Phone Number
-          </Typography> */}
-          {/* <div className="flex gap-2 ">
-            <Form.Item initialValue={initialValues.phoneCode} name="phoneCode">
-              <Select
-                className="!w-40  h-12 "
-                options={countryCodes.map((country) => ({
-                  label: (
-                    <div className="flex items-center">
-                      <Image
-                        src={profileImage}
-                        alt={`${country.value} Flag`}
-                        className="w-5 h-3 inline-block mr-2"
-                      />
-                      {country.label}
-                    </div>
-                  ),
-                  value: country.value,
-                }))}
-              />
-            </Form.Item>
-            <Form.Item
-              name="phoneNumber"
-              noStyle
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your phone number!",
-                },
-              ]}
-            >
-              <Input
-                className="w-full h-12 !text-lg"
-                placeholder="Enter Phone Number"
-              />
-            </Form.Item>
-          </div> */}
-
-          {/* <Form.Item label="Date of Birth" name="birthday">
-            <DatePicker format="YYYY-MM-DD" />
-          </Form.Item> */}
           <div className="">
             <Button
               className="!bg-[#F88D58] mt-4 py-3 inline-block w-fit h-fit"

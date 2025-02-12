@@ -84,6 +84,7 @@ const FeaturedPups = () => {
                 {/* Image Section with Full Width and Height */}
                 <div className="absolute inset-0">
                   <Image
+                    loading="lazy"
                     src={url + shelter?.image}
                     alt={shelter?.name}
                     width={0}

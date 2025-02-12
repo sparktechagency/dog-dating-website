@@ -61,6 +61,7 @@ const DonateNow = (params) => {
           <div className="flex gap-6 items-center md:items-start sm:flex-row flex-col">
             <div className="w-48 h-48 relative rounded-lg overflow-hidden flex-shrink-0 border-2 shadow-xl">
               <Image
+                loading="lazy"
                 src={url + selectedShelter?.image}
                 alt={selectedShelter?.name}
                 className="object-cover object-top"
@@ -103,59 +104,6 @@ const DonateNow = (params) => {
           </div>
 
           <div className="space-y-4 flex flex-col md:text-base text-sm ">
-            {/* <div className="flex  gap-3 text-start">
-              <div className="flex gap-1 items-start  justify-center">
-                <Image alt="friend" src={svg} className="w-5" />
-                <span className="font-medium">Spayed/Neutered:</span>
-              </div>
-
-              <span className="text-[#F88D58]">
-                {selectedShelter?.preferences.spayedNeutered}
-              </span>
-            </div>
-
-            <div className="flex  gap-3 text-start">
-              <div className="flex gap-1 items-start justify-center">
-                <Image alt="friend" src={svg} className="w-5" />
-                <span className="font-medium">How do you play:</span>
-              </div>
-
-              <span className="text-[#F88D58]">
-                {selectedShelter?.preferences.playStyle}
-              </span>
-            </div>
-
-            <div className="flex  text-start gap-3">
-              <div className="flex gap-1 items-start justify-center">
-                <Image alt="friend" src={svg} className="w-5" />
-                <span className="font-medium">Do you like a crowd:</span>
-              </div>
-              <span className="text-[#F88D58]">
-                {selectedShelter?.preferences.crowdPreference}
-              </span>
-            </div>
-
-            <div className="flex  gap-3 text-start">
-              <div className="flex gap-1 justify-center items-start">
-                <Image alt="friend" src={svg} className="w-5" />
-                <span className="font-medium ">Play/Size preferences:</span>
-              </div>
-              <span className="text-[#F88D58]">
-                {" "}
-                {selectedShelter?.preferences.sizePreference}
-              </span>
-            </div>
-
-            <div className="flex  gap-3 text-start">
-              <div className="flex gap-1 items-start justify-center">
-                <Image alt="friend" src={svg} className="w-5" />
-                <span className="font-medium">Location preferences:</span>
-              </div>
-              <span className="text-[#F88D58]">
-                {" "}
-                {selectedShelter?.preferences.locationPreference}
-              </span>
-            </div> */}
             <Link href={selectedShelter?.shelterLink} target="_blank">
               <div className="w-full  ">
                 <button

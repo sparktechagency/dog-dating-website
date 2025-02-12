@@ -16,7 +16,6 @@ import { useSelector } from "react-redux";
 import { decodedToken } from "@/utils/jwt";
 import Loader from "../ui/Loader";
 import { ConfigProvider, Pagination } from "antd";
-
 const Friends = () => {
   const [page, setPage] = useState(1);
 
@@ -67,8 +66,6 @@ const Friends = () => {
         skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
       }
     );
-
-  console.log("nearByFriends", nearByFriends?.data?.meta?.total);
 
   return (
     <div className="bg-[#FFFAF5]">

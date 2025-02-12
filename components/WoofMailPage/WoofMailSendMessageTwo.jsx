@@ -3,28 +3,34 @@ import { Form, Input, Upload } from "antd";
 import { BsImage } from "react-icons/bs";
 import { FaTelegramPlane, FaTimes } from "react-icons/fa";
 import { toast } from "sonner";
+import axios from "axios";
 
 const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   const [form] = Form.useForm();
+  const [textValue, setTextValue] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState([]); // ✅ Store uploaded image URLs
 
   // Reset previews and file list when the selected conversation changes
   useEffect(() => {
     setFileList([]);
     setPreviewUrls([]);
+    setUploadedImageUrls([]); // Reset uploaded image URLs
   }, [selectedConversation?._id]);
 
-  // Dependency array includes selectedConversation
   useEffect(() => {
     form.setFieldValue("message", "");
-  }, [selectedConversation._id]); // Dependency array includes selectedConversation
+  }, [selectedConversation._id]);
 
+  // Handle file selection and preview
   const handleImageChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList); // Update the file list
+    setFileList(newFileList);
     generatePreviewUrls(newFileList);
+    uploadImages(newFileList); // ✅ Upload images when selected
   };
 
+  // Generate local preview URLs
   const generatePreviewUrls = (files) => {
     const urls = files.map((file) => {
       if (!file.url && file.originFileObj) {
@@ -35,43 +41,86 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
     setPreviewUrls(urls);
   };
 
+  // ✅ Upload images to backend and get URLs
+  const uploadImages = async (files) => {
+    const uploadedUrls = [];
+    for (const file of files) {
+      if (!file.originFileObj) continue;
+      const formData = new FormData();
+      formData.append("file", file.originFileObj);
+
+      try {
+        const response = await axios.post(
+          "http://10.0.70.112:8002/api/v1/message/uploadImage",
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        if (response.data.success) {
+          uploadedUrls.push(response.data.data);
+        }
+      } catch (error) {
+        toast.error("Failed to upload image");
+      }
+    }
+    setUploadedImageUrls(uploadedUrls); // ✅ Store uploaded image URLs
+  };
+
+  // ✅ Handle image delete
   const handleDeleteImage = (indexToDelete) => {
     const newFileList = fileList.filter((_, index) => index !== indexToDelete);
     const newPreviewUrls = previewUrls.filter(
       (_, index) => index !== indexToDelete
     );
+    const newUploadedUrls = uploadedImageUrls.filter(
+      (_, index) => index !== indexToDelete
+    );
+
     setFileList(newFileList);
     setPreviewUrls(newPreviewUrls);
+    setUploadedImageUrls(newUploadedUrls);
   };
 
+  // ✅ Send message with image URL
   const handleMessageSend = async (values) => {
-    console.log(values);
-    // const toastId = toast.loading("Sending Message...");
-    // const data = {
-    //   chat: selectedConversation?._id,
-    //   sender: userData?.userId,
-    //   text: values?.message,
-    //   senderDetails: userData,
-    // };
-    // try {
-    //   socket.emit("send-new-message", data);
-    //   form.resetFields();
-    //   setFileList([]); // Clear the fileList after sending message
-    //   setPreviewUrls([]); // Clear the previews
-    //   toast.success("Message sent successfully!", {
-    //     id: toastId,
-    //     duration: 2000,
-    //   });
-    // } catch (error) {
-    //   toast.error(error?.data?.message || "Failed to send message", {
-    //     id: toastId,
-    //     duration: 2000,
-    //   });
-    // }
+    const toastId = toast.loading("Sending Message...");
+    const data = {
+      chat: selectedConversation?._id,
+      sender: userData?.userId,
+      text: values?.message,
+      images: uploadedImageUrls, // ✅ Send uploaded image URLs
+      senderDetails: userData,
+    };
+
+    try {
+      socket.emit("send-new-message", data);
+      form.resetFields();
+      setTextValue(null);
+      setFileList([]);
+      setPreviewUrls([]);
+      setUploadedImageUrls([]);
+      toast.success("Message sent successfully!", {
+        id: toastId,
+        duration: 2000,
+      });
+    } catch (error) {
+      toast.error("Failed to send message", { id: toastId, duration: 2000 });
+    }
+  };
+
+  const hanleTyping = async (value) => {
+    const message = {
+      chatId: selectedConversation?._id,
+      users: selectedConversation?.users,
+      status: value,
+    };
+    try {
+      socket?.emit("typing", message, (res) => {});
+    } catch (error) {}
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="absolute bottom-10 !bg-white flex items-center gap-2">
         {previewUrls.map((url, index) => (
           <div
@@ -98,16 +147,20 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
       </div>
       <Form form={form} onFinish={handleMessageSend}>
         <div className="!bg-white absolute -bottom-5 flex justify-center items-center w-full p-1">
-          <div className="w-full rounded-full bg-white border px-4 py-2 flex items-center space-x-4">
+          <div className="w-full rounded-full bg-white border border-[#F88D58]  px-4 py-2 flex items-center space-x-4">
             <Form.Item className="w-full !p-0 !m-0" name="message">
               <Input
+                onFocus={() => hanleTyping(true)}
+                onBlur={() => hanleTyping(false)}
+                onChange={(e) => setTextValue(e.target.value)}
                 placeholder="Send your message..."
-                className="border-none focus:ring-0 outline-none !bg-transparent text-black"
+                className="!border-none !ring-0 !outline-none  !bg-transparent text-black"
               />
             </Form.Item>
             <Form.Item className="!p-0 !m-0" name="image">
               <Upload
                 fileList={fileList}
+                onChange={handleImageChange}
                 customRequest={(options) => {
                   setTimeout(() => {
                     options.onSuccess("ok");
@@ -117,14 +170,17 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
                 multiple
                 accept="image/*"
                 showUploadList={false}
-                onChange={handleImageChange}
               >
-                <BsImage className="cursor-pointer text-xl text-gray-500" />
+                <BsImage className="cursor-pointer text-xl text-[#F88D58] mt-1" />
               </Upload>
             </Form.Item>
           </div>
-          <button type="submit">
-            <FaTelegramPlane className="cursor-pointer text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3" />
+          <button
+            disabled={!textValue && fileList.length < 1}
+            className="disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            type="submit"
+          >
+            <FaTelegramPlane className=" text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3 " />
           </button>
         </div>
       </Form>

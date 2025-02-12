@@ -51,6 +51,7 @@ const ContractPage = () => {
           {/* Image */}
           <div>
             <Image
+              loading="lazy"
               src={img}
               alt="Contact Us Dog"
               className="rounded-lg shadow-lg aspect-square object-cover"

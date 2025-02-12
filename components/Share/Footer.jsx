@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import logo from "../../asserts/footerLogo.png";
 import Image from "next/image";
@@ -6,8 +7,37 @@ import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import Link from "next/link";
+import { FaXTwitter } from "react-icons/fa6";
+import { useGetAllLinksQuery } from "@/redux/api/features/adminSetting";
 
 const Footer = () => {
+  const { data, isFetching } = useGetAllLinksQuery();
+  const socialData = data?.data;
+
+  const socialLinks = [
+    {
+      link: socialData?.facebookUrl,
+      icon: <FaFacebook className="text-white text-2xl" />,
+    },
+    {
+      link: socialData?.instagramUrl,
+      icon: <FaInstagram className="text-white text-2xl" />,
+    },
+    {
+      link: socialData?.linkedinUrl,
+      icon: <FaLinkedin className="text-white text-2xl" />,
+    },
+
+    {
+      link: socialData?.twitterUrl,
+      icon: <FaXTwitter className="text-white text-2xl" />,
+    },
+    {
+      link: socialData?.youtubeUrl,
+      icon: <FaYoutube className="text-white text-2xl" />,
+    },
+  ];
+
   return (
     <nav className="bg-[#302F51] p-4 z-40">
       {/* <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center"> */}
@@ -17,6 +47,7 @@ const Footer = () => {
           <div className="flex justify-between md:flex-row flex-col">
             <div className="flex items-center justify-center md:justify-start">
               <Image
+                loading="lazy"
                 src={logo} // Replace with the actual path to your logo
                 alt="Woof Spot"
                 className="md:h-32 h-24 w-auto"
@@ -96,10 +127,21 @@ const Footer = () => {
           </div>
 
           <div className="flex md:justify-end justify-center  space-x-4 ">
-            <FaFacebook className="text-white text-2xl" />
-            <FaYoutube className="text-white text-2xl" />
-            <FaLinkedin className="text-white text-2xl" />
-            <FaInstagram className="text-white text-2xl" />
+            <Link target="_blank" href={`${socialData?.facebookUrl}`}>
+              <FaFacebook className="text-white text-2xl" />
+            </Link>
+            <Link target="_blank" href={`${socialData?.instagramUrl}`}>
+              <FaInstagram className="text-white text-2xl" />
+            </Link>
+            <Link target="_blank" href={`${socialData?.twitterUrl}`}>
+              <FaLinkedin className="text-white text-2xl" />
+            </Link>
+            <Link target="_blank" href={`${socialData?.linkedinUrl}`}>
+              <FaXTwitter className="text-white text-2xl" />
+            </Link>
+            <Link target="_blank" href={`${socialData?.youtubeUrl}`}>
+              <FaYoutube className="text-white text-2xl" />
+            </Link>
           </div>
         </div>
       </div>

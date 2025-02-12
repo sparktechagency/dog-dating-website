@@ -81,6 +81,7 @@ const Login = () => {
         <div className=" md:block hidden w-1/2 my-auto">
           <div className="flex flex-col justify-end mt-10 ">
             <Image
+              loading="lazy"
               alt="dog-Image"
               src={loginImg}
               className="object-cover aspect-square rounded shadow-xl"
@@ -91,7 +92,12 @@ const Login = () => {
         {/* Right side login functionality */}
         <div className="flex-1 flex flex-col justify-center items-center  mx-2">
           <div className="mb-5 ">
-            <Image alt="dog-Image" src={logo} className="w-52 " />
+            <Image
+              loading="lazy"
+              alt="dog-Image"
+              src={logo}
+              className="w-52 "
+            />
           </div>
           <h1 className="text-4xl font-bold mb-2 md:mt-16 mt-8">Log in</h1>
           <p className="text-gray-600 mb-4 text-xl">

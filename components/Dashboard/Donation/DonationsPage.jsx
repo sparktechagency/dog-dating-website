@@ -1,15 +1,18 @@
 "use client";
 import React, { useState } from "react";
-import { Button, ConfigProvider, Flex, Table } from "antd";
+import { Button, ConfigProvider, Flex, Table, Tooltip } from "antd";
 import { BiMenuAltRight, BiSolidDonateHeart } from "react-icons/bi";
 import { BsFilterRight } from "react-icons/bs";
 import { Select, Space } from "antd";
 import { useDonationUserQuery } from "@/redux/api/features/authApi";
+import WoofHero from "@/asserts/woofHero.png";
+import WoofSupporter from "@/asserts/woofSupporter.png";
+import Image from "next/image";
 
 const { Option } = Select;
 
 const DonationsPage = () => {
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 12 });
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 10 });
   const handleTableChange = (pagination) => {
     setPagination({
       page: pagination.current,
@@ -20,13 +23,6 @@ const DonationsPage = () => {
   const { data: donationUser, isFetching } = useDonationUserQuery({
     page: pagination?.page,
   });
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const [selectedValue, setSelectedValue] = useState(null);
-
-  const handleChange = (value) => {
-    setSelectedValue(value);
-  };
 
   const calculateTotalDonation = (donations) => {
     if (!Array.isArray(donations)) {
@@ -54,33 +50,71 @@ const DonationsPage = () => {
         });
         return formattedDate; // e.g., "January 2, 2025"
       },
-      // Adding a sorter for the date
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      sortDirections: ["descend", "ascend"], // This controls the allowed sort directions
+      // // Adding a sorter for the date
+      // sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      // sortDirections: ["descend", "ascend"], // This controls the allowed sort directions
     },
     {
       key: "name",
       title: "Donator Name",
       dataIndex: "name",
-    },
-    {
-      key: "amount",
-      title: "Amount",
-      dataIndex: "amount",
-      // Adding a sorter for the amount
-      sorter: (a, b) => a.amount - b.amount,
-      sortDirections: ["descend", "ascend"], // Allows numeric sorting
+      render: (text, record) => (
+        <div>
+          <h1 className="flex items-center gap-2">
+            <p>{text}</p>{" "}
+            <div className="flex items-center gap-1 ">
+              {record?.userId?.isSupported && (
+                <Tooltip title="Woof Spot Supporter">
+                  <Image
+                    loading="lazy"
+                    src={WoofSupporter}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofSupporter"
+                  />
+                </Tooltip>
+              )}
+              {record?.userId?.isHero && (
+                <Tooltip title="Woof Spot Hero">
+                  <Image
+                    loading="lazy"
+                    src={WoofHero}
+                    className="size-4"
+                    width={1000}
+                    height={1000}
+                    alt="WoofHero"
+                  />
+                </Tooltip>
+              )}
+            </div>
+          </h1>
+        </div>
+      ),
     },
     {
       key: "email",
       title: "Email",
       dataIndex: "email",
     },
-  ];
 
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+    {
+      key: "transectionId",
+      title: "Transection Id",
+      dataIndex: "transectionId",
+      // // Adding a sorter for the amount
+      // sorter: (a, b) => a.amount - b.amount,
+      // sortDirections: ["descend", "ascend"], // Allows numeric sorting
+    },
+    {
+      key: "amount",
+      title: "Amount",
+      dataIndex: "amount",
+      // // Adding a sorter for the amount
+      // sorter: (a, b) => a.amount - b.amount,
+      // sortDirections: ["descend", "ascend"], // Allows numeric sorting
+    },
+  ];
 
   return (
     <div>

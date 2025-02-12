@@ -6,13 +6,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
-.roboto{
+.roboto {
   font-family: var(--font-roboto);
 }
 

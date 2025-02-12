@@ -17,11 +17,13 @@ const Containt = () => {
       >
         <div className="relative flex items-end   sm:pb-16 md:justify-center  md:mx-0 mx-auto ">
           <motion.div
-          					  initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8 , delay: 0.4 }}
-          className="">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className=""
+          >
             <Image
+              loading="lazy"
               className="md:w-screen w-[82vw] rounded-lg shadow-lg scale-110"
               objectFit="cover"
               src={dog1}
@@ -34,36 +36,40 @@ const Containt = () => {
         <div className="flex items-center justify-center text-center">
           <div className="flex justify-center items-center flex-col text-[#302F51]">
             <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-            className="text-[34px] md:text-fluid-lg-title xl:text-[62px] font-bold flex flex-shrink-0 md:mb-[12px] mb-[20px] md:mx-0 mx-[20px]">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-[34px] md:text-fluid-lg-title xl:text-[62px] font-bold flex flex-shrink-0 md:mb-[12px] mb-[20px] md:mx-0 mx-[20px]"
+            >
               Add Your Profile
             </motion.h2>
             <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-[22px] md:text-fluid-small-title font-semibold md:mb-[30px] mb-[20px]">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-[22px] md:text-fluid-small-title font-semibold md:mb-[30px] mb-[20px]"
+            >
               Find new Friends Nearby
             </motion.p>
-            <motion.p 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4}}
-            className="text-[16px] md:text-fluid-base text-justify mx-6">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-[16px] md:text-fluid-base text-justify mx-6"
+            >
               Become a part of the Woof Spot community! Create a profile for
               your pup and discover dogs near you. Match your dogs play style
               with others for fun playdates and lasting friendships.
             </motion.p>
             <Link href="/friends">
-            <button
-              className="md:mt-[46.5px] mt-5  text-white no-underline  bg-[#F88D58] hover:bg-black 
+              <button
+                className="md:mt-[46.5px] mt-5  text-white no-underline  bg-[#F88D58] hover:bg-black 
                  xl:px-[48px] xl:py-[20px] lg:px-[38px] lg:py-[16px] md:px-[28px] md:py-[10px] px-[48px]  py-[20px] md:mb-0 mb-6 md:text-fluid-button text-[18px] flex justify-center 
                  items-center gap-[16px] rounded-lg "
-            >
-              Get Started <MdOutlineArrowOutward />
-            </button></Link>
+              >
+                Get Started <MdOutlineArrowOutward />
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -73,20 +79,22 @@ const Containt = () => {
 
         <div className="flex items-center justify-center text-center">
           <div className="flex justify-center items-center flex-col text-[#302F51]">
-            <motion.h2 
-                      					  initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.8  }}
-            className="md:text-fluid-lg-title text-[40px] font-bold flex flex-shrink-0 mb-[30px] text-center md:mx-0 mx-[24px]">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="md:text-fluid-lg-title text-[40px] font-bold flex flex-shrink-0 mb-[30px] text-center md:mx-0 mx-[24px]"
+            >
               Connecting Paws, Building Community
             </motion.h2>
             {/* <p  className="text-fluid-small-title font-semibold mb-[30px]">Find new Friends Nearby </p> */}
 
             <motion.p
-                      					  initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.8 , delay: 0.2 }}
-            className="md:text-fluid-base text-[16px]  text-justify mb-[20px] md:mx-0 mx-[20px]">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="md:text-fluid-base text-[16px]  text-justify mb-[20px] md:mx-0 mx-[20px]"
+            >
               For over twenty years, I lived in the same neighborhood, but I
               didn’t know a single neighbor. Life was busy, and connections just
               didn’t happen. Then, three years ago, things changed when the
@@ -96,20 +104,22 @@ const Containt = () => {
               together.
             </motion.p>
             <motion.p
-                      					  initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.8 , delay: 0.2 }}
-            className="md:text-fluid-base text-[16px]  text-justify mb-[20px] md:mx-0 mx-[20px]">
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="md:text-fluid-base text-[16px]  text-justify mb-[20px] md:mx-0 mx-[20px]"
+            >
               Dogs bring so much joy into our lives, and they enrich our
               communities in ways we often overlook. They help us forge
               connections, share smiles, and create bonds that last. In
               recognizing the incredible value dogs bring, Woof Spot was born.
             </motion.p>
-            <motion.p 
-                      					  initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8 , delay: 0.2 }}
-            className="md:text-fluid-base text-[16px] text-justify md:mx-0 mx-[20px]">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="md:text-fluid-base text-[16px] text-justify md:mx-0 mx-[20px]"
+            >
               At Woof Spot, we believe that every dog is unique, with their own
               play styles, social needs, and personalities. Our mission is to
               connect dogs and their owners, fostering friendships that make
@@ -130,10 +140,11 @@ const Containt = () => {
 
         <div className="relative flex  items-center md:px-4  sm:pb-16 md:justify-center   md:mx-0 mx-auto">
           <motion.div
-                    					  initial={{ opacity: 0, y: 20 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          transition={{ duration: 0.8 , delay: 0.2 }}
-          className="">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className=""
+          >
             <Image
               className="md:w-screen w-[82vw] rounded-lg shadow-lg 
                 scale-110"
