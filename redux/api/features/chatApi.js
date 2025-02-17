@@ -33,6 +33,29 @@ const chatApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.chat],
     }),
+    blockChat: build.mutation({
+      query: ({ id, data }) => ({
+        url: `/chat/${id}/block`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.chat],
+    }),
+    unBlockChat: build.mutation({
+      query: ({ id, data }) => ({
+        url: `/chat/${id}/unblock`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.chat],
+    }),
+    deleteChat: build.mutation({
+      query: ({ id }) => ({
+        url: `/chat/${id}/delete`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.chat],
+    }),
   }),
 });
 
@@ -41,4 +64,7 @@ export const {
   useGetAllChatByUserQuery,
   useGetAllMessageByChatIdQuery,
   useLeaveGroupChatMutation,
+  useBlockChatMutation,
+  useUnBlockChatMutation,
+  useDeleteChatMutation,
 } = chatApi;

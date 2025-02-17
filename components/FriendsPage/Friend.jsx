@@ -157,9 +157,9 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
         <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-2">
           Matched {petPartner?.totalPercentage}%
         </p>
-        <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-2">
+        {/* <p className="text-lg sm:text-xl lg:text-2xl font-bold mt-2">
           {petPartner?.message}
-        </p>
+        </p> */}
         <div className="flex justify-center items-center gap-[11px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +187,7 @@ const Friend = ({ userData, petPartner, index, petProfile }) => {
           </svg>
 
           <p className="font-semibold text-fluid-lg-title-2 my-[27px]">
-            {petPartner?.distanceInMiles?.toFixed(3)} Miles
+            {petPartner?.distanceInMiles?.toFixed(2)} Miles
           </p>
         </div>
 

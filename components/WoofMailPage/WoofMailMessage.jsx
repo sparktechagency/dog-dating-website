@@ -15,18 +15,26 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { BsPersonAdd, BsThreeDotsVertical } from "react-icons/bs";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { HiMiniArrowLeftStartOnRectangle } from "react-icons/hi2";
-import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import {
+  MdBlockFlipped,
+  MdDelete,
+  MdOutlineArrowBackIosNew,
+} from "react-icons/md";
+import { CgUnblock } from "react-icons/cg";
+
 import { useDispatch, useSelector } from "react-redux";
 import LeaveConversation from "./LeaveConversation";
 import WoofMailMessageCard from "./WoofMailMessageCard";
 import Loader from "../ui/Loader";
-import WoofMailSendMessage from "./WoofMailSendMessage";
 import WoofMailSendMessageTwo from "./WoofMailSendMessageTwo";
 
 import WoofHero from "@/asserts/woofHero.png";
 import WoofSupporter from "@/asserts/woofSupporter.png";
+import BlockConversation from "./BlockModal";
+import UnBlockConversation from "./UnBlockModal";
+import DeleteConversationModal from "./DeleteConversationModal";
 
 const WoofMailMessage = ({
   selectedConversation,
@@ -41,9 +49,17 @@ const WoofMailMessage = ({
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [leaveConversationModal, setLeaveConversationModal] = useState(false);
+  const [blockConversationModal, setBlockConversationModal] = useState(false);
+  const [unBlockConversationModal, setUnBlockConversationModal] =
+    useState(false);
+  const [deleteConversationModal, setDeleteConversationModal] = useState(false);
 
   const isAdmin = selectedConversation?.groupAdmins?.some(
     (admin) => admin?._id === userData?.userId
+  );
+
+  const isBlocked = selectedConversation?.blockedUsers?.some(
+    (user) => user === userData?.userId
   );
 
   useEffect(() => {
@@ -53,17 +69,8 @@ const WoofMailMessage = ({
     }
   });
 
-  const menu = (
+  const leaveMenu = (
     <Menu>
-      {/* {isAdmin && (
-        <Menu.Item key="1">
-          <div className="flex items-center gap-2 text-base">
-            <BsPersonAdd className="text-[#F88D58]" />
-            <span className="text-[#F88D58]">Add Member</span>
-          </div>
-        </Menu.Item>
-      )} */}
-
       <Menu.Item key="2">
         <div
           onClick={() => setLeaveConversationModal(true)}
@@ -71,6 +78,42 @@ const WoofMailMessage = ({
         >
           <HiMiniArrowLeftStartOnRectangle className="text-[#F88D58]" />
           <span className="text-[#F88D58]">Leave Conversation</span>
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const blockMenu = (
+    <Menu>
+      {selectedConversation?.blockedUsers.length === 0 ? (
+        <Menu.Item key="1">
+          <div
+            onClick={() => setBlockConversationModal(true)}
+            className="flex items-center gap-2 text-base"
+          >
+            <MdBlockFlipped className="text-[#F88D58]" />
+            <span className="text-[#F88D58]">Block The User</span>
+          </div>
+        </Menu.Item>
+      ) : isBlocked ? null : (
+        <Menu.Item key="1">
+          <div
+            onClick={() => setUnBlockConversationModal(true)}
+            className="flex items-center gap-2 text-base"
+          >
+            <CgUnblock className="text-[#F88D58]" />
+            <span className="text-[#F88D58]">Unblock The User</span>
+          </div>
+        </Menu.Item>
+      )}
+
+      <Menu.Item key="2">
+        <div
+          onClick={() => setDeleteConversationModal(true)}
+          className="flex items-center gap-2 text-base"
+        >
+          <MdDelete className="text-[#F88D58]" />
+          <span className="text-[#F88D58]">Delete Conversation</span>
         </div>
       </Menu.Item>
     </Menu>
@@ -261,9 +304,15 @@ const WoofMailMessage = ({
               </div>
             </div>
 
-            {selectedConversation?.isGroupChat && (
+            {selectedConversation?.isGroupChat ? (
               <div>
-                <Dropdown overlay={menu} trigger={["click"]}>
+                <Dropdown overlay={leaveMenu} trigger={["hover"]}>
+                  <BsThreeDotsVertical className="text-2xl cursor-pointer text-[#F88D58]" />
+                </Dropdown>
+              </div>
+            ) : (
+              <div>
+                <Dropdown overlay={blockMenu} trigger={["hover"]}>
                   <BsThreeDotsVertical className="text-2xl cursor-pointer text-[#F88D58]" />
                 </Dropdown>
               </div>
@@ -274,7 +323,7 @@ const WoofMailMessage = ({
           <Content className="bg-white flex flex-col gap-5 rounded-none relative ">
             <div className="h-full flex flex-col justify-end">
               <Card
-                className="!border-0 !pb-14 overflow-y-auto border-none h-full"
+                className="!border-0 !pb-14 overflow-y-auto border-none h-full overflow-x-hidden"
                 ref={messagesContainerRef}
               >
                 {isAllMessageFetching ? (
@@ -321,6 +370,34 @@ const WoofMailMessage = ({
           setLeaveConversationModal={setLeaveConversationModal}
           userData={userData}
           chatId={selectedConversation?._id}
+        />
+      )}
+      {blockConversationModal && (
+        <BlockConversation
+          socket={socket}
+          blockConversationModal={blockConversationModal}
+          setSelectedConversation={setSelectedConversation}
+          setBlockConversationModal={setBlockConversationModal}
+          userData={userData}
+          chat={selectedConversation}
+        />
+      )}
+      {unBlockConversationModal && (
+        <UnBlockConversation
+          unBlockConversationModal={unBlockConversationModal}
+          setSelectedConversation={setSelectedConversation}
+          setUnBlockConversationModal={setUnBlockConversationModal}
+          userData={userData}
+          chat={selectedConversation}
+        />
+      )}
+      {deleteConversationModal && (
+        <DeleteConversationModal
+          deleteConversationModal={deleteConversationModal}
+          setSelectedConversation={setSelectedConversation}
+          setDeleteConversationModal={setDeleteConversationModal}
+          userData={userData}
+          chat={selectedConversation}
         />
       )}
     </div>
