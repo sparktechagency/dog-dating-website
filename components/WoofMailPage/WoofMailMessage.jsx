@@ -92,7 +92,7 @@ const WoofMailMessage = ({
             className="flex items-center gap-2 text-base"
           >
             <MdBlockFlipped className="text-[#F88D58]" />
-            <span className="text-[#F88D58]">Block The User</span>
+            <span className="text-[#F88D58]">Block User</span>
           </div>
         </Menu.Item>
       ) : isBlocked ? null : (
@@ -102,7 +102,7 @@ const WoofMailMessage = ({
             className="flex items-center gap-2 text-base"
           >
             <CgUnblock className="text-[#F88D58]" />
-            <span className="text-[#F88D58]">Unblock The User</span>
+            <span className="text-[#F88D58]">Unblock User</span>
           </div>
         </Menu.Item>
       )}
