@@ -106,16 +106,6 @@ const WoofMailMessage = ({
           </div>
         </Menu.Item>
       )}
-
-      <Menu.Item key="2">
-        <div
-          onClick={() => setDeleteConversationModal(true)}
-          className="flex items-center gap-2 text-base"
-        >
-          <MdDelete className="text-[#F88D58]" />
-          <span className="text-[#F88D58]">Delete Conversation</span>
-        </div>
-      </Menu.Item>
     </Menu>
   );
 
@@ -306,13 +296,13 @@ const WoofMailMessage = ({
 
             {selectedConversation?.isGroupChat ? (
               <div>
-                <Dropdown overlay={leaveMenu} trigger={["hover"]}>
+                <Dropdown overlay={leaveMenu} trigger={["click"]}>
                   <BsThreeDotsVertical className="text-2xl cursor-pointer text-[#F88D58]" />
                 </Dropdown>
               </div>
             ) : (
               <div>
-                <Dropdown overlay={blockMenu} trigger={["hover"]}>
+                <Dropdown overlay={blockMenu} trigger={["click"]}>
                   <BsThreeDotsVertical className="text-2xl cursor-pointer text-[#F88D58]" />
                 </Dropdown>
               </div>

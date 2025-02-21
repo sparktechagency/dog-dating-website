@@ -18,7 +18,7 @@ const UnBlockConversation = ({
     const data = {
       blockUserId: userId?.[0]?._id,
     };
-    console.log(data);
+
     try {
       const res = await unblockChat({ id: chat?._id, data }).unwrap();
 

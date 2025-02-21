@@ -19,18 +19,22 @@ const BlockConversation = ({
     const data = {
       blockUserId: userId?.[0]?._id,
     };
-    console.log(data);
+
     try {
       const res = await blockChat({ id: chat?._id, data }).unwrap();
 
-      //   socket.emit("send-new-message", data);
+      socket.emit(
+        "isChatBlocked",
+        { chatId: chat?._id, userId: data?.blockUserId },
+        (res) => {}
+      );
 
       toast.success(res.message, {
         id: toastId,
         duration: 2000,
       });
-      setSelectedConversation(null);
       setBlockConversationModal(false);
+      setSelectedConversation(null);
     } catch (err) {
       toast.error(err.data.message, {
         id: toastId,

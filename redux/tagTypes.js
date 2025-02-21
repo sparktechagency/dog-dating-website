@@ -7,6 +7,7 @@ export const tagTypes = {
   chat: "Chat",
   payment: "Payment",
   adminSettings: "AdminSettings",
+  blockUser: "BlockUser",
 };
 
 export const tagTypesList = [
@@ -18,4 +19,5 @@ export const tagTypesList = [
   tagTypes.chat,
   tagTypes.payment,
   tagTypes.adminSettings,
+  tagTypes.blockUser,
 ];

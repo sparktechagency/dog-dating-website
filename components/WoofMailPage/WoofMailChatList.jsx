@@ -2,13 +2,16 @@
 import groupImage from "./asserts/group.svg";
 import { Input } from "antd";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCirclePlus } from "react-icons/fa6";
 import Loader from "../ui/Loader";
 import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllChatByUserQuery } from "@/redux/api/features/chatApi";
 import CreateGroup from "./CreateGroup";
 import WoofMailChatListCard from "./WoofMailChatListCard";
+import { MdBlock } from "react-icons/md";
+import BlockUsersModal from "./BlockUsers";
+import { SocketContext } from "@/context/SocketContextApi";
 
 const WoofMailChatList = ({
   selectedConversation,
@@ -17,13 +20,16 @@ const WoofMailChatList = ({
   imageUrl,
   onlineUsers,
 }) => {
+  const { socket } = useContext(SocketContext);
   const menuRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddGroupModal, setShowAddGroupModal] = useState(false);
+  const [showBlocUsersModal, setShowBlocUsersModal] = useState(false);
   const [open, setOpen] = useState(false);
 
   const toggleGroupModal = () => setShowAddGroupModal((prev) => !prev);
+  const toggleBlocUsersModal = () => setShowBlocUsersModal((prev) => !prev);
 
   const toggleMenu = () => {
     setOpen((prev) => !prev);
@@ -42,13 +48,43 @@ const WoofMailChatList = ({
     };
   }, [open]);
 
-  const { data: allChatList, isFetching: isAllChatFeacthing } =
-    useGetAllChatByUserQuery(
-      { id: userData?.userId },
-      {
-        skip: !userData?.userId,
-      }
-    );
+  const {
+    data: allChatList,
+    isFetching: isAllChatFeacthing,
+    refetch,
+  } = useGetAllChatByUserQuery(
+    { id: userData?.userId },
+    {
+      skip: !userData?.userId,
+    }
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket?.on(`isChatBlocked::${selectedConversation?._id}`, (res) => {
+        if (res?.success) {
+          setSelectedConversation(null);
+          refetch();
+        }
+      });
+
+      socket?.on(`needRefresh::${userData?.userId}`, (res) => {
+        if (res?.success) {
+          refetch();
+        }
+      });
+    }
+
+    return () => {
+      socket?.off(`isChatBlocked::${selectedConversation?._id}`);
+    };
+  }, [
+    refetch,
+    selectedConversation?._id,
+    setSelectedConversation,
+    socket,
+    userData?.userId,
+  ]);
 
   const filteredConversations = allChatList?.data
     ?.filter((conversation) =>
@@ -86,18 +122,27 @@ const WoofMailChatList = ({
 
             {open && (
               <div className="bg-[#F3F5FB] py-3 shadow-md absolute -left-32 top-9 rounded z-[99999] w-44 p-1">
-                <div className="flex gap-2 whitespace-nowrap">
+                <div
+                  onClick={toggleGroupModal}
+                  className="flex gap-2 whitespace-nowrap"
+                >
                   <Image
                     loading="lazy"
                     alt="profileImage"
                     src={groupImage}
                     className=""
                   />
-                  <p
-                    onClick={toggleGroupModal}
-                    className="text-[#302F51] cursor-pointer text-[20px] font-bold"
-                  >
+                  <p className="text-[#302F51] cursor-pointer text-[20px] font-bold">
                     Create Group
+                  </p>
+                </div>
+                <div
+                  onClick={toggleBlocUsersModal}
+                  className="flex items-center gap-2 whitespace-nowrap"
+                >
+                  <MdBlock className="text-[#F88D58] text-2xl" />{" "}
+                  <p className="text-[#302F51] cursor-pointer text-[20px] font-bold">
+                    Blocked Users
                   </p>
                 </div>
               </div>
@@ -147,6 +192,15 @@ const WoofMailChatList = ({
             toggleGroupModal={toggleGroupModal}
             showAddGroupModal={showAddGroupModal}
             setShowAddGroupModal={setShowAddGroupModal}
+            userData={userData}
+            allChatList={allChatList}
+          />
+        </div>
+      )}
+      {showBlocUsersModal && (
+        <div className="inset-0 overflow-y-auto fixed  flex justify-center md:items-center items-start md:mt-0 mt-16 bg-black/20 z-50">
+          <BlockUsersModal
+            toggleBlocUsersModal={toggleBlocUsersModal}
             userData={userData}
             allChatList={allChatList}
           />
