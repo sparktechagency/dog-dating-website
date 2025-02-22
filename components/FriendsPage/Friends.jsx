@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Friend from "./Friend";
 import HowDoYouPlay from "../HomePage/HowDoYouPlay";
 
@@ -16,7 +16,9 @@ import { useSelector } from "react-redux";
 import { decodedToken } from "@/utils/jwt";
 import Loader from "../ui/Loader";
 import { ConfigProvider, Pagination } from "antd";
+import { SocketContext } from "@/context/SocketContextApi";
 const Friends = () => {
+  const { socket } = useContext(SocketContext);
   const [page, setPage] = useState(1);
 
   // Add a useEffect to debug state changes
@@ -59,13 +61,26 @@ const Friends = () => {
   }, [petProfileData, petProfileError]);
 
   // Fetch nearby friends
-  const { data: nearByFriends, isFetching: nearByFriendsFetching } =
-    useNearbyFriendsQuery(
-      { id: userData?.userId, page: page },
-      {
-        skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
-      }
-    );
+  const {
+    data: nearByFriends,
+    isFetching: nearByFriendsFetching,
+    refetch,
+  } = useNearbyFriendsQuery(
+    { id: userData?.userId, page: page },
+    {
+      skip: !userData?.userId || isFetchingPetProfile, // Skip query if userId or petProfile is unavailable
+    }
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket?.on(`needRefresh::${userData?.userId}`, (res) => {
+        if (res?.success) {
+          refetch();
+        }
+      });
+    }
+  }, [refetch, socket, userData?.userId]);
 
   return (
     <div className="bg-[#FFFAF5]">

@@ -306,7 +306,8 @@ export default function CreateGroup(props) {
           </Form.Item>
           <div className="">
             <Button
-              className="!bg-[#F88D58] mt-4 py-3 inline-block w-fit h-fit"
+              disabled={selectedUsers.length < 2}
+              className="!bg-[#F88D58] !text-white disabled:opacity-50 mt-4 py-3 inline-block w-fit h-fit"
               type="primary"
               block
               htmlType="submit"

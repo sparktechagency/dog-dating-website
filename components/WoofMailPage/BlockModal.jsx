@@ -1,34 +1,40 @@
-import { useLeaveGroupChatMutation } from "@/redux/api/features/chatApi";
+import { useBlockChatMutation } from "@/redux/api/features/chatApi";
 import { Button, Modal } from "antd";
 import { toast } from "sonner";
 
-const LeaveConversation = ({
+const BlockConversation = ({
   socket,
-  leaveConversationModal,
+  blockConversationModal,
   setSelectedConversation,
-  setLeaveConversationModal,
+  setBlockConversationModal,
   userData,
-  chatId,
+  chat,
 }) => {
-  const [leaveConversation] = useLeaveGroupChatMutation();
-  const handleLeaveConversation = async (userData) => {
-    const toastId = toast.loading("Leaving Conversation...");
+  const [blockChat] = useBlockChatMutation();
+
+  const userId = chat?.users?.filter((user) => user._id !== userData?.userId);
+
+  const handleBlock = async (userData) => {
+    const toastId = toast.loading("Blocking...");
+    const data = {
+      blockUserId: userId?.[0]?._id,
+    };
+
     try {
-      const res = await leaveConversation({ id: chatId }).unwrap();
-      const data = {
-        chat: chatId,
-        sender: null,
-        text: res?.message,
-      };
+      const res = await blockChat({ id: chat?._id, data }).unwrap();
 
-      socket.emit("send-new-message", data, (res) => {});
+      socket.emit(
+        "isChatBlocked",
+        { chatId: chat?._id, userId: data?.blockUserId },
+        (res) => {}
+      );
 
-      toast.success("You have left the conversation", {
+      toast.success(res.message, {
         id: toastId,
         duration: 2000,
       });
+      setBlockConversationModal(false);
       setSelectedConversation(null);
-      setLeaveConversationModal(false);
     } catch (err) {
       toast.error(err.data.message, {
         id: toastId,
@@ -39,9 +45,9 @@ const LeaveConversation = ({
   return (
     <Modal
       // title="Confirm Delete"
-      open={leaveConversationModal}
-      onOk={() => handleLeaveConversation(userData)}
-      onCancel={() => setLeaveConversationModal(false)}
+      open={blockConversationModal}
+      onOk={() => handleBlock(userData)}
+      onCancel={() => setBlockConversationModal(false)}
       okText="Leave Conversation"
       cancelText="Cancel"
       centered
@@ -59,10 +65,11 @@ const LeaveConversation = ({
           <Button
             className="text-xl py-5 px-8 !text-base-color"
             type="primary"
-            onClick={() => setLeaveConversationModal(false)}
+            onClick={() => setBlockConversationModal(false)}
             style={{
               marginRight: 12,
               background: "rgba(221, 221, 221, 1)",
+              color: "black",
             }}
           >
             Cancel
@@ -70,19 +77,19 @@ const LeaveConversation = ({
           <Button
             className="text-xl py-5 px-8"
             type="primary"
-            style={{ background: "#F88D58" }}
-            onClick={() => handleLeaveConversation(userData)}
+            style={{ background: "#FA4A0D" }}
+            onClick={() => handleBlock(userData)}
           >
-            Leave
+            Block
           </Button>
         </div>
       }
     >
       <p className="text-3xl font-semibold pt-10 pb-4">
-        Do you want to leave from this conversation?
+        Do you want to block this user?
       </p>
     </Modal>
   );
 };
 
-export default LeaveConversation;
+export default BlockConversation;
