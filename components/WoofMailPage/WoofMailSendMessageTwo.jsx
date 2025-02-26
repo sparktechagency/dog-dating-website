@@ -55,7 +55,7 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
 
       try {
         const response = await axios.post(
-          "http://10.0.70.112:8002/api/v1/message/uploadImage",
+          "https://api.woofspot.net/api/v1/message/uploadImage",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
