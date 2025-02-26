@@ -24,17 +24,17 @@ export const SocketProvider = ({ children }) => {
       });
 
       socketStore.on("connect", () => {
-        toast.success("Connected to socket server");
+        // toast.success("Connected to socket server");
         // successToast("Connected to server"); // Don't remove this line - it's used for socket connection testing
       });
 
       socketStore.on("disconnect", () => {
-        toast.error("Disconnected from socket server");
+        // toast.error("Disconnected from socket server");
         // errorToast("Disconnected from server"); // Don't remove this line - it's used for socket connection testing
       });
 
       socketStore.on("connect_error", (error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         // errorToast(error.message); // Don't remove this line - it's used for socket connection testing
       });
 
