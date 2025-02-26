@@ -108,11 +108,11 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
               duration: 2000,
             });
       });
-      form.resetFields();
-      setTextValue(null);
       setFileList([]);
       setPreviewUrls([]);
       setUploadedImageUrls([]);
+      form.resetFields();
+      setTextValue(null);
     } catch (error) {
       toast.error(error?.data?.message || "Failed to send message", {
         id: toastId,
