@@ -11,10 +11,13 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
     (user) => user === userData?.userId
   );
   const [form] = Form.useForm();
+  const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [textValue, setTextValue] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]); // ✅ Store uploaded image URLs
+
+  console.log({ uploadedImageUrls });
 
   // Reset previews and file list when the selected conversation changes
   useEffect(() => {
@@ -47,6 +50,7 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
 
   // ✅ Upload images to backend and get URLs
   const uploadImages = async (files) => {
+    setIsUploadLoading(true);
     const uploadedUrls = [];
     for (const file of files) {
       if (!file.originFileObj) continue;
@@ -67,7 +71,8 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
         toast.error("Failed to upload image");
       }
     }
-    setUploadedImageUrls(uploadedUrls); // ✅ Store uploaded image URLs
+    setUploadedImageUrls(uploadedUrls);
+    setIsUploadLoading(false); // ✅ Store uploaded image URLs
   };
 
   // ✅ Handle image delete
@@ -83,11 +88,12 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
     setFileList(newFileList);
     setPreviewUrls(newPreviewUrls);
     setUploadedImageUrls(newUploadedUrls);
+
+    newFileList?.length < 1 && setIsUploadLoading(false);
   };
 
   // ✅ Send message with image URL
   const handleMessageSend = async (values) => {
-    const toastId = toast.loading("Sending Message...");
     const data = {
       chat: selectedConversation?._id,
       sender: userData?.userId,
@@ -97,27 +103,29 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
     };
 
     try {
-      socket.emit("send-new-message", data, (res) => {
-        res?.success
-          ? toast.success("Message sent successfully!", {
-              id: toastId,
-              duration: 2000,
-            })
-          : toast.error(res?.message, {
-              id: toastId,
-              duration: 2000,
-            });
+      socket?.emit("send-new-message", data, (res) => {
+        setFileList([]);
+        setPreviewUrls([]);
+        setUploadedImageUrls([]);
+        form.resetFields();
+        setTextValue(null);
+        // res?.success
+        //   ? toast.success("Message sent successfully!", {
+        //       id: toastId,
+        //       duration: 2000,
+        //     })
+        //   : toast.error(res?.message, {
+        //       id: toastId,
+        //       duration: 2000,
+        //     });
       });
-      setFileList([]);
-      setPreviewUrls([]);
-      setUploadedImageUrls([]);
-      form.resetFields();
-      setTextValue(null);
     } catch (error) {
-      toast.error(error?.data?.message || "Failed to send message", {
-        id: toastId,
-        duration: 2000,
-      });
+      toast.error(
+        error?.data?.message || error?.message || "Failed to send message",
+        {
+          duration: 2000,
+        }
+      );
     }
   };
 
@@ -198,13 +206,21 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
                   </Upload>
                 </Form.Item>
               </div>
-              <button
-                disabled={!textValue && fileList.length < 1}
-                className="disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                type="submit"
-              >
-                <FaTelegramPlane className=" text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3 " />
-              </button>
+              {isUploadLoading ? (
+                "Uploading..."
+              ) : (
+                <button
+                  disabled={
+                    (!textValue && fileList.length < 1) ||
+                    (uploadedImageUrls.length < 1 &&
+                      fileList.length !== uploadedImageUrls.length)
+                  }
+                  className="disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  type="submit"
+                >
+                  <FaTelegramPlane className=" text-white bg-[#F88D58] rounded-full p-2 text-4xl ms-3 " />
+                </button>
+              )}
             </div>
           </Form>
         </div>
