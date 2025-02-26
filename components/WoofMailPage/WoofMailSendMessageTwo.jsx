@@ -5,6 +5,7 @@ import { FaTelegramPlane, FaTimes } from "react-icons/fa";
 import { toast } from "sonner";
 import axios from "axios";
 import Image from "next/image";
+import Loader from "../ui/Loader";
 
 const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   const isBlocked = selectedConversation?.blockedUsers?.some(
@@ -16,8 +17,6 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   const [fileList, setFileList] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]); // ✅ Store uploaded image URLs
-
-  console.log({ uploadedImageUrls });
 
   // Reset previews and file list when the selected conversation changes
   useEffect(() => {
@@ -207,7 +206,7 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
                 </Form.Item>
               </div>
               {isUploadLoading ? (
-                "Uploading..."
+                <Loader className={"w-fit mx-1"} />
               ) : (
                 <button
                   disabled={
