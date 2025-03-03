@@ -99,6 +99,16 @@ export const authApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.user],
     }),
+    changePassword: build.mutation({
+      query: (data) => {
+        return {
+          url: `/auth/change-password`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: [tagTypes.user],
+    }),
     myProfile: build.query({
       query: () => {
         return {
@@ -153,6 +163,7 @@ export const {
   useResendForgetOTPMutation,
   useForgetOtpVerifyMutation,
   useResetPasswordMutation,
+  useChangePasswordMutation,
   useMyProfileQuery,
   useGetAllUsersQuery,
   useDonationUserQuery,
