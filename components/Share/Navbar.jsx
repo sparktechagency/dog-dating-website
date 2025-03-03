@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaBars, FaCross, FaTimes } from "react-icons/fa";
+import { PiPasswordFill } from "react-icons/pi";
 import { ImCross } from "react-icons/im";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -253,7 +254,7 @@ const Navbar = () => {
               />
             </div>
             {open && (
-              <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-32 p-1">
+              <div className="bg-[#F3F5FB] py-3 shadow-md absolute right-0 rounded z-50 w-52 p-1">
                 <Link href="/profile">
                   <div className="flex gap-3">
                     <Image
@@ -270,9 +271,20 @@ const Navbar = () => {
                     </p>
                   </div>
                 </Link>
+                <Link href="/change-password">
+                  <div className="flex items-center gap-3 mt-3">
+                    <PiPasswordFill className="size-4 text-[#F88D58]" />
+                    <p
+                      // onClick={toggleUserModal}
+                      className="text-[#302F51] text-[18px] cursor-pointer font-bold"
+                    >
+                      Change Password
+                    </p>
+                  </div>
+                </Link>
                 <div
                   onClick={handleLogout}
-                  className="flex gap-3 mt-2 whitespace-nowrap"
+                  className="flex gap-3 mt-3 whitespace-nowrap"
                 >
                   <Image
                     loading="lazy"
