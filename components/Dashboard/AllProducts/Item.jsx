@@ -91,11 +91,14 @@ const Item = ({ item }) => {
           />
         </div>
         <div className="text-start">
-          <h2 className="text-[40px] font-bold text-[#302F51] my-3">
+          <h2 className="text-[30px] font-bold text-[#302F51] my-3">
             {item?.title}
           </h2>
-          <p className="text-[20px] font-semibold text-[#302F51] mb-4">
+          <p className="text-[20px] font-semibold text-[#302F51] mb-2">
             ${item?.price}
+          </p>
+          <p className="text-[20px] font-semibold text-[#302F51]/50 mb-4">
+            {item?.description}
           </p>
         </div>
         <div className="flex justify-end">

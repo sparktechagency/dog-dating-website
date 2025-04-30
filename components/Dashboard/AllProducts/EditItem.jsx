@@ -62,9 +62,10 @@ const EditItem = (props) => {
     const formData = new FormData();
     try {
       const image = e.target.image.files[0] || item?.image;
-      const title = e.target.name.value;
+      const title = e.target.title.value;
       const price = e.target.price.value;
       const productLink = e.target.link.value;
+      const description = e.target.description.value;
 
       if (!image) {
         setError("Please select an image.");
@@ -75,6 +76,7 @@ const EditItem = (props) => {
         title,
         price: Number(price),
         productLink: productLink,
+        description: description,
       };
 
       formData.append("data", JSON.stringify(data));
@@ -196,6 +198,24 @@ const EditItem = (props) => {
                 placeholder={item?.productLink}
                 defaultValue={item?.productLink}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-5"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-white mb-1"
+              >
+                Description*
+              </label>
+              <textarea
+                type="text"
+                rows={5}
+                id="name"
+                name="description"
+                required
+                placeholder={item?.description}
+                defaultValue={item?.description}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
