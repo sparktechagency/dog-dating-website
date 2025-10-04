@@ -8,6 +8,7 @@ const nextConfig = {
       { hostname: "10.0.70.42" },
       { hostname: "10.0.70.112" },
       { hostname: "api.woofspot.net" },
+      { hostname: "10.10.10.32" },
     ],
   },
 };

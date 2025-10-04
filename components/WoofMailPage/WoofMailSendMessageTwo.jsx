@@ -6,11 +6,13 @@ import { toast } from "sonner";
 import axios from "axios";
 import Image from "next/image";
 import Loader from "../ui/Loader";
+import { getBaseUrl } from "@/helpers/config/envConfig";
 
 const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
   const isBlocked = selectedConversation?.blockedUsers?.some(
     (user) => user === userData?.userId
   );
+  const baseUrl = getBaseUrl();
   const [form] = Form.useForm();
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [textValue, setTextValue] = useState(null);
@@ -58,7 +60,7 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
 
       try {
         const response = await axios.post(
-          "https://api.woofspot.net/api/v1/message/uploadImage",
+          `${baseUrl}/message/uploadImage`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -141,7 +143,7 @@ const WoofMailSendMessageTwo = ({ socket, selectedConversation, userData }) => {
 
   return (
     <div>
-      {selectedConversation?.blockedUsers.length !== 0 ? (
+      {selectedConversation?.blockedUsers?.length !== 0 ? (
         <div className="absolute bottom-0 w-full py-5 !bg-white">
           <h1 className="text-center text-base sm:text-lg lg:text-xl font-semibold text-red-500">
             {isBlocked ? "You have been blocked" : "You blocked this user"}

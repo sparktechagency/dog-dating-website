@@ -85,7 +85,7 @@ const WoofMailMessage = ({
 
   const blockMenu = (
     <Menu>
-      {selectedConversation?.blockedUsers.length === 0 ? (
+      {selectedConversation?.blockedUsers?.length === 0 ? (
         <Menu.Item key="1">
           <div
             onClick={() => setBlockConversationModal(true)}
