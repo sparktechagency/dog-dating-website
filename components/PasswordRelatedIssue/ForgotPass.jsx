@@ -40,7 +40,7 @@ const ForgotPass = () => {
       <FiKey className="my-8 text-8xl bg-[#FFF5ED] text-[#F88D58] rounded-full p-6" />
       <h1 className="text-3xl font-semibold">Forgot password?</h1>
       <p className="mt-4 text-gray-500">
-        No worries, we&apos;ll send you rest instructions.
+        No worries, we&apos;ll send you reset instructions.
       </p>
       <form onSubmit={onHandleSubmit} action="" className="w-full max-w-sm">
         {/* Email */}
